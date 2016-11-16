@@ -36,6 +36,14 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
+# Typescript
+.tscache
+
+# JetBrains
+.idea
 
 # Typings
 typings
+
+# Build directory
+build

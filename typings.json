@@ -2,6 +2,10 @@
   "name": "hedgehog-client",
   "dependencies": {},
   "globalDependencies": {
-    "node": "registry:dt/node#6.0.0+20161110151007"
+    "bytebuffer": "registry:dt/bytebuffer#5.0.0+20160624071349",
+    "long": "registry:dt/long#3.0.2+20160602144319",
+    "node": "registry:dt/node#6.0.0+20161110151007",
+    "node_zeromq/zmq": "registry:dt/node_zeromq/zmq#0.0.0+20160622112132",
+    "protobufjs": "registry:dt/protobufjs#5.0.1+20161019142200"
   }
 }
