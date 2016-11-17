@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package hedgehog.protocol.proto;
+
+option java_package = "at.pria.hedgehog.protocol.proto";
+option java_outer_classname = "ProcessP";
+
+enum ProcessFileno {
+    STDIN = 0;
+    STDOUT = 1;
+    STDERR = 2;
+}
+
+// Invoke a process on the controller
+message ProcessExecuteRequest {
+    string working_dir = 1;
+    repeated string args = 2;
+}
+
+// Reply with the process' PID for communication purposes
+message ProcessExecuteReply {
+    uint32 pid = 1;
+}
+
+// send stream data to a process' STDIN
+message ProcessStreamAction {
+    uint32 pid = 1;
+    //must be STDIN, as only STDIN is writable
+    ProcessFileno fileno = 2;
+    //an empty chunk closes the stream
+    bytes chunk = 3;
+}
+
+// receive stream data from a process' STDOUT or STDERR
+message ProcessStreamUpdate {
+    uint32 pid = 1;
+    //can't be STDIN, as STDIN is only readable
+    ProcessFileno fileno = 2;
+    //an empty chunk signals EOF
+    bytes chunk = 3;
+}
+
+// Signals that the process has exited
+message ProcessExitUpdate {
+    uint32 pid = 1;
+    uint32 exit_code = 2;
+}

@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package hedgehog.protocol.proto;
+
+option java_package = "at.pria.hedgehog.protocol.proto";
+option java_outer_classname = "IOP";
+
+// IO flags and flag combinations
+enum IOStateFlags {
+    option allow_alias = true;
+    // flag combinations (first because 0x00 needs to be first)
+    INPUT_FLOATING = 0x00;
+    INPUT_PULLUP = 0x02;
+    INPUT_PULLDOWN = 0x04;
+    OUTPUT_OFF = 0x01;
+    OUTPUT_ON = 0x09;
+    // flags
+    OUTPUT = 0x01; // output/input
+    PULLUP = 0x02; // pullup/no pullup
+    PULLDOWN = 0x04; // pulldown/no pulldown
+    LEVEL = 0x08; // on/off
+}
+
+// Set one sensor state.
+message IOStateAction {
+    uint32 port = 1;
+    IOStateFlags flags = 2;
+}
+
+// Request for one analog sensor value
+message AnalogRequest {
+    uint32 port = 1;
+}
+
+// Update of one analog sensor value
+message AnalogUpdate {
+    uint32 port = 1;
+    uint32 value = 2;
+}
+
+// Request for one digital sensor value
+message DigitalRequest {
+    uint32 port = 1;
+}
+
+// Update of one digital sensor value
+message DigitalUpdate {
+    uint32 port = 1;
+    bool value = 2;
+}

@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package hedgehog.protocol.proto;
+
+option java_package = "at.pria.hedgehog.protocol.proto";
+option java_outer_classname = "AckP";
+
+// Acknowledgement codes
+enum AcknowledgementCode {
+    // the command completed successfully
+    OK = 0;
+    // the command is not known
+    // this can happen if the controller runs older software than the client,
+    // or if the controller doesn't support all commands allowed by the specification
+    UNKNOWN_COMMAND = 1;
+    // the command is not valid; details are in the message
+    // this should not happen if the client sends proper commands
+    // e.g. a absolute/relative position command uses negative velocity/power, or the brake mode;
+    //      a motor velocity/power or servo position is out of range;
+    //      an analog IO port is set to output
+    INVALID_COMMAND = 2;
+    // the command is valid, but not supported; details are in the message
+    // this can happen if the controller runs older software than the client,
+    // or if the controller doesn't support all features allowed by the specification
+    // e.g. a port number is out of range for the used hardware;
+    //      an unknown motor mode is used;
+    //      an unknown IO state flag is used
+    UNSUPPORTED_COMMAND = 3;
+    // the command didn't complete successfully; details are in the message
+    // this can happen if the current state of the controller doesn't allow a specific supported command
+    // e.g. an AnalogRequest/DigitalRequest fails because the port is configured as digital/analog, or as output;
+    //      a process command uses an unknown pid;
+    //      a process can't be started because of an OS error (e.g. the executable or working directory is not found)
+    FAILED_COMMAND = 4;
+}
+
+// an `OK` acknowledgement is sent as a reply to commands that have no other result
+// an Acknowledgement with another code is sent instead of the regular reply if a command failed
+message Acknowledgement {
+    AcknowledgementCode code = 1;
+    // if the code is `OK`, this will be empty
+    // otherwise, the message mith contain more information
+    string message = 2;
+}

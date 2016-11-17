@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package hedgehog.protocol.proto;
+
+option java_package = "at.pria.hedgehog.protocol.proto";
+option java_outer_classname = "ServoP";
+
+// Set one servo target position
+message ServoAction {
+    uint32 port = 1;
+    bool active = 2;
+    uint32 position = 3;
+}

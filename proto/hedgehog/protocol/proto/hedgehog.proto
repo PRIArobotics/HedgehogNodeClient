@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package hedgehog.protocol.proto;
+
+option java_package = "at.pria.hedgehog.protocol.proto";
+option java_outer_classname = "HedgehogP";
+
+import "hedgehog/protocol/proto/ack.proto";
+import "hedgehog/protocol/proto/io.proto";
+import "hedgehog/protocol/proto/motor.proto";
+import "hedgehog/protocol/proto/servo.proto";
+import "hedgehog/protocol/proto/process.proto";
+
+// `HedgehogMessage` represents a message of any kind of the Hedgehog protocol.
+message HedgehogMessage {
+    // Contains any one of the different Hedgehog commands.
+    // See their respective files for command information.
+    oneof payload {
+        // ack.proto
+        Acknowledgement acknowledgement = 1;
+        // io.proto
+        IOStateAction io_state_action = 2;
+        AnalogRequest analog_request = 3;
+        AnalogUpdate analog_update = 4;
+        DigitalRequest digital_request = 5;
+        DigitalUpdate digital_update = 6;
+        // motor.proto
+        MotorAction motor_action = 7;
+        MotorRequest motor_request = 8;
+        MotorUpdate motor_update = 9;
+        MotorStateUpdate motor_state_update = 10;
+        MotorSetPositionAction motor_set_position_action = 11;
+        // servo.proto
+        ServoAction servo_action = 12;
+        // process.proto
+        ProcessExecuteRequest process_execute_request = 13;
+        ProcessExecuteReply process_execute_reply = 14;
+        ProcessStreamAction process_stream_action = 15;
+        ProcessStreamUpdate process_stream_update = 16;
+        ProcessExitUpdate process_exit_update = 17;
+    }
+}

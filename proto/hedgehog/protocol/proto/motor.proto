@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package hedgehog.protocol.proto;
+
+option java_package = "at.pria.hedgehog.protocol.proto";
+option java_outer_classname = "MotorP";
+
+enum MotorState {
+    // The motor receives constant power
+    // set amount to 0 (or skip it) to turn the motor off
+    POWER = 0;
+    // The motor is braked by connecting its two pins
+    // The amount field specifies the duty cycle with which the motor is braked
+    // setting amount to 0 (or skipping it) is equivalent to a full brake
+    BRAKE = 1;
+    // The motor is controlled to have a constant velocity
+    // set amount to 0 (or skip it) to actively keeping in one position
+    VELOCITY = 2;
+}
+
+// Set one motor action
+message MotorAction {
+    uint32 port = 1;
+    // the state to set
+    MotorState state = 2;
+    // the amount (power, velocity) to set for the action
+    sint32 amount = 3;
+    // if a goal position is given, upon reaching the position,
+    // the motor will go into this state (with amount = 0 if relevant), i.e.:
+    // POWER: turn off
+    // BRAKE: full brake
+    // VELOCITY: freeze
+    MotorState reached_state = 4;
+    // set one of these to run the action until a goal position is reached
+    oneof position {
+        sint32 relative = 5;
+        sint32 absolute = 6;
+    }
+}
+
+// Request for one motor state
+message MotorRequest {
+    uint32 port = 1;
+}
+
+// Update of one motor state
+// Only velocity and position can change on their own
+// If the current command is a position command, the state can change as well;
+// that change is signaled separately by MotorStateUpdate
+message MotorUpdate {
+    uint32 port = 1;
+    sint32 velocity = 2;
+    sint32 position = 3;
+}
+
+// Update of one motor state
+// This update is only triggered when a motor's command had a goal position
+// and that position was reached.
+message MotorStateUpdate {
+    uint32 port = 1;
+    MotorState state = 2;
+}
+
+// Set one motor's position counter
+message MotorSetPositionAction {
+    uint32 port = 1;
+    sint32 position = 2;
+}
