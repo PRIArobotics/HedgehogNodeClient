@@ -9,7 +9,7 @@ let sock = zmq.socket('pub');
 
 
 export default class Motor {
-    private MotorState;
+    public MotorState;
     private MotorAction;
     private MotorRequest;
     private MotorUpdate;
