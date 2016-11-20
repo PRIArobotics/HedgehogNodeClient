@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package hedgehog.protocol.proto;
 
-option java_package = "at.pria.hedgehog.protocol.proto";
+option java_package = "at.pria.hedgehog.proto.proto";
 option java_outer_classname = "AckP";
 
 // Acknowledgement codes
