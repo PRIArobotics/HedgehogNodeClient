@@ -4,7 +4,7 @@
   "description": "Client library for the Hedgehog Educational Robotics Controller",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter spec --check-leaks --recursive build/test/"
   },
   "repository": {
     "type": "git",
@@ -43,6 +43,7 @@
   "dependencies": {
     "babel-polyfill": "^6.16.0",
     "codelyzer": "^1.0.0-beta.4",
+    "mocha": "^3.1.2",
     "protobufjs": "^5.0.1",
     "zmq": "^2.15.3"
   }

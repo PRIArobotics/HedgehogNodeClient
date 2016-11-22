@@ -38,19 +38,19 @@ export default class Io {
     }
 
     public output() {
-        return (this.flags & this.IOStateFlags.OUTPUT) != 0
+        return (this.flags & this.IOStateFlags.OUTPUT) !== 0;
     }
 
     public pullup() {
-        return (this.flags & this.IOStateFlags.PULLUP) != 0
+        return (this.flags & this.IOStateFlags.PULLUP) !== 0;
     }
 
     public pulldown() {
-        return (this.flags & this.IOStateFlags.PULLDOWN) != 0
+        return (this.flags & this.IOStateFlags.PULLDOWN) !== 0;
     }
 
     public level() {
-        return (this.flags & this.IOStateFlags.LEVEL) != 0
+        return (this.flags & this.IOStateFlags.LEVEL) !== 0;
     }
 
     public serialize(message) {

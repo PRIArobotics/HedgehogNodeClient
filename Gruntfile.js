@@ -15,6 +15,10 @@ module.exports = function(grunt) {
             all: {
                 src: ['hedgehog/**/*.ts', 'typings/index.d.ts'],
                 outDir: 'build/hedgehog'
+            },
+            test: {
+                src: ['test/**/*.ts', 'typings/index.d.ts'],
+                outDir: 'build'
             }
         },
         babel: {
@@ -50,7 +54,8 @@ module.exports = function(grunt) {
             options: {
                 configuration: "tslint.json"
             },
-            protocol: 'hedgehog/**/*.ts',
+            proto: 'hedgehog/proto/**/*.ts',
+            test: 'test/**/*.ts'
         }
     });
 

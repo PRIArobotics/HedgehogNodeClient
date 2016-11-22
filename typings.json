@@ -7,5 +7,8 @@
     "node": "registry:dt/node#6.0.0+20161110151007",
     "node_zeromq/zmq": "registry:dt/node_zeromq/zmq#0.0.0+20160622112132",
     "protobufjs": "registry:dt/protobufjs#5.0.1+20161019142200"
+  },
+  "globalDevDependencies": {
+    "mocha": "registry:dt/mocha#2.2.5+20161028141524"
   }
 }

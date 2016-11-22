@@ -28,7 +28,7 @@ export default class Process {
 
         processExecuteRequest.args.push(args);
 
-        return
+        return processExecuteRequest;
     }
 
     public parseExecuteReply(pid: number) {
@@ -53,10 +53,10 @@ export default class Process {
         });
     }
 
-    public parseExitUpdate(pid: number, exit_code: number) {
+    public parseExitUpdate(pid: number, ExitCode: number) {
         return new this.ProcessExitUpdate({
             pid,
-            exit_code
+            exit_code: ExitCode
         });
     }
 
