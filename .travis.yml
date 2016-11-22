@@ -10,7 +10,9 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - g++-4.8 libzmq3 libzmq3-dev
+    - g++-4.8
+    - libzmq3
+    - libzmq3-dev
 before_script:
 - npm install
 - typings install
