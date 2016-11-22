@@ -7,19 +7,15 @@ export default class Io {
     public IOStateFlags;
     private IOStateAction;
 
-    private flags;
-
     constructor() {
         let builder = ProtoBuf.loadProtoFile("proto/hedgehog/protocol/proto/io.proto");
 
-        this.IOStateFlags = builder.build("hedgehog.protocol.proto.IOStateAction");
+        this.IOStateFlags = builder.build("hedgehog.protocol.proto.IOStateFlags");
         this.IOStateAction = builder.build("hedgehog.protocol.proto.IOStateAction");
     }
 
     public parseStateAction(port: number, flags: any) {
-        this.flags = flags;
-
-        if(flags & this.IOStateFlags.OUTPUT && flags & (this.IOStateFlags.PULLUP|this.IOStateFlags.PULLDOWN)) {
+        if(flags & this.IOStateFlags.OUTPUT && flags & (this.IOStateFlags.PULLUP | this.IOStateFlags.PULLDOWN)) {
             throw new TypeError("only input ports can be set to pullup or pulldown");
         }
 
@@ -37,20 +33,20 @@ export default class Io {
         });
     }
 
-    public output() {
-        return (this.flags & this.IOStateFlags.OUTPUT) !== 0;
+    public output(ioStateAction) {
+        return (ioStateAction.flags & this.IOStateFlags.OUTPUT) !== 0;
     }
 
-    public pullup() {
-        return (this.flags & this.IOStateFlags.PULLUP) !== 0;
+    public pullup(ioStateAction) {
+        return (ioStateAction.flags & this.IOStateFlags.PULLUP) !== 0;
     }
 
-    public pulldown() {
-        return (this.flags & this.IOStateFlags.PULLDOWN) !== 0;
+    public pulldown(ioStateAction) {
+        return (ioStateAction.flags & this.IOStateFlags.PULLDOWN) !== 0;
     }
 
-    public level() {
-        return (this.flags & this.IOStateFlags.LEVEL) !== 0;
+    public level(ioStateAction) {
+        return (ioStateAction.flags & this.IOStateFlags.LEVEL) !== 0;
     }
 
     public serialize(message) {

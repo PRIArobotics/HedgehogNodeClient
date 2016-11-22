@@ -45,7 +45,7 @@ export default class Process {
         });
     }
 
-    public parseStreamUpdate(pid: number, fileno: any, chunk: Uint8Array) {
+    public parseStreamUpdate(pid: number, fileno: any, chunk: Buffer) {
         return new this.ProcessStreamUpdate({
             pid,
             fileno,
