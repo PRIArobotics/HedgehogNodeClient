@@ -20,7 +20,7 @@ export default class Digital {
         });
     }
 
-    public parseDigitalUpdate(port: number, value: number) {
+    public parseDigitalUpdate(port: number, value: boolean) {
         return new this.DigitalUpdate({
             port,
             value

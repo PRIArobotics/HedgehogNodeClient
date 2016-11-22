@@ -81,7 +81,7 @@ describe('Proto', () => {
 
         describe('DigitalUpdate',() => {
             it('should return a valid DigitalUpdate', () => {
-                return digitalProto.parseDigitalUpdate(0, 0);
+                return digitalProto.parseDigitalUpdate(0, true);
             });
         });
 
@@ -93,7 +93,7 @@ describe('Proto', () => {
 
         describe('DigitalUpdate Serialization',() => {
             it('should return a valid serialized DigitalUpdate', () => {
-                return digitalProto.serialize(digitalProto.parseDigitalUpdate(0, 0));
+                return digitalProto.serialize(digitalProto.parseDigitalUpdate(0, true));
             });
         });
     });
