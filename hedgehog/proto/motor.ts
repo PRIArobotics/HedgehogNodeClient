@@ -3,6 +3,7 @@ import "babel-polyfill";
 
 import ProtoBuf = require("protobufjs");
 import zmq = require('zmq');
+import {wrapCallbackAsPromise} from "../utils";
 
 
 let sock = zmq.socket('pub');
@@ -16,23 +17,8 @@ export default class Motor {
     private MotorStateUpdate;
     private MotorSetPositionAction;
 
-    constructor() {
-        /*
-        // Asynchronously load proto files
-        ProtoBuf.loadProtoFile("proto/hedgehog/protocol/proto/motor.proto", function(err, builder) {
-            console.log(builder);
-
-            // Use builder to create classes for each message
-            this.MotorState = builder.build("hedgehog.protocol.proto.MotorState");
-            this.MotorAction = builder.build("hedgehog.protocol.proto.MotorAction");
-            this.MotorRequest = builder.build('hedgehog.protocol.proto.MotorRequest');
-            this.MotorUpdate = builder.build("hedgehog.protocol.proto.MotorUpdate");
-            this.MotorStateUpdate = builder.build("hedgehog.protocol.proto.MotorStateUpdate");
-            this.MotorSetPositionAction = builder.build("hedgehog.protocol.proto.MotorSetPositionAction");
-        });
-        */
-
-        let builder = ProtoBuf.loadProtoFile("proto/hedgehog/protocol/proto/motor.proto");
+    public async init() {
+        let builder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile, "proto/hedgehog/protocol/proto/motor.proto");
 
         this.MotorState = builder.build("hedgehog.protocol.proto.MotorState");
         this.MotorAction = builder.build("hedgehog.protocol.proto.MotorAction");

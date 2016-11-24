@@ -1,14 +1,15 @@
 import "babel-polyfill";
 
 import ProtoBuf = require("protobufjs");
+import {wrapCallbackAsPromise} from "../utils";
 
 
 export default class Analog {
     private AnalogRequest;
     private AnalogUpdate;
 
-    constructor() {
-        let builder = ProtoBuf.loadProtoFile("proto/hedgehog/protocol/proto/io.proto");
+    public async init() {
+        let builder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile, "proto/hedgehog/protocol/proto/io.proto");
 
         this.AnalogRequest = builder.build("hedgehog.protocol.proto.AnalogRequest");
         this.AnalogUpdate = builder.build("hedgehog.protocol.proto.AnalogUpdate");

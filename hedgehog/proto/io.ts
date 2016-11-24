@@ -1,14 +1,15 @@
 import "babel-polyfill";
 
 import ProtoBuf = require("protobufjs");
+import {wrapCallbackAsPromise} from "../utils";
 
 
 export default class Io {
     public IOStateFlags;
     private IOStateAction;
 
-    constructor() {
-        let builder = ProtoBuf.loadProtoFile("proto/hedgehog/protocol/proto/io.proto");
+    public async init() {
+        let builder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile, "proto/hedgehog/protocol/proto/io.proto");
 
         this.IOStateFlags = builder.build("hedgehog.protocol.proto.IOStateFlags");
         this.IOStateAction = builder.build("hedgehog.protocol.proto.IOStateAction");

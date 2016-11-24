@@ -4,8 +4,10 @@ import assert = require('assert');
 import Ack from '../hedgehog/proto/ack';
 import Analog from '../hedgehog/proto/analog';
 import Digital from '../hedgehog/proto/digital';
+import Hedgehog from '../hedgehog/proto/hedgehog';
 import Io from '../hedgehog/proto/io';
 import Motor from '../hedgehog/proto/motor';
+
 
 describe('Proto', () => {
 
@@ -14,6 +16,7 @@ describe('Proto', () => {
 
         beforeEach(() => {
             ackProto = new Ack();
+            return ackProto.init();
         });
 
         describe('AcknowledgementCode', () => {
@@ -41,6 +44,7 @@ describe('Proto', () => {
 
         beforeEach(() => {
             analogProto = new Analog();
+            return analogProto.init();
         });
 
         describe('AnalogRequest', () => {
@@ -75,6 +79,7 @@ describe('Proto', () => {
 
         beforeEach(() => {
             digitalProto = new Digital();
+            return digitalProto.init();
         });
 
         describe('DigitalRequest', () => {
@@ -109,6 +114,7 @@ describe('Proto', () => {
 
         beforeEach(() => {
             ioProto = new Io();
+            return ioProto.init();
         });
 
         describe('IOStateFlags', () => {
@@ -191,6 +197,7 @@ describe('Proto', () => {
 
         beforeEach(() => {
             motorProto = new Motor();
+            return motorProto.init();
         });
 
         describe('MotorState', () => {
