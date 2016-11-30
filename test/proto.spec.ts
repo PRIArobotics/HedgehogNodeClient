@@ -205,5 +205,103 @@ describe('Proto', () => {
                 assert.equal(0, motorProto.MotorState.POWER);
             });
         });
+
+        describe('MotorAction', () => {
+            let motorActionMessage;
+
+            it('should return a valid MotorAction', () => {
+                motorActionMessage = motorProto.parseAction(0, 0);
+                return motorActionMessage;
+            });
+
+            it('should return throw an error that relativity and absolute are mutually exclusive', () => {
+                assert.throws(() => motorActionMessage = motorProto.parseAction(0, 0, 0, 0, 0),
+                    TypeError, "relative and absolute are mutually exclusive");
+            });
+
+            it('should return throw an error that reached_state must be kept at ' +
+                'its default value for non-positional motor commands', () => {
+                assert.throws(() => motorActionMessage = motorProto.parseAction(
+                    0, 0, 0, undefined, undefined, motorProto.MotorState.BRAKE),
+                    TypeError, "reached_state must be kept at its default value for non-positional motor commands");
+            });
+
+            it('should return a valid serialized StateAction', () => {
+                return motorProto.serialize(motorActionMessage);
+            });
+        });
+
+        describe('MotorRequest', () => {
+            let motorRequestMessage;
+
+            it('should return a valid MotorRequest', () => {
+                motorRequestMessage = motorProto.parseRequest(0);
+                return motorRequestMessage;
+            });
+
+            it('should return a valid serialized StateAction', () => {
+                return motorProto.serialize(motorRequestMessage);
+            });
+        });
+
+        describe('MotorUpdate', () => {
+            let motorUpdateMessage;
+
+            it('should return a valid MotorUpdate', () => {
+                motorUpdateMessage = motorProto.parseUpdate(0, 0, 0);
+                return motorUpdateMessage;
+            });
+
+            it('should return a valid serialized StateAction', () => {
+                return motorProto.serialize(motorUpdateMessage);
+            });
+        });
+
+        describe('MotorStateUpdate', () => {
+            let motorStateUpdateMessage;
+
+            it('should return a valid MotorStateUpdate', () => {
+                motorStateUpdateMessage = motorProto.parseStateUpdate(0, 0);
+                return motorStateUpdateMessage;
+            });
+
+            it('should return a valid serialized StateAction', () => {
+                return motorProto.serialize(motorStateUpdateMessage);
+            });
+        });
+
+        describe('MotorSetPositionAction', () => {
+            let motorSetPositionActionMessage;
+
+            it('should return a valid MotorSetPositionAction', () => {
+                motorSetPositionActionMessage = motorProto.parseSetPositionAction(0, 0);
+                return motorSetPositionActionMessage;
+            });
+
+            it('should return a valid serialized StateAction', () => {
+                return motorProto.serialize(motorSetPositionActionMessage);
+            });
+        });
+    });
+
+    describe('Hedgehog', () => {
+        let hedgehogProto: Hedgehog;
+        let digitalProto: Digital;
+
+        beforeEach( async () => {
+            hedgehogProto = new Hedgehog();
+            await hedgehogProto.init();
+            digitalProto = new Digital();
+            return digitalProto.init();
+        });
+
+        describe('HedgehogMessage', () => {
+            it('HedgehogMessage test', () => {
+                let digitalRequestMessage = digitalProto.parseDigitalRequest(0);
+
+                hedgehogProto.parseHedgehogMessage(digitalRequestMessage);
+            });
+        });
+
     });
 });

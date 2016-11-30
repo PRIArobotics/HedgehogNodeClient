@@ -16,8 +16,6 @@ export default class Digital {
     }
 
     public parseDigitalRequest(port: number) {
-        console.log(this.DigitalRequest);
-
         return new this.DigitalRequest({
             port
         });

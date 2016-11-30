@@ -34,7 +34,8 @@ export default class Motor {
         if(relative != null && absolute != null) {
             throw new TypeError("relative and absolute are mutually exclusive");
         }
-        if(relative == null && absolute == null) {
+
+        if( (relative == null || relative === undefined) && (absolute == null || absolute === undefined)) {
             if(reachedState !== 0) {
                 throw new TypeError(
                     "reached_state must be kept at its default value for non-positional motor commands");
