@@ -1,40 +1,26 @@
+
 import "babel-polyfill";
 
-import ProtoBuf = require("protobufjs");
-import {wrapCallbackAsPromise} from "../utils";
+let hedgehog = require('../../protoLib/hedgehog_pb');
 
-export default class Hedgehog {
-    private HedgehogMessage;
 
-    public async init() {
+export default class Command {
 
-        let ackBuilder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile,
-            "proto/hedgehog/protocol/proto/ack.proto");
+    private message: any;
 
-        let builder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile,
-            "proto/hedgehog/protocol/proto/hedgehog.proto");
-
-        let ioBuilder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile,
-            "proto/hedgehog/protocol/proto/io.proto");
-
-        let motorBuilder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile,
-            "proto/hedgehog/protocol/proto/motor.proto");
-
-        let processBuilder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile,
-            "proto/hedgehog/protocol/proto/process.proto");
-
-        let servoBuilder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile,
-            "proto/hedgehog/protocol/proto/servo.proto");
-
-        this.HedgehogMessage = builder.build("hedgehog.protocol.proto.HedgehogMessage");
+    constructor(message: any) {
+        this.message = message;
     }
 
-    public parseHedgehogMessage(message) {
-        console.log(typeof message);
+    public parse(): any {
+        let hedgehogMessage = new hedgehog.HedgehogMessage();
 
-        /*
-        new this.HedgehogMessage({
+        hedgehogMessage.setMotorAction(this.message);
 
-        })*/
+        return hedgehogMessage;
+    }
+
+    public serialize(message): Uint8Array {
+        return message.serializeBinary();
     }
 }

@@ -1,35 +1,36 @@
 import "babel-polyfill";
 
-import ProtoBuf = require("protobufjs");
-import {wrapCallbackAsPromise} from "../utils";
+let io = require('../../protoLib/io_pb');
 
+export default class AnalogRequest {
+    private port: number;
 
-export default class Analog {
-    private AnalogRequest;
-    private AnalogUpdate;
-
-    public async init() {
-        let builder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile, "proto/hedgehog/protocol/proto/io.proto");
-
-        this.AnalogRequest = builder.build("hedgehog.protocol.proto.AnalogRequest");
-        this.AnalogUpdate = builder.build("hedgehog.protocol.proto.AnalogUpdate");
+    constructor(port: number) {
+        this.port = port;
     }
 
-    public parseAnalogRequest(port: number) {
-        return new this.AnalogRequest({
-            port
-        });
+    public parse() {
+        let analogRequest = new io.AnalogRequest();
+        analogRequest.setPort(this.port);
+
+        return analogRequest;
+    }
+}
+
+export class AnalogUpdate {
+    private port: number;
+    private value: number;
+
+    constructor(port: number, value: number) {
+        this.port = port;
+        this.value = value;
     }
 
-    public parseAnalogUpdate(port: number, value: number) {
-        return new this.AnalogUpdate({
-            port,
-            value
-        });
-    }
+    public parse() {
+        let analogUpdate = new io.AnalogUpdate();
+        analogUpdate.setPort(this.port);
+        analogUpdate.setValue(this.value);
 
-    public serialize(message) {
-        let buffer = message.encode();
-        return buffer.toArrayBuffer();
+        return analogUpdate;
     }
 }

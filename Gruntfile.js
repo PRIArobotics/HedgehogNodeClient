@@ -10,7 +10,8 @@ module.exports = function(grunt) {
                 emitDecoratorMetadata: true,
                 experimentalDecorators: true,
                 removeComments: false,
-                noImplicitAny: false
+                noImplicitAny: false,
+                allowJs: true
             },
             all: {
                 src: ['hedgehog/**/*.ts', 'typings/index.d.ts'],
@@ -46,6 +47,12 @@ module.exports = function(grunt) {
                         cwd: 'proto/',
                         src: ['**/*.proto'],
                         dest: 'build/proto'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'protoLib/',
+                        src: ['*.js'],
+                        dest: 'build/protoLib'
                     }
                 ]
             }

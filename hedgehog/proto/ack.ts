@@ -1,29 +1,23 @@
 import "babel-polyfill";
 
-import ProtoBuf = require("protobufjs");
-import {wrapCallbackAsPromise} from "../utils";
+let ack: any = require('../../protoLib/ack_pb');
 
+export default class Acknowledgement {
+    public static AcknowledgementCode = ack.AcknowledgementCode;
 
-export default class Ack {
-    public AcknowledgementCode;
-    private Acknowledgement;
+    private code: number;
+    private message: string;
 
-    public async init() {
-        let builder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile, "proto/hedgehog/protocol/proto/ack.proto");
-
-        this.AcknowledgementCode = builder.build("hedgehog.protocol.proto.AcknowledgementCode");
-        this.Acknowledgement = builder.build("hedgehog.protocol.proto.Acknowledgement");
+    constructor(code: number = ack.AcknowledgementCode.OK, message: string) {
+        this.code = code;
+        this.message = message;
     }
 
-    public parseAcknowledgement(code: number = this.AcknowledgementCode.OK, message: string) {
-        return new this.Acknowledgement({
-            code,
-            message
-        });
-    }
+    public parse() {
+        let acknowledgement = new ack.Acknowledgement();
+        acknowledgement.setCode(this.code);
+        acknowledgement.setMessage(this.message);
 
-    public serialize(message) {
-        let buffer = message.encode();
-        return buffer.toArrayBuffer();
+        return acknowledgement;
     }
 }

@@ -1,35 +1,36 @@
 import "babel-polyfill";
 
-import ProtoBuf = require("protobufjs");
-import {wrapCallbackAsPromise} from "../utils";
+let io = require('../../protoLib/io_pb');
 
+export default class DigitalRequest {
+    private port: number;
 
-export default class Digital {
-    private DigitalRequest;
-    private DigitalUpdate;
-
-    public async init() {
-        let builder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile, "proto/hedgehog/protocol/proto/io.proto");
-
-        this.DigitalRequest = builder.build("hedgehog.protocol.proto.DigitalRequest");
-        this.DigitalUpdate = builder.build("hedgehog.protocol.proto.DigitalUpdate");
+    constructor(port: number) {
+        this.port = port;
     }
 
-    public parseDigitalRequest(port: number) {
-        return new this.DigitalRequest({
-            port
-        });
+    public parse() {
+        let digitalRequest = new io.DigitalRequest();
+        digitalRequest.setPort(this.port);
+
+        return digitalRequest;
+    }
+}
+
+export class DigitalUpdate {
+    private port: number;
+    private value: number;
+
+    constructor(port: number, value: number) {
+        this.port = port;
+        this.value = value;
     }
 
-    public parseDigitalUpdate(port: number, value: boolean) {
-        return new this.DigitalUpdate({
-            port,
-            value
-        });
-    }
+    public parse() {
+        let digitalUpdate = new io.DigitalUpdate();
+        digitalUpdate.setPort(this.port);
+        digitalUpdate.setValue(this.value);
 
-    public serialize(message) {
-        let buffer = message.encode();
-        return buffer.toArrayBuffer();
+        return digitalUpdate;
     }
 }

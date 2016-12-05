@@ -11,7 +11,8 @@
     "ordered-imports": false,
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
     "no-unused-variable": [false],
-    "no-bitwise": false
+    "no-bitwise": false,
+    "no-var-requires": false
   },
   "rulesDirectory": [
     "node_modules/codelyzer"

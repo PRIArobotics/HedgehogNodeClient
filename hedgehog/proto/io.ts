@@ -1,57 +1,50 @@
 import "babel-polyfill";
 
-import ProtoBuf = require("protobufjs");
-import {wrapCallbackAsPromise} from "../utils";
+let io = require('../../protoLib/io_pb');
 
 
-export default class Io {
-    public IOStateFlags;
-    private IOStateAction;
+export default class StateAction {
+    private port: number;
+    private flags: any;
 
-    public async init() {
-        let builder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile, "proto/hedgehog/protocol/proto/io.proto");
-
-        this.IOStateFlags = builder.build("hedgehog.protocol.proto.IOStateFlags");
-        this.IOStateAction = builder.build("hedgehog.protocol.proto.IOStateAction");
-    }
-
-    public parseStateAction(port: number, flags: any) {
-        if(flags & this.IOStateFlags.OUTPUT && flags & (this.IOStateFlags.PULLUP | this.IOStateFlags.PULLDOWN)) {
+    constructor(port: number, flags: any) {
+        if(flags & io.IOStateFlags.OUTPUT && flags & (io.IOStateFlags.PULLUP | io.IOStateFlags.PULLDOWN)) {
             throw new TypeError("only input ports can be set to pullup or pulldown");
         }
 
-        if( !(flags & this.IOStateFlags.OUTPUT) && flags & this.IOStateFlags.LEVEL) {
+        if( !(flags & io.IOStateFlags.OUTPUT) && flags & io.IOStateFlags.LEVEL) {
             throw new TypeError("only output ports can be set to on");
         }
 
-        if(flags & this.IOStateFlags.PULLUP && flags & this.IOStateFlags.PULLDOWN) {
+        if(flags & io.IOStateFlags.PULLUP && flags & io.IOStateFlags.PULLDOWN) {
             throw new TypeError("pullup and pulldown are mutually exclusive");
         }
 
-        return new this.IOStateAction({
-            port,
-            flags
-        });
+        this.port = port;
+        this.flags = flags;
+    }
+
+    public parse() {
+        let stateAction = new io.StateAction();
+        stateAction.setPort(this.port);
+        stateAction.setFlags(this.flags);
+
+        return stateAction;
     }
 
     public output(ioStateAction) {
-        return (ioStateAction.flags & this.IOStateFlags.OUTPUT) !== 0;
+        return (ioStateAction.flags & io.IOStateFlags.OUTPUT) !== 0;
     }
 
     public pullup(ioStateAction) {
-        return (ioStateAction.flags & this.IOStateFlags.PULLUP) !== 0;
+        return (ioStateAction.flags & io.IOStateFlags.PULLUP) !== 0;
     }
 
     public pulldown(ioStateAction) {
-        return (ioStateAction.flags & this.IOStateFlags.PULLDOWN) !== 0;
+        return (ioStateAction.flags & io.IOStateFlags.PULLDOWN) !== 0;
     }
 
     public level(ioStateAction) {
-        return (ioStateAction.flags & this.IOStateFlags.LEVEL) !== 0;
-    }
-
-    public serialize(message) {
-        let buffer = message.encode();
-        return buffer.toArrayBuffer();
+        return (ioStateAction.flags & io.IOStateFlags.LEVEL) !== 0;
     }
 }

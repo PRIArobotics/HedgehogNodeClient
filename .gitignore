@@ -47,3 +47,9 @@ typings
 
 # Build directory
 build
+
+# ZMQ tests
+hedgehog/test
+
+# protolibs
+protoLib

@@ -1,44 +1,33 @@
 import "babel-polyfill";
 
+
 import assert = require('assert');
-import Ack from '../hedgehog/proto/ack';
+import Acknowledgement from '../hedgehog/proto/ack';
 import Analog from '../hedgehog/proto/analog';
 import Digital from '../hedgehog/proto/digital';
 import Hedgehog from '../hedgehog/proto/hedgehog';
 import Io from '../hedgehog/proto/io';
 import Motor from '../hedgehog/proto/motor';
 
-
 describe('Proto', () => {
 
     describe('Ack', () => {
-        let ackProto: Ack;
+        let ackProto: Acknowledgement;
 
         beforeEach(() => {
-            ackProto = new Ack();
-            return ackProto.init();
-        });
-
-        describe('AcknowledgementCode', () => {
-            it('should return the AcknowledgementCode OK (0) (if one code works, all codes work)', () => {
-                assert.equal(0, ackProto.AcknowledgementCode.OK);
-            });
+            ackProto = new Acknowledgement(Acknowledgement.AcknowledgementCode.OK, 'Message');
         });
 
         describe('AcknowledgementMessage', () => {
             let acknowledgementMessage;
 
             it('should return a valid AcknowledgementMessage', () => {
-                acknowledgementMessage = ackProto.parseAcknowledgement(ackProto.AcknowledgementCode.OK, 'Message');
+                acknowledgementMessage = ackProto.parse();
                 return acknowledgementMessage;
-            });
-
-            it('should return a valid serialized AcknowledgementMessage', () => {
-                return ackProto.serialize(acknowledgementMessage);
             });
         });
     });
-
+/*
     describe('Analog', () => {
         let analogProto: Analog;
 
@@ -304,4 +293,5 @@ describe('Proto', () => {
         });
 
     });
+    */
 });

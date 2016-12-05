@@ -1,91 +1,122 @@
 
 import "babel-polyfill";
 
-import ProtoBuf = require("protobufjs");
-import zmq = require('zmq');
-import {wrapCallbackAsPromise} from "../utils";
+let motor = require('../../protoLib/motor_pb');
 
+export default class Action {
+    private port: number;
+    private state: number;
+    private amount: number;
+    private relative: number;
+    private absolute: number;
+    private reachedState: number;
 
-let sock = zmq.socket('pub');
+    constructor(port: number, state: number, amount: number = 0, relative?: number,
+                absolute?: number, reachedState: number = motor.MotorState.POWER) {
 
-
-export default class Motor {
-    public MotorState;
-    private MotorAction;
-    private MotorRequest;
-    private MotorUpdate;
-    private MotorStateUpdate;
-    private MotorSetPositionAction;
-
-    public async init() {
-        let builder = await wrapCallbackAsPromise(ProtoBuf.loadProtoFile, "proto/hedgehog/protocol/proto/motor.proto");
-
-        this.MotorState = builder.build("hedgehog.protocol.proto.MotorState");
-        this.MotorAction = builder.build("hedgehog.protocol.proto.MotorAction");
-        this.MotorRequest = builder.build('hedgehog.protocol.proto.MotorRequest');
-        this.MotorUpdate = builder.build("hedgehog.protocol.proto.MotorUpdate");
-        this.MotorStateUpdate = builder.build("hedgehog.protocol.proto.MotorStateUpdate");
-        this.MotorSetPositionAction = builder.build("hedgehog.protocol.proto.MotorSetPositionAction");
-    }
-
-    public parseAction(port: number, state: number, amount: number = 0, relative?: number,
-                       absolute?: number, reachedState: number = this.MotorState.POWER) {
-
-        if(relative != null && absolute != null) {
+        if(this.relative != null && this.absolute != null) {
             throw new TypeError("relative and absolute are mutually exclusive");
         }
 
-        if( (relative == null || relative === undefined) && (absolute == null || absolute === undefined)) {
-            if(reachedState !== 0) {
+        if( (this.relative == null || this.relative === undefined) &&
+            (this.absolute == null || this.absolute === undefined)) {
+            if(this.reachedState !== 0) {
                 throw new TypeError(
                     "reached_state must be kept at its default value for non-positional motor commands");
             }
         }
 
-
-        let motorAction = new this.MotorAction({
-            port,
-            state,
-            amount,
-            reached_state: reachedState,
-        });
-
-        if(relative != null) motorAction.relative = relative;
-        if(absolute != null) motorAction.absolute = absolute;
-
-        return motorAction;
+        this.port = port;
+        this.state = state;
+        this.amount = amount;
+        this.relative = relative;
+        this.absolute = absolute;
+        this.reachedState = reachedState;
     }
 
-    public parseRequest(port: number) {
-        return new this.MotorRequest({
-            port
-        });
+    public parse() {
+        let action = new motor.MotorAction();
+
+        action.setPort(this.port);
+        action.setState(this.state);
+        action.setAmount(this.amount);
+        action.setReachedState(this.reachedState);
+
+        if(this.relative != null) action.setRelative(this.relative);
+        if(this.absolute != null) action.setAbsolute(this.absolute);
+
+        return action;
+    }
+}
+
+export class Request {
+    private port: number;
+
+    constructor(port: number) {
+        this.port = port;
     }
 
-    public parseUpdate(port: number, velocity: number, position: number) {
-        return new this.MotorUpdate({
-            port,
-            velocity,
-            position
-        });
+    public parse() {
+        let request = new motor.MotorRequest();
+        request.setPort(this.port);
+
+        return request;
+    }
+}
+
+export class Update {
+    private port: number;
+    private velocity: number;
+    private position: number;
+
+    constructor(port: number, velocity: number, position: number) {
+        this.port = port;
+        this.velocity = velocity;
+        this.position = position;
     }
 
-    public parseStateUpdate(port: number, state: number) {
-        return new this.MotorStateUpdate({
-            port,
-            state
-        });
+    public parse() {
+        let update = new motor.MotorUpdate();
+        update.setPort(this.port);
+        update.setVelocity(this.velocity);
+        update.setPosition(this.position);
+
+        return update;
+    }
+}
+
+export class StateUpdate {
+    private port: number;
+    private state: number;
+
+    constructor(port: number, state: number) {
+        this.port = port;
+        this.state = state;
     }
 
-    public parseSetPositionAction(port: number, position: number) {
-        return new this.MotorSetPositionAction({
-            port,
-            position
-        });
+    public parse() {
+        let stateUpdate = new motor.MotorStateUpdate();
+        stateUpdate.setPort(this.port);
+        stateUpdate.setState(this.state);
+
+        return stateUpdate;
+    }
+}
+
+export class SetPositionAction {
+    private port: number;
+    private position: number;
+
+    constructor(port: number, position: number) {
+        this.port = port;
+        this.position = position;
     }
 
-    public serialize(message) {
-        let buffer = message.encode();
-        return buffer.toArrayBuffer();
+    public parse() {
+        let setPositionAction = new motor.SetPositionAction();
+        setPositionAction.setPort(this.port);
+        setPositionAction.setState(this.position);
+
+        return setPositionAction;
     }
 }
