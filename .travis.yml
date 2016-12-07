@@ -13,11 +13,13 @@ addons:
     - g++-4.8
     - libzmq3
     - libzmq3-dev
-    - protobuf-compiler
 before_script:
 - npm install
 - typings install
 - grunt protoc
+- wget https://github.com/google/protobuf/releases/download/v3.1.0/protoc-3.1.0-linux-x86_64.zip
+- unzip protoc-3.1.0-linux-x86_64.zip
+- PATH=./bin:$PATH
 script:
 - grunt tslint
 - grunt build
