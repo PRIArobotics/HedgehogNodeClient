@@ -44,15 +44,9 @@ module.exports = function(grunt) {
                 files: [
                     {
                         expand: true,
-                        cwd: 'proto/',
-                        src: ['**/*.proto'],
-                        dest: 'build/proto'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'protoLib/',
+                        cwd: 'hedgehog/protocol/proto',
                         src: ['*.js'],
-                        dest: 'build/protoLib'
+                        dest: 'build/hedgehog/protocol/proto'
                     }
                 ]
             }
@@ -73,6 +67,21 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-symlink');
     grunt.loadNpmTasks('grunt-babel');
 
+    grunt.registerTask('protoc', function() {
+        var options = {
+            cmd: 'protoc',
+            args: ["--proto_path=proto --js_out=import_style=commonjs,binary:. `find proto -name '*.proto'`"]
+        };
+
+        var done = this.async();
+
+        var protoctask = grunt.util.spawn(options, function doneFunction(error, result, code) {
+            done()
+        });
+
+        protoctask.stdout.pipe(process.stdout);
+        protoctask.stderr.pipe(process.stderr);
+    });
 
     grunt.registerTask('compile', ['ts', 'babel']);
     grunt.registerTask('build', ['clean', 'compile', 'copy']);
