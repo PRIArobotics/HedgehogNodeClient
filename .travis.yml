@@ -13,6 +13,7 @@ addons:
     - g++-4.8
     - libzmq3
     - libzmq3-dev
+    - protobuf-compiler
 before_script:
 - npm install
 - typings install
