@@ -1,6 +1,6 @@
 import "babel-polyfill";
 
-let ack: any = require('../../protoLib/ack_pb');
+let ack: any = require('../../hedgehog/protocol/proto/ack_pb');
 
 export default class Acknowledgement {
     public static AcknowledgementCode = ack.AcknowledgementCode;

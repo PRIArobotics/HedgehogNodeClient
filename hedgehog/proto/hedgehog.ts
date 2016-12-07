@@ -1,7 +1,7 @@
 
 import "babel-polyfill";
 
-let hedgehog = require('../../protoLib/hedgehog_pb');
+let hedgehog = require('../../hedgehog/protocol/proto/hedgehog_pb');
 
 
 export default class Command {

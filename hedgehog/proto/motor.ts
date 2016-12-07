@@ -1,7 +1,7 @@
 
 import "babel-polyfill";
 
-let motor = require('../../protoLib/motor_pb');
+let motor = require('../../hedgehog/protocol/proto/motor_pb');
 
 export default class Action {
     private port: number;
@@ -14,13 +14,15 @@ export default class Action {
     constructor(port: number, state: number, amount: number = 0, relative?: number,
                 absolute?: number, reachedState: number = motor.MotorState.POWER) {
 
-        if(this.relative != null && this.absolute != null) {
+        console.log(reachedState);
+
+        if(relative != null && absolute != null) {
             throw new TypeError("relative and absolute are mutually exclusive");
         }
 
-        if( (this.relative == null || this.relative === undefined) &&
-            (this.absolute == null || this.absolute === undefined)) {
-            if(this.reachedState !== 0) {
+        if( (relative == null || relative === undefined) &&
+            (absolute == null || absolute === undefined)) {
+            if(reachedState !== 0) {
                 throw new TypeError(
                     "reached_state must be kept at its default value for non-positional motor commands");
             }

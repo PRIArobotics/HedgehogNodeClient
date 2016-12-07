@@ -1,6 +1,6 @@
 import "babel-polyfill";
 
-let io = require('../../protoLib/io_pb');
+let io = require('../../hedgehog/protocol/proto/io_pb');
 
 export default class AnalogRequest {
     private port: number;
