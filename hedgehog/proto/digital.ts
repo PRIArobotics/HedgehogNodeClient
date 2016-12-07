@@ -1,8 +1,8 @@
 import "babel-polyfill";
 
-let io = require('../../hedgehog/protocol/proto/io_pb');
+let io = require('../protocol/proto/io_pb');
 
-export default class DigitalRequest {
+export class DigitalRequest {
     private port: number;
 
     constructor(port: number) {

@@ -1,10 +1,10 @@
 
 import "babel-polyfill";
 
-let hedgehog = require('../../hedgehog/protocol/proto/hedgehog_pb');
+let hedgehog = require('../protocol/proto/hedgehog_pb');
 
 
-export default class Command {
+export class Command {
 
     private message: any;
 

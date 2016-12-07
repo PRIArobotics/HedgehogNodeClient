@@ -2,12 +2,12 @@ import "babel-polyfill";
 
 
 import assert = require('assert');
-import Acknowledgement from '../hedgehog/proto/ack';
-import Analog from '../hedgehog/proto/analog';
-import Digital from '../hedgehog/proto/digital';
-import Hedgehog from '../hedgehog/proto/hedgehog';
-import Io from '../hedgehog/proto/io';
-import Motor from '../hedgehog/proto/motor';
+import { Acknowledgement } from '../hedgehog/proto/ack';
+import { AnalogRequest, AnalogUpdate } from '../hedgehog/proto/analog';
+import { DigitalRequest, DigitalUpdate } from '../hedgehog/proto/digital';
+import { Command } from '../hedgehog/proto/hedgehog';
+import { StateAction } from '../hedgehog/proto/io';
+import { Action } from '../hedgehog/proto/motor';
 
 describe('Proto', () => {
 

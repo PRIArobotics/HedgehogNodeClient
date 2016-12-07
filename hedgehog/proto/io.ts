@@ -1,9 +1,9 @@
 import "babel-polyfill";
 
-let io = require('../../hedgehog/protocol/proto/io_pb');
+let io = require('../protocol/proto/io_pb');
 
 
-export default class StateAction {
+export class StateAction {
     private port: number;
     private flags: any;
 

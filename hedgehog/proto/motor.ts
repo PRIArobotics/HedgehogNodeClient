@@ -1,9 +1,9 @@
 
 import "babel-polyfill";
 
-let motor = require('../../hedgehog/protocol/proto/motor_pb');
+let motor = require('../protocol/proto/motor_pb');
 
-export default class Action {
+export class Action {
     private port: number;
     private state: number;
     private amount: number;
