@@ -16,6 +16,7 @@ addons:
 before_script:
 - npm install
 - typings install
+- grunt protoc
 script:
 - grunt tslint
 - grunt build

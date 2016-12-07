@@ -52,4 +52,4 @@ build
 hedgehog/test
 
 # protolibs
-protoLib
+hedgehog/protocol

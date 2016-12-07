@@ -68,19 +68,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-babel');
 
     grunt.registerTask('protoc', function() {
-        var options = {
-            cmd: 'protoc',
-            args: ["--proto_path=proto --js_out=import_style=commonjs,binary:. `find proto -name '*.proto'`"]
-        };
-
-        var done = this.async();
-
-        var protoctask = grunt.util.spawn(options, function doneFunction(error, result, code) {
-            done()
-        });
-
-        protoctask.stdout.pipe(process.stdout);
-        protoctask.stderr.pipe(process.stderr);
+        var exec = require('child_process').execSync;
+        exec("protoc --proto_path=proto --js_out=import_style=commonjs,binary:. `find proto -name '*.proto'`", { encoding: 'utf8' });
     });
 
     grunt.registerTask('compile', ['ts', 'babel']);
