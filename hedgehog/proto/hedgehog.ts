@@ -2,11 +2,13 @@
 import "babel-polyfill";
 
 let hedgehog = require('../protocol/proto/hedgehog_pb');
+let io = require('../protocol/proto/io_pb');
+let motor = require('../protocol/proto/motor_pb');
 
 
-export class Command {
+export class Message {
 
-    private message: any;
+    public message: any;
 
     constructor(message: any) {
         this.message = message;
@@ -15,7 +17,8 @@ export class Command {
     public parse(): any {
         let hedgehogMessage = new hedgehog.HedgehogMessage();
 
-        hedgehogMessage.setMotorAction(this.message);
+        if (this.message instanceof io.DigitalRequest) hedgehogMessage.setDigitalRequest(this.message);
+        if (this.message instanceof motor.MotorAction) hedgehogMessage.setMotorAction(this.message);
 
         return hedgehogMessage;
     }

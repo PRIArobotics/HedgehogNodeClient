@@ -1,12 +1,13 @@
 import "babel-polyfill";
 
 let ack: any = require('../protocol/proto/ack_pb');
+export let AcknowledgementCode = ack.AcknowledgementCode;
+
 
 export class Acknowledgement {
-    public static AcknowledgementCode = ack.AcknowledgementCode;
 
-    private code: number;
-    private message: string;
+    public code: number;
+    public message: string;
 
     constructor(code: number = ack.AcknowledgementCode.OK, message: string) {
         this.code = code;

@@ -1,11 +1,11 @@
 import "babel-polyfill";
 
 let io = require('../protocol/proto/io_pb');
-
+export let IOStateFlags = io.IOStateFlags;
 
 export class StateAction {
-    private port: number;
-    private flags: any;
+    public port: number;
+    public flags: any;
 
     constructor(port: number, flags: any) {
         if(flags & io.IOStateFlags.OUTPUT && flags & (io.IOStateFlags.PULLUP | io.IOStateFlags.PULLDOWN)) {
@@ -25,26 +25,26 @@ export class StateAction {
     }
 
     public parse() {
-        let stateAction = new io.StateAction();
+        let stateAction = new io.IOStateAction();
         stateAction.setPort(this.port);
         stateAction.setFlags(this.flags);
 
         return stateAction;
     }
 
-    public output(ioStateAction) {
-        return (ioStateAction.flags & io.IOStateFlags.OUTPUT) !== 0;
+    public output() {
+        return (this.flags & io.IOStateFlags.OUTPUT) !== 0;
     }
 
-    public pullup(ioStateAction) {
-        return (ioStateAction.flags & io.IOStateFlags.PULLUP) !== 0;
+    public pullup() {
+        return (this.flags & io.IOStateFlags.PULLUP) !== 0;
     }
 
-    public pulldown(ioStateAction) {
-        return (ioStateAction.flags & io.IOStateFlags.PULLDOWN) !== 0;
+    public pulldown() {
+        return (this.flags & io.IOStateFlags.PULLDOWN) !== 0;
     }
 
-    public level(ioStateAction) {
-        return (ioStateAction.flags & io.IOStateFlags.LEVEL) !== 0;
+    public level() {
+        return (this.flags & io.IOStateFlags.LEVEL) !== 0;
     }
 }

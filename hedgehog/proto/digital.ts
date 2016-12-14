@@ -3,7 +3,7 @@ import "babel-polyfill";
 let io = require('../protocol/proto/io_pb');
 
 export class DigitalRequest {
-    private port: number;
+    public port: number;
 
     constructor(port: number) {
         this.port = port;
@@ -18,10 +18,10 @@ export class DigitalRequest {
 }
 
 export class DigitalUpdate {
-    private port: number;
-    private value: number;
+    public port: number;
+    public value: boolean;
 
-    constructor(port: number, value: number) {
+    constructor(port: number, value: boolean) {
         this.port = port;
         this.value = value;
     }

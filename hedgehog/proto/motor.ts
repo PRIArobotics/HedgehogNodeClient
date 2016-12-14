@@ -2,19 +2,19 @@
 import "babel-polyfill";
 
 let motor = require('../protocol/proto/motor_pb');
+export let MotorState = motor.MotorState;
 
 export class Action {
-    private port: number;
-    private state: number;
-    private amount: number;
-    private relative: number;
-    private absolute: number;
-    private reachedState: number;
+
+    public port: number;
+    public state: number;
+    public amount: number;
+    public relative: number;
+    public absolute: number;
+    public reachedState: number;
 
     constructor(port: number, state: number, amount: number = 0, relative?: number,
                 absolute?: number, reachedState: number = motor.MotorState.POWER) {
-
-        console.log(reachedState);
 
         if(relative != null && absolute != null) {
             throw new TypeError("relative and absolute are mutually exclusive");

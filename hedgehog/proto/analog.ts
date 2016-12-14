@@ -3,7 +3,7 @@ import "babel-polyfill";
 let io = require('../protocol/proto/io_pb');
 
 export class AnalogRequest {
-    private port: number;
+    public port: number;
 
     constructor(port: number) {
         this.port = port;
@@ -18,8 +18,8 @@ export class AnalogRequest {
 }
 
 export class AnalogUpdate {
-    private port: number;
-    private value: number;
+    public port: number;
+    public value: number;
 
     constructor(port: number, value: number) {
         this.port = port;

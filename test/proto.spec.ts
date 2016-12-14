@@ -2,185 +2,174 @@ import "babel-polyfill";
 
 
 import assert = require('assert');
-import { Acknowledgement } from '../hedgehog/proto/ack';
-import { AnalogRequest, AnalogUpdate } from '../hedgehog/proto/analog';
-import { DigitalRequest, DigitalUpdate } from '../hedgehog/proto/digital';
-import { Command } from '../hedgehog/proto/hedgehog';
-import { StateAction } from '../hedgehog/proto/io';
-import { Action } from '../hedgehog/proto/motor';
+import {Acknowledgement, AcknowledgementCode} from '../hedgehog/proto/ack';
+import {AnalogRequest, AnalogUpdate} from '../hedgehog/proto/analog';
+import {DigitalRequest, DigitalUpdate} from '../hedgehog/proto/digital';
+import {Message} from '../hedgehog/proto/hedgehog';
+import {StateAction, IOStateFlags} from '../hedgehog/proto/io';
+import {Action} from '../hedgehog/proto/motor';
 
 describe('Proto', () => {
 
     describe('Ack', () => {
-        let ackProto: Acknowledgement;
+        let acknowledgement: Acknowledgement;
 
         beforeEach(() => {
-            ackProto = new Acknowledgement(Acknowledgement.AcknowledgementCode.OK, 'Message');
+            acknowledgement = new Acknowledgement(AcknowledgementCode.OK, 'Message');
         });
 
         describe('AcknowledgementMessage', () => {
             let acknowledgementMessage;
 
             it('should return a valid AcknowledgementMessage', () => {
-                acknowledgementMessage = ackProto.parse();
+                acknowledgementMessage = acknowledgement.parse();
                 return acknowledgementMessage;
             });
         });
     });
-/*
+
     describe('Analog', () => {
-        let analogProto: Analog;
-
-        beforeEach(() => {
-            analogProto = new Analog();
-            return analogProto.init();
-        });
-
         describe('AnalogRequest', () => {
+            let analogRequest: AnalogRequest;
+
+            beforeEach(() => {
+                analogRequest = new AnalogRequest(0);
+            });
+
             let analogRequestMessage;
 
             it('should return a valid AnalogRequest', () => {
-                analogRequestMessage = analogProto.parseAnalogRequest(0);
+                analogRequestMessage = analogRequest.parse();
                 return analogRequestMessage;
-            });
-
-            it('should return a valid serialized AnalogRequest', () => {
-                return analogProto.serialize(analogRequestMessage);
             });
         });
 
         describe('AnalogUpdate', () => {
+            let analogUpdate: AnalogUpdate;
+
+            beforeEach(() => {
+                analogUpdate = new AnalogUpdate(0, 0);
+            });
+
             let analogUpdateMessage;
 
             it('should return a valid AnalogUpdate', () => {
-                analogUpdateMessage = analogProto.parseAnalogUpdate(0, 0);
+                analogUpdateMessage = analogUpdate.parse();
                 return analogUpdateMessage;
-            });
-
-            it('should return a valid serialized AnalogUpdate', () => {
-                return analogProto.serialize(analogUpdateMessage);
             });
         });
     });
 
     describe('Digital', () => {
-        let digitalProto: Digital;
-
-        beforeEach(() => {
-            digitalProto = new Digital();
-            return digitalProto.init();
-        });
-
         describe('DigitalRequest', () => {
+            let digitalRequest: DigitalRequest;
+
+            beforeEach(() => {
+                digitalRequest = new DigitalRequest(0);
+            });
+
             let digitalRequestMessage;
 
             it('should return a valid DigitalRequest', () => {
-                digitalRequestMessage = digitalProto.parseDigitalRequest(0);
+                digitalRequestMessage = digitalRequest.parse();
                 return digitalRequestMessage;
-            });
-
-            it('should return a valid serialized DigitalRequest', () => {
-                return digitalProto.serialize(digitalRequestMessage);
             });
         });
 
         describe('DigitalUpdate', () => {
+            let digitalUpdate: DigitalUpdate;
+
+            beforeEach(() => {
+                digitalUpdate = new DigitalUpdate(0, true);
+            });
+
             let digitalUpdateMessage;
 
             it('should return a valid DigitalUpdate', () => {
-                digitalUpdateMessage = digitalProto.parseDigitalUpdate(0, true);
+                digitalUpdateMessage = digitalUpdate.parse();
                 return digitalUpdateMessage;
-            });
-
-            it('should return a valid serialized DigitalUpdate', () => {
-                return digitalProto.serialize(digitalUpdateMessage);
             });
         });
     });
 
     describe('Io', () => {
-        let ioProto: Io;
-
-        beforeEach(() => {
-            ioProto = new Io();
-            return ioProto.init();
-        });
 
         describe('IOStateFlags', () => {
             it('should return the IOStateFlag INPUT_FLOATING (0x00) (if one code works, all codes work)', () => {
-                assert.equal(0, ioProto.IOStateFlags.INPUT_FLOATING);
+                assert.equal(0, IOStateFlags.INPUT_FLOATING);
             });
         });
 
         describe('StateAction', () => {
+            let stateAction;
+
+            beforeEach(() => {
+                stateAction = new StateAction(0, IOStateFlags.OUTPUT);
+            });
+
             let stateActionMessage;
 
             it('should return a valid StateAction', () => {
-                stateActionMessage = ioProto.parseStateAction(0, ioProto.IOStateFlags.OUTPUT);
-                return stateActionMessage;
-            });
-
-            it('should return a valid serialized StateAction', () => {
-                return ioProto.serialize(stateActionMessage);
+                stateActionMessage = stateAction.parse();
             });
 
             describe('StateAction IOStateFlags handling', () => {
                 it('should return true since the StateAction has an OUTPUT IOStateFlag', () => {
-                    assert.equal(true, ioProto.output(stateActionMessage));
+                    assert.equal(true, stateAction.output());
                 });
 
                 it('should return false since the StateAction has an OUTPUT IOStateFlag', () => {
-                    assert.equal(false, ioProto.pullup(stateActionMessage));
+                    assert.equal(false, stateAction.pullup());
                 });
 
                 it('should return false since the StateAction has an OUTPUT IOStateFlag', () => {
-                    assert.equal(false, ioProto.pulldown(stateActionMessage));
+                    assert.equal(false, stateAction.pulldown());
                 });
 
                 it('should return false since the StateAction has an OUTPUT IOStateFlag', () => {
-                    assert.equal(false, ioProto.level(stateActionMessage));
+                    assert.equal(false, stateAction.level());
                 });
 
                 it('should return true since the StateAction has the PULLUP IOStateFlag', () => {
-                    assert.equal(true, ioProto.pullup(ioProto.parseStateAction(0, ioProto.IOStateFlags.PULLUP)));
+                    stateAction = new StateAction(0, IOStateFlags.PULLUP);
+
+                    assert.equal(true, stateAction.pullup());
                 });
 
                 it('should return true since the StateAction has the PULLDOWN IOStateFlag', () => {
-                    assert.equal(true, ioProto.pulldown(ioProto.parseStateAction(0, ioProto.IOStateFlags.PULLDOWN)));
+                    stateAction = new StateAction(0, IOStateFlags.PULLDOWN);
+
+                    assert.equal(true, stateAction.pulldown());
                 });
 
                 it('should return true since the StateAction has the LEVEL IOStateFlag and OUTPUT', () => {
-                    assert.equal(true, ioProto.level(
-                        ioProto.parseStateAction(0, ioProto.IOStateFlags.LEVEL | ioProto.IOStateFlags.OUTPUT)));
+                    stateAction = new StateAction(0, IOStateFlags.LEVEL | IOStateFlags.OUTPUT);
+
+                    assert.equal(true, stateAction.level(stateAction));
                 });
 
-                it('should 1return an error since the StateAction a' +
+                it('should return an error since the StateAction a ' +
                     'PULLUP or PULLDOWN flag requires an INPUT flag', () => {
-                    assert.throws(() => ioProto.level(ioProto.parseStateAction(
-                        0, ioProto.IOStateFlags.PULLUP | ioProto.IOStateFlags.OUTPUT)),
-                        TypeError, "only input ports can be set to pullup or pulldown");
-
-                    assert.throws(() => ioProto.level(ioProto.parseStateAction(
-                        0, ioProto.IOStateFlags.PULLDOWN | ioProto.IOStateFlags.OUTPUT)),
+                    assert.throws(() => new StateAction(0, IOStateFlags.PULLUP | IOStateFlags.OUTPUT),
                         TypeError, "only input ports can be set to pullup or pulldown");
                 });
 
-                it('should return an error since the StateAction has the' +
+                it('should return an error since the StateAction has the ' +
                     'LEVEL IOStateFlag and no OUTPUT', () => {
-                    assert.throws(() => ioProto.level(ioProto.parseStateAction(
-                        0, ioProto.IOStateFlags.LEVEL)), TypeError, "only output ports can be set to on");
+                    assert.throws(() => new StateAction(0, IOStateFlags.LEVEL),
+                        TypeError, "only output ports can be set to on");
                 });
 
-                it('should return an error since the StateAction has the' +
+                it('should return an error since the StateAction has the ' +
                     'PULLUP AND PULLDOWN and they are mutually exclusive', () => {
-                    assert.throws(() => ioProto.level(ioProto.parseStateAction(
-                        0, ioProto.IOStateFlags.PULLUP | ioProto.IOStateFlags.PULLDOWN)),
+                    assert.throws(() => new StateAction(0, IOStateFlags.PULLUP | IOStateFlags.PULLDOWN),
                         TypeError, "pullup and pulldown are mutually exclusive");
                 });
             });
         });
     });
 
+    /*
     describe('Motor', () => {
         let motorProto: Motor;
 
