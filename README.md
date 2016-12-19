@@ -12,11 +12,13 @@ Thus, if you want to start working on the API, you will need to install them fir
 - Typings Management: [Typings](https://github.com/typings/typings)
 - Testing: [Mocha](http://mochajs.org/)
 - Linting: [TSLint](https://palantir.github.io/tslint/) (Available via Grunt task. No installation required!)
+- Protobuffer Compiler: [Protoc](https://github.com/google/protobuf) can be downloaded [here](https://github.com/google/protobuf/releases)  
 
 ### Setup
 ```
 $ npm install     # Install required NPM modules
 $ typings install # Install TypeScript type definitions
+$ grunt protoc    # Generate Protobuffer Javascript files
 ```
 
 ### Running tests
