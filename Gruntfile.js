@@ -56,6 +56,7 @@ module.exports = function(grunt) {
                 configuration: "tslint.json"
             },
             proto: 'hedgehog/proto/**/*.ts',
+            client: 'hedgehog/client/**/*.ts',
             test: 'test/**/*.ts'
         }
     });
