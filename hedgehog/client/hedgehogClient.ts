@@ -27,7 +27,7 @@ export class HedgehogClient {
 
         socket.on('message', (data) => {
             try {
-                let hedgehogMessage = HedgehogMessage.deserializeBinary(data);
+                let hedgehogMessage = HedgehogMessage.deserializeBinary(new Uint8Array(data));
 
                 if (hedgehogMessage.getDigitalUpdate()) {
                     let digitalUpdate = hedgehogMessage.getDigitalUpdate();
@@ -61,6 +61,7 @@ export class HedgehogClient {
                     }
                 }
             } catch (e) {
+                console.log(e);
             }
         });
     }
