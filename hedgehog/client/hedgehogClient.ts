@@ -77,12 +77,12 @@ export class HedgehogClient {
         socket.send(['', Buffer.from(hedgehogMessage)]);
     }
 
-    public set_input_state(port: number, pullup) {
+    public setInputState(port: number, pullup) {
         this.sendHedgehogMessage(new StateAction(port, pullup ?
             IOStateFlags.INPUT_PULLUP : IOStateFlags.INPUT_FLOATING));
     }
 
-    public get_analog_object(port) {
+    public getAnalogObject(port) {
         return new Promise((resolve, reject) => {
             this.sendHedgehogMessage(new AnalogRequest(port));
 
@@ -94,12 +94,12 @@ export class HedgehogClient {
 
     }
 
-    public async get_analog(port) {
-        let analogRequest: any = await this.get_analog_object(port);
+    public async getAnalog(port) {
+        let analogRequest: any = await this.getAnalogObject(port);
         return analogRequest.getValue();
     }
 
-    public get_digital_object(port) {
+    public getDigitalObject(port) {
         return new Promise((resolve, reject) => {
             this.sendHedgehogMessage(new DigitalRequest(port));
 
@@ -110,16 +110,16 @@ export class HedgehogClient {
         });
     }
 
-    public async get_digital(port) {
-        let digitalRequest: any = await this.get_digital_object(port);
+    public async getDigital(port) {
+        let digitalRequest: any = await this.getDigitalObject(port);
         return digitalRequest.getValue();
     }
 
-    public set_digital_output(port: number, level) {
+    public setDigitalOutput(port: number, level) {
         this.sendHedgehogMessage(new StateAction(port, level ? IOStateFlags.OUTPUT_ON : IOStateFlags.OUTPUT_OFF));
     }
 
-    public set_motor(port: number, state: number, amount: number=0,
+    public setMotor(port: number, state: number, amount: number=0,
                      reachedState: number=MotorState.POWER, relative: number=null,
                      absolute: number=null, onReached: number=null) {
         if(onReached) {
@@ -131,20 +131,20 @@ export class HedgehogClient {
     }
 
     public move(port: number, amount: number, state: number=MotorState.POWER) {
-        this.set_motor(port, state, amount);
+        this.setMotor(port, state, amount);
     }
 
-    public move_relative_position(port: number, amount: number, relative: number,
+    public moveRelativePosition(port: number, amount: number, relative: number,
                                   state: number=MotorState.POWER, onReached: number=null) {
-        this.set_motor(port, state, amount, null, relative, onReached);
+        this.setMotor(port, state, amount, null, relative, onReached);
     }
 
-    public move_absolute_position(port: number, amount: number, absolute: number,
+    public moveAbsolutePosition(port: number, amount: number, absolute: number,
                                   state: number=MotorState.POWER, onReached: number=null) {
-        this.set_motor(port, state, amount, null, absolute, onReached);
+        this.setMotor(port, state, amount, null, absolute, onReached);
     }
 
-    public get_motor(port) {
+    public getMotor(port) {
         return new Promise((resolve, reject) => {
             this.sendHedgehogMessage(new MotorRequest(port));
 
@@ -156,15 +156,15 @@ export class HedgehogClient {
     }
 
     public async get_motor_velocity(port) {
-        let motor: any = await this.get_motor(port);
+        let motor: any = await this.getMotor(port);
         return motor.getVelocity();
     }
 
-    public set_motor_position(port: number, position: number) {
+    public setMotorPosition(port: number, position: number) {
         this.sendHedgehogMessage(new MotorSetPositionAction(port, position));
     }
 
-    public set_servo(port: number, active: boolean, position: number) {
+    public setServo(port: number, active: boolean, position: number) {
         this.sendHedgehogMessage(new ServoAction(port, active, position));
     }
 
