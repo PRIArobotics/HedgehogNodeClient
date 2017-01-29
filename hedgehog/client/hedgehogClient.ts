@@ -120,8 +120,8 @@ export class HedgehogClient {
     }
 
     public setMotor(port: number, state: number, amount: number=0,
-                     reachedState: number=MotorState.POWER, relative: number=null,
-                     absolute: number=null, onReached: number=null) {
+                    reachedState: number=MotorState.POWER, relative: number=null,
+                    absolute: number=null, onReached: number=null) {
         if(onReached) {
             if (!relative && !absolute) {
                 throw TypeError("callback given, but no end position");
@@ -135,12 +135,12 @@ export class HedgehogClient {
     }
 
     public moveRelativePosition(port: number, amount: number, relative: number,
-                                  state: number=MotorState.POWER, onReached: number=null) {
+                                state: number=MotorState.POWER, onReached: number=null) {
         this.setMotor(port, state, amount, null, relative, onReached);
     }
 
     public moveAbsolutePosition(port: number, amount: number, absolute: number,
-                                  state: number=MotorState.POWER, onReached: number=null) {
+                                state: number=MotorState.POWER, onReached: number=null) {
         this.setMotor(port, state, amount, null, absolute, onReached);
     }
 
