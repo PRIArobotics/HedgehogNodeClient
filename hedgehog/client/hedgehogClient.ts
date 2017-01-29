@@ -5,7 +5,7 @@
 import zmq = require('zmq');
 
 import {Message} from '../proto/hedgehog';
-import {Action as MotorAction, MotorState, SetPositionAction as MotorSetPositionAction} from '../proto/motor';
+import {Action as MotorAction, MotorState, SetPositionAction as MotorSetPositionAction, Request as MotorRequest} from '../proto/motor';
 import {Action as ServoAction} from '../proto/servo';
 import {DigitalRequest} from '../proto/digital';
 import {AnalogUpdate, AnalogRequest} from '../proto/analog';
@@ -26,12 +26,6 @@ export class HedgehogClient {
         socket.connect(this.endpoint);
 
         socket.on('message', (data) => {
-
-            console.log(data.toString());
-            console.log(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
-
-            console.log(new Uint8Array(data));
-
             try {
                 let hedgehogMessage = HedgehogMessage.deserializeBinary(data);
 
@@ -67,13 +61,11 @@ export class HedgehogClient {
                     }
                 }
             } catch (e) {
-                console.log(e);
             }
         });
     }
 
     public sendHedgehogMessage (message) {
-        console.log(message.parse());
         let hedgehogMessage = new Message(message.parse()).parse().serializeBinary();
         socket.send(['', Buffer.from(hedgehogMessage)]);
     }
@@ -85,6 +77,8 @@ export class HedgehogClient {
 
     public get_analog(port) {
         return new Promise((resolve, reject) => {
+            this.sendHedgehogMessage(new AnalogRequest(port));
+
             this.callbacks.set('get_analog_' + port, {
                 resolve,
                 reject
@@ -94,6 +88,8 @@ export class HedgehogClient {
     }
     public get_digital(port) {
         return new Promise((resolve, reject) => {
+            this.sendHedgehogMessage(new DigitalRequest(port));
+
             this.callbacks.set('get_digital_' + port, {
                 resolve,
                 reject
@@ -132,6 +128,8 @@ export class HedgehogClient {
 
     public get_motor(port) {
         return new Promise((resolve, reject) => {
+            this.sendHedgehogMessage(new MotorRequest(port));
+
             this.callbacks.set('get_motor_' + port, {
                 resolve,
                 reject
