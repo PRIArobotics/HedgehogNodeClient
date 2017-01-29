@@ -24,42 +24,42 @@ let socket = zmq.socket('dealer');
 
 export class HedgehogClient {
     public endpoint: string;
-    private callbacks: Map<string, {resolve, reject}>;
+    private callbacks: Map<string, {resolve, reject}> = new Map();
 
     constructor (endpoint: string = 'tcp://127.0.0.1:10789') {
         this.endpoint = endpoint;
 
         socket.connect(this.endpoint);
 
-        socket.on('message', (data) => {
+        socket.on('message', (delimiter, data) => {
             try {
-                let hedgehogMessage = HedgehogMessage.deserializeBinary(new Uint8Array(data));
+                let hedgehogMessage = HedgehogMessage.deserializeBinary(data.buffer);
 
-                if (hedgehogMessage.getDigitalUpdate()) {
+                if (hedgehogMessage.hasDigitalUpdate()) {
                     let digitalUpdate = hedgehogMessage.getDigitalUpdate();
                     let callback = this.callbacks.get('get_digital_' + digitalUpdate.getPort());
                     if (callback) {
                         callback.resolve(digitalUpdate);
                     }
-                } else if (hedgehogMessage.getAnalogUpdate()) {
+                } else if (hedgehogMessage.hasAnalogUpdate()) {
                     let analogUpdate = hedgehogMessage.getAnalogUpdate();
                     let callback = this.callbacks.get('get_analog_' + analogUpdate.getPort());
                     if (callback) {
                         callback.resolve(analogUpdate);
                     }
-                } else if (hedgehogMessage.getMotorUpdate()) {
+                } else if (hedgehogMessage.hasMotorUpdate()) {
                     let motorUpdate = hedgehogMessage.getMotorUpdate();
                     let callback = this.callbacks.get('get_motor_' + motorUpdate.getPort());
                     if (callback) {
                         callback.resolve(motorUpdate);
                     }
-                } else if (hedgehogMessage.getMotorStateUpdate()) {
+                } else if (hedgehogMessage.hasMotorStateUpdate()) {
                     let motorStateUpdate = hedgehogMessage.getMotorStateUpdate();
                     let callback = this.callbacks.get('get_motor_' + motorStateUpdate.getPort());
                     if (callback) {
                         callback.resolve(motorStateUpdate);
                     }
-                } else if (hedgehogMessage.getMotorStateUpdate()) {
+                } else if (hedgehogMessage.hasMotorStateUpdate()) {
                     let motorStateUpdate = hedgehogMessage.getMotorStateUpdate();
                     let callback = this.callbacks.get('get_motor_' + motorStateUpdate.getPort());
                     if (callback) {
@@ -67,7 +67,7 @@ export class HedgehogClient {
                     }
                 }
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
         });
     }
