@@ -6,13 +6,13 @@ import zmq = require('zmq');
 
 import {Message} from '../proto/hedgehog';
 import {
-    Action as MotorAction,
+    MotorAction,
     MotorState,
     SetPositionAction as MotorSetPositionAction,
     Request as MotorRequest
 } from '../proto/motor';
 
-import {Action as ServoAction} from '../proto/servo';
+import {ServoAction} from '../proto/servo';
 import {DigitalRequest} from '../proto/digital';
 import {AnalogUpdate, AnalogRequest} from '../proto/analog';
 import {StateAction, IOStateFlags} from '../proto/io';

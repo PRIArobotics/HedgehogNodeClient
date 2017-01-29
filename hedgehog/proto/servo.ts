@@ -2,7 +2,7 @@ import "babel-polyfill";
 
 let servo: any = require('../protocol/proto/servo_pb');
 
-export class Action {
+export class ServoAction {
     public port: number;
     public active: boolean;
     public position: number;

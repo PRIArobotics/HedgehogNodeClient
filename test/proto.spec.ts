@@ -7,7 +7,7 @@ import {AnalogRequest, AnalogUpdate} from '../hedgehog/proto/analog';
 import {DigitalRequest, DigitalUpdate} from '../hedgehog/proto/digital';
 import {Message} from '../hedgehog/proto/hedgehog';
 import {StateAction, IOStateFlags} from '../hedgehog/proto/io';
-import {Action} from '../hedgehog/proto/motor';
+import {MotorAction} from '../hedgehog/proto/motor';
 
 describe('Proto', () => {
 

@@ -4,7 +4,7 @@ import "babel-polyfill";
 let motor = require('../protocol/proto/motor_pb');
 export let MotorState = motor.MotorState;
 
-export class Action {
+export class MotorAction {
 
     public port: number;
     public state: number;
