@@ -5,7 +5,13 @@
 import zmq = require('zmq');
 
 import {Message} from '../proto/hedgehog';
-import {Action as MotorAction, MotorState, SetPositionAction as MotorSetPositionAction, Request as MotorRequest} from '../proto/motor';
+import {
+    Action as MotorAction,
+    MotorState,
+    SetPositionAction as MotorSetPositionAction,
+    Request as MotorRequest
+} from '../proto/motor';
+
 import {Action as ServoAction} from '../proto/servo';
 import {DigitalRequest} from '../proto/digital';
 import {AnalogUpdate, AnalogRequest} from '../proto/analog';
@@ -76,7 +82,7 @@ export class HedgehogClient {
             IOStateFlags.INPUT_PULLUP : IOStateFlags.INPUT_FLOATING));
     }
 
-    public get_analog(port) {
+    public get_analog_object(port) {
         return new Promise((resolve, reject) => {
             this.sendHedgehogMessage(new AnalogRequest(port));
 
@@ -87,7 +93,13 @@ export class HedgehogClient {
         });
 
     }
-    public get_digital(port) {
+
+    public async get_analog(port) {
+        let analogRequest: any = await this.get_analog_object(port);
+        return analogRequest.getValue();
+    }
+
+    public get_digital_object(port) {
         return new Promise((resolve, reject) => {
             this.sendHedgehogMessage(new DigitalRequest(port));
 
@@ -96,6 +108,11 @@ export class HedgehogClient {
                 reject
             });
         });
+    }
+
+    public async get_digital(port) {
+        let digitalRequest: any = await this.get_digital_object(port);
+        return digitalRequest.getValue();
     }
 
     public set_digital_output(port: number, level) {
