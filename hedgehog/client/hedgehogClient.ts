@@ -84,12 +84,12 @@ export class HedgehogClient {
 
     public getAnalogObject(port) {
         return new Promise((resolve, reject) => {
-            this.sendHedgehogMessage(new AnalogRequest(port));
-
             this.callbacks.set('get_analog_' + port, {
                 resolve,
                 reject
             });
+
+            this.sendHedgehogMessage(new AnalogRequest(port));
         });
 
     }
@@ -101,12 +101,12 @@ export class HedgehogClient {
 
     public getDigitalObject(port) {
         return new Promise((resolve, reject) => {
-            this.sendHedgehogMessage(new DigitalRequest(port));
-
             this.callbacks.set('get_digital_' + port, {
                 resolve,
                 reject
             });
+
+            this.sendHedgehogMessage(new DigitalRequest(port));
         });
     }
 
@@ -146,12 +146,12 @@ export class HedgehogClient {
 
     public getMotor(port) {
         return new Promise((resolve, reject) => {
-            this.sendHedgehogMessage(new MotorRequest(port));
-
             this.callbacks.set('get_motor_' + port, {
                 resolve,
                 reject
             });
+
+            this.sendHedgehogMessage(new MotorRequest(port));
         });
     }
 
