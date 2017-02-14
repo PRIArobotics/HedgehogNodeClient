@@ -1,8 +1,8 @@
 {
   "name": "hedgehog-client",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Client library for the Hedgehog Educational Robotics Controller",
-  "main": "build/index.js",
+  "main": "build/hedgehog/index.js",
   "typings": "hedgehog/index.ts",
   "scripts": {
     "test": "mocha --reporter spec --check-leaks --recursive build/test/"
@@ -46,7 +46,6 @@
     "codelyzer": "^1.0.0-beta.4",
     "google-protobuf": "^3.1.1",
     "mocha": "^3.1.2",
-    "protobufjs": "^5.0.1",
     "zmq": "^2.15.3"
   }
 }
