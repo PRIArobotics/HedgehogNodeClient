@@ -119,15 +119,20 @@ export class HedgehogClient {
         this.sendHedgehogMessage(new StateAction(port, level ? IOStateFlags.OUTPUT_ON : IOStateFlags.OUTPUT_OFF));
     }
 
-    public setMotor(port: number, state: number, amount: number=0,
-                    reachedState: number=MotorState.POWER, relative: number=null,
-                    absolute: number=null, onReached: number=null) {
+    public setMotor(port: number,
+                    state: number,
+                    amount: number=0,
+                    reachedState: number=null,
+                    relative: number=null,
+                    absolute: number=null,
+                    onReached: number=null) {
+        // TODO: implement callback
         if(onReached) {
             if (!relative && !absolute) {
                 throw TypeError("callback given, but no end position");
             }
         }
-        this.sendHedgehogMessage(new MotorAction(port, state, amount, reachedState, relative, absolute));
+        this.sendHedgehogMessage(new MotorAction(port, state, amount, relative, absolute, reachedState));
     }
 
     public move(port: number, amount: number, state: number=MotorState.POWER) {
@@ -155,7 +160,7 @@ export class HedgehogClient {
         });
     }
 
-    public async get_motor_velocity(port) {
+    public async getMotorVelocity(port) {
         let motor: any = await this.getMotor(port);
         return motor.getVelocity();
     }
