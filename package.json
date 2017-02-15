@@ -1,6 +1,6 @@
 {
   "name": "hedgehog-client",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Client library for the Hedgehog Educational Robotics Controller",
   "main": "build/hedgehog/index.js",
   "typings": "hedgehog/index.ts",
