@@ -122,10 +122,10 @@ export class HedgehogClient {
     public setMotor(port: number,
                     state: number,
                     amount: number=0,
-                    reachedState: number=null,
                     relative: number=null,
                     absolute: number=null,
-                    onReached: number=null) {
+                    reachedState?: number,
+                    onReached?: number) {
         // TODO: implement callback
         if(onReached) {
             if (!relative && !absolute) {
@@ -137,6 +137,10 @@ export class HedgehogClient {
 
     public move(port: number, amount: number, state: number=MotorState.POWER) {
         this.setMotor(port, state, amount);
+    }
+
+    public stopMotor (port: number) {
+        this.setMotor(port, MotorState.BRAKE);
     }
 
     public moveRelativePosition(port: number, amount: number, relative: number,
