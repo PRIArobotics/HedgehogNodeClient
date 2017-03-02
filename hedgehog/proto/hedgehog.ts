@@ -21,7 +21,7 @@ export class Message {
 
         /* tslint:disable */
         if (this.message instanceof ack.Acknowledgement) hedgehogMessage.setAcknowledgement(this.message);
-        if (this.message instanceof io.IOStateAction) hedgehogMessage.setIOStateAction(this.message);
+        if (this.message instanceof io.IOStateAction) hedgehogMessage.setIoStateAction(this.message);
         if (this.message instanceof io.AnalogRequest) hedgehogMessage.setAnalogRequest(this.message);
         if (this.message instanceof io.AnalogUpdate) hedgehogMessage.setAnalogUpdate(this.message);
         if (this.message instanceof io.DigitalRequest) hedgehogMessage.setDigitalRequest(this.message);
