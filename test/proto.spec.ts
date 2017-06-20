@@ -2,7 +2,10 @@ import "babel-polyfill";
 
 
 import assert = require('assert');
-import {Acknowledgement, AcknowledgementCode} from '../hedgehog/proto/ack';
+
+let hedgehog_pb: any = require('../hedgehog/protocol/proto/hedgehog_pb');
+let ack_pb: any = require('../hedgehog/protocol/proto/ack_pb');
+import {Acknowledgement, AcknowledgementCode} from '../hedgehog/protocol/messages/ack';
 import {AnalogRequest, AnalogUpdate} from '../hedgehog/proto/analog';
 import {DigitalRequest, DigitalUpdate} from '../hedgehog/proto/digital';
 import {Message} from '../hedgehog/proto/hedgehog';
@@ -10,7 +13,27 @@ import {StateAction, IOStateFlags} from '../hedgehog/proto/io';
 import {MotorAction} from '../hedgehog/proto/motor';
 
 describe('Proto', () => {
+    function testMessage(msg, wire, MsgClass) {
+        let on_wire = msg.serialize();
+        assert.deepEqual(on_wire, wire.serializeBinary());
+        let received = MsgClass.parse(on_wire);
+        assert.deepEqual(received, msg);
+    }
 
+    describe('ack.Acknowledgement', () =>  {
+        it("should translate `OK` messages successfully", () => {
+            let proto = new ack_pb.Acknowledgement();
+            proto.setCode(AcknowledgementCode.OK);
+            proto.setMessage('');
+            let wire = new hedgehog_pb.HedgehogMessage();
+            wire.setAcknowledgement(proto);
+
+            let msg = new Acknowledgement();
+            testMessage(msg, wire, Acknowledgement);
+        });
+    });
+
+    /*
     describe('Ack', () => {
         let acknowledgement: Acknowledgement;
 
@@ -169,7 +192,6 @@ describe('Proto', () => {
         });
     });
 
-    /*
     describe('Motor', () => {
         let motorProto: Motor;
 
