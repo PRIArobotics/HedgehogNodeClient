@@ -50,6 +50,3 @@ build
 
 # ZMQ tests
 hedgehog/test
-
-# protolibs
-hedgehog/protocol
