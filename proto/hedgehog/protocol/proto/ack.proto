@@ -28,17 +28,20 @@ enum AcknowledgementCode {
     UNSUPPORTED_COMMAND = 3;
     // the command didn't complete successfully; details are in the message
     // this can happen if the current state of the controller doesn't allow a specific supported command
-    // e.g. an AnalogRequest/DigitalRequest fails because the port is configured as digital/analog, or as output;
+    // e.g. an AnalogRequest/DigitalRequest fails because the port is configured as output;
     //      a process command uses an unknown pid;
     //      a process can't be started because of an OS error (e.g. the executable or working directory is not found)
     FAILED_COMMAND = 4;
 }
 
-// an `OK` acknowledgement is sent as a reply to commands that have no other result
-// an Acknowledgement with another code is sent instead of the regular reply if a command failed
+// Reply messages for actions that have no response data. Code `OK` means a positive acknowledgement, other codes      
+// negative acknowledgements. A negative acknowledgement may be sent as the reply to any message, even if another reply
+// is expected. Negative acknowledgements may have a `message` describing the error condition.                         
+//
+// <= (code, [message]):     ack
 message Acknowledgement {
     AcknowledgementCode code = 1;
     // if the code is `OK`, this will be empty
-    // otherwise, the message mith contain more information
+    // otherwise, the message might contain more information
     string message = 2;
 }

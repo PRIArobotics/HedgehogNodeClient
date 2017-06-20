@@ -1,0 +1,147 @@
+.template 0
+ ignorecase = 0
+
+ # load packages and modules
+ for package
+   xml to protocol from "gsl/packages/$(package).xml"
+   delete package
+ endfor
+ for module
+   xml to protocol from "gsl/modules/$(module).xml"
+   delete module
+ endfor
+
+ # extract messages from packages for lookup
+ for package
+   for package.message
+     message.package = package.name
+     move message to protocol
+   endfor
+ endfor
+
+ # assign message to complex classes
+ for module
+   for complex
+     for class as c
+       for module.class where name = "$(c)"
+         class.message = complex.message
+       else
+         abort "ERROR: complex class-set $(module.name).$(id) references nonexistent class $(module.name).$(c)"
+       endfor
+     endfor
+   endfor
+ endfor
+
+ # add class' usage to message, and message's fields to class
+ function handle_class
+   # lookup corresponding message
+   for protocol.message where name = "$(class.message)"
+     # create usage
+     new usage
+       usage.type = class.type
+       usage.syntax = class.syntax
+       usage.description = "$(class->description)"
+     endnew
+
+     # store message data in class
+     new class.message as m
+       m.package = message.package
+       m.name = message.name
+       m.oneof_name = message.oneof_name
+       for message.field
+         copy field to m
+       endfor
+     endnew
+
+     for class.field as f
+       # if fields are given, lookup corresponding fields
+       for message.field where name = "$(f)"
+         copy field to class
+         delete f
+       else
+         found = 0
+         for message.field where defined(oneof)
+           for field.field where name = "$(f)"
+             copy field to class
+             delete f
+             found = 1
+           endfor
+         endfor
+         if found = 0
+           # lookup corresponding fields failed
+           abort "ERROR: $(module.name).$(name) references nonexistent field $(message.name).$(f)"
+         endif
+       endfor
+     else
+       # use all message's fields
+       for message.field
+         copy field to class
+       endfor
+     endfor
+   else
+     # lookup corresponding message failed
+     abort "ERROR: $(module.name).$(name) references nonexistent message $(class.message)"
+   endfor
+ endfunction
+
+ # visit all classes
+ for module
+   for class
+     handle_class()
+   endfor
+   for complex
+     for class as c
+       for module.class where name = "$(c)"
+         move class to complex
+         delete c
+       else
+         abort "ERROR: complex class-set $(module.name).$(id) references nonexistent class $(module.name).$(c)"
+       endfor
+     endfor
+
+     # lookup corresponding message
+     for protocol.message where name = "$(complex.message)"
+       # store message data in complex
+       new complex.message as m
+         m.package = message.package
+         m.name = message.name
+         m.oneof_name = message.oneof_name
+         for message.field
+           copy field to m
+         endfor
+       endnew
+     else
+       # lookup corresponding message failed
+       abort "ERROR: $(complex.module).$(name) references nonexistent message $(class.message)"
+     endfor
+   endfor
+ endfor
+
+ # re-package messages
+ for package as p
+   for protocol.message where package = "$(p.name)"
+     move message to p
+   endfor
+ endfor
+
+ directory.create("proto/$(path)/proto/")
+ scope ->root
+   # generate main proto definitions
+   output "proto/$(path)/proto/$(package).proto"
+     gsl from "gsl/root_proto"
+   close
+ endscope
+ for package
+   # generate proto definitions
+   output "proto/$(path)/proto/$(name).proto"
+     gsl from "gsl/proto"
+   close
+ endfor
+ directory.create("$(path)/messages/")
+ for module
+   # generate python messages
+   output "$(path)/messages/$(name).py"
+     gsl from "gsl/python"
+   close
+ endfor
+.endtemplate

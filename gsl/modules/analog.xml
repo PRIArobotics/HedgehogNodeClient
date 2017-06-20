@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<module name="analog">
+  <class type="req" syntax="(port)"
+         name="Request">
+    <description>analog request => analog reply</description>
+    <field>port</field>
+  </class>
+  <class type="rep" syntax="(port, value)"
+         name="Reply">
+    <description>analog reply</description>
+    <field>port</field>
+    <field>value</field>
+  </class>
+  <class type="req" syntax="(port, subscription)"
+         name="Subscribe">
+    <description>analog subscribe => ack</description>
+    <field>port</field>
+    <field>subscription</field>
+  </class>
+  <class type="upd" syntax="(port, value, subscription)"
+         name="Update">
+    <description>analog update</description>
+  </class>
+
+  <complex dir="req" id="" message="AnalogMessage">
+    <class>Request</class>
+    <class>Subscribe</class>
+  </complex>
+  <complex dir="rep" id="" message="AnalogMessage">
+    <class>Reply</class>
+    <class>Update</class>
+  </complex>
+</module>

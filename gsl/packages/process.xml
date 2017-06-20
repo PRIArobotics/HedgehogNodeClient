@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<package name="process">
+  <message name="ProcessExecuteAction" oneof_name="process_execute_action" oneof_tag="20">
+    <description>Invoke a process on the controller</description>
+
+    <field name="args" repeated="1">
+      <proto type="string" tag="2"/>
+      <python type="str"/>
+    </field>
+    <field name="working_dir">
+      <proto type="string" tag="1"/>
+      <python type="str" default="None"/>
+    </field>
+  </message>
+  <message name="ProcessExecuteReply" oneof_name="process_execute_reply" oneof_tag="21">
+    <description>Reply with the process' PID for communication purposes</description>
+
+    <field name="pid">
+      <proto type="uint32" tag="1"/>
+      <python type="int"/>
+    </field>
+  </message>
+  <message name="ProcessStreamMessage" oneof_name="process_stream_message" oneof_tag="8">
+    <description>send data to/receive data from a process' file streams</description>
+
+    <field name="pid">
+      <proto type="uint32" tag="1"/>
+      <python type="int"/>
+    </field>
+    <field name="fileno">
+      <proto type="ProcessFileno" tag="2"/>
+      <python type="int"/>
+    </field>
+    <field name="chunk">
+      <proto type="bytes" tag="3"/>
+      <python type="bytes" default="b''"/>
+    </field>
+  </message>
+  <message name="ProcessSignalAction" oneof_name="process_signal_action" oneof_tag="22">
+    <description>Send signal to a process</description>
+
+    <field name="pid">
+      <proto type="uint32" tag="1"/>
+      <python type="int"/>
+    </field>
+    <field name="signal">
+      <proto type="uint32" tag="2"/>
+      <python type="int"/>
+    </field>
+  </message>
+  <message name="ProcessExitUpdate" oneof_name="process_exit_update" oneof_tag="23">
+    <description>Signals that the process has exited</description>
+
+    <field name="pid">
+      <proto type="uint32" tag="1"/>
+      <python type="int"/>
+    </field>
+    <field name="exit_code">
+      <proto type="int32" tag="2"/>
+      <python type="int"/>
+    </field>
+  </message>
+</package>

@@ -1,0 +1,56 @@
+.template 0
+ ignorecase = 0
+
+ function add_import
+   for module.import where name = "$(class->message.package)_pb2"
+   else
+     new module.import
+       import.name = "$(class->message.package)_pb2"
+     endnew
+   endfor
+ endfunction
+
+ for class
+   add_import()
+   class->message.full_name = "$(->message.package)_pb2.$(->message.name)"
+   class.Msg = string.replace(type, "req|RequestMsg,rep|ReplyMsg,upd|ReplyMsg")
+   class.Superclass = "SimpleMessage"
+ endfor
+
+ for complex
+   complex->message.full_name = "$(->message.package)_pb2.$(->message.name)"
+   complex.Msg = string.replace(dir, "req|RequestMsg,rep|ReplyMsg")
+   complex.parse_name = "_parse_$((id <> "") ?? "$(id)_" ?)$(string.replace(dir, "req|request,rep|reply"))"
+
+   for class
+     add_import()
+     class->message.full_name = "$(->message.package)_pb2.$(->message.name)"
+     class.Msg = "protobuf"
+     class.Superclass = "Message"
+   endfor
+ endfor
+.endtemplate
+.template 1
+from typing import Union
+
+from . import RequestMsg, ReplyMsg, Message, SimpleMessage
+.for import
+from $(string.replace(path, "/|.")).proto import $(name)
+.endfor
+from hedgehog.utils import protobuf
+.for class
+
+
+.  gsl from "gsl/python_class"
+.endfor
+.for complex
+.  for class
+
+
+.    gsl from "gsl/python_class"
+.  endfor
+
+
+.  gsl from "gsl/python_parser"
+.endfor
+.endtemplate

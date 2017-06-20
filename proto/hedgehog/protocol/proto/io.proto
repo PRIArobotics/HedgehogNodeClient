@@ -5,8 +5,10 @@ package hedgehog.protocol.proto;
 option java_package = "at.pria.hedgehog.protocol.proto";
 option java_outer_classname = "IOP";
 
+import "hedgehog/protocol/proto/subscription.proto";
+
 // IO flags and flag combinations
-enum IOStateFlags {
+enum IOFlags {
     option allow_alias = true;
     // flag combinations (first because 0x00 needs to be first)
     INPUT_FLOATING = 0x00;
@@ -21,30 +23,46 @@ enum IOStateFlags {
     LEVEL = 0x08; // on/off
 }
 
-// Set one sensor state.
-message IOStateAction {
+// Changes the configuration of one IO port
+//
+// => (port, flags):         IO action => ack
+message IOAction {
     uint32 port = 1;
-    IOStateFlags flags = 2;
+    IOFlags flags = 2;
 }
 
-// Request for one analog sensor value
-message AnalogRequest {
+// Request or reply for one IO port's current command. The command may change by an IO action.
+//
+// => (port):                IO command request => IO command reply
+// <= (port, flags):         IO command reply
+// => (port, subscription):  IO command subscribe => ack
+// <- (port, flags, subscription):  IO command update
+message IOCommandMessage {
     uint32 port = 1;
+    IOFlags flags = 2;
+    Subscription subscription = 3;
 }
 
-// Update of one analog sensor value
-message AnalogUpdate {
+// Request or reply for one analog sensor's value
+//
+// => (port):                analog request => analog reply
+// <= (port, value):         analog reply
+// => (port, subscription):  analog subscribe => ack
+// <- (port, value, subscription):  analog update
+message AnalogMessage {
     uint32 port = 1;
     uint32 value = 2;
+    Subscription subscription = 3;
 }
 
-// Request for one digital sensor value
-message DigitalRequest {
-    uint32 port = 1;
-}
-
-// Update of one digital sensor value
-message DigitalUpdate {
+// Request or reply for one digital sensor's value
+//
+// => (port):                digital request => digital reply
+// <= (port, value):         digital reply
+// => (port, subscription):  digital subscribe => ack
+// <- (port, value, subscription):  digital update
+message DigitalMessage {
     uint32 port = 1;
     bool value = 2;
+    Subscription subscription = 3;
 }
