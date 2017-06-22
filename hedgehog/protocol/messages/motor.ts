@@ -9,7 +9,7 @@ type Subscription = any;
 
 @RequestMsg.message(motor_pb.MotorAction, PayloadCase.MOTOR_ACTION)
 export class Action extends Message {
-    constructor(public port: number, public state: number, public amount: number = 0, public reached_state: number = MotorState.POWER, public relative?: number, public absolute?: number) {
+    constructor(public port: number, public state: number, public amount: number = 0, public reachedState: number = MotorState.POWER, public relative?: number, public absolute?: number) {
         super();
     }
 
@@ -18,10 +18,10 @@ export class Action extends Message {
         let port = msg.getPort();
         let state = msg.getState();
         let amount = msg.getAmount();
-        let reached_state = msg.getReachedState();
+        let reachedState = msg.getReachedState();
         let relative = msg.hasRelative()? msg.getRelative() : undefined;
         let absolute = msg.hasAbsolute()? msg.getAbsolute() : undefined;
-        return new Action(port, state, amount, reached_state, relative, absolute);
+        return new Action(port, state, amount, reachedState, relative, absolute);
     }
 
     serializeTo(containerMsg: ProtoContainerMessage): void {
@@ -29,7 +29,7 @@ export class Action extends Message {
         msg.setPort(this.port);
         msg.setState(this.state);
         msg.setAmount(this.amount);
-        msg.setReachedState(this.reached_state);
+        msg.setReachedState(this.reachedState);
         msg.setRelative(this.relative);
         msg.setAbsolute(this.absolute);
         (<any> containerMsg).setMotorAction(msg);

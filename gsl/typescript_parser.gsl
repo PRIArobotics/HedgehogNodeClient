@@ -12,15 +12,15 @@
  macro parse_field
 .  for field
 .    # oneof
-        let $(name) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
+        let $(name:camel) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
 .  else
 .    # regular field
 .    if defined(repeated)
-        let $(name) = msg.get$(name:Pascal)List();
+        let $(name:camel) = msg.get$(name:Pascal)List();
 .    elsif (kind ? "") = "nested"
-        let $(name) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
+        let $(name:camel) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
 .    else
-        let $(name) = msg.get$(name:Pascal)();
+        let $(name:camel) = msg.get$(name:Pascal)();
 .    endif
 .  endfor
 .endmacro
@@ -30,10 +30,10 @@
    for field
      for field
        # oneof
-       result += "$(name)$(last() ?? "" ? ", ")"
+       result += "$(name:camel)$(last() ?? "" ? ", ")"
      else
        # regular field
-       result += "$(name)$(last() ?? "" ? ", ")"
+       result += "$(name:camel)$(last() ?? "" ? ", ")"
      endfor
    endfor
    return result

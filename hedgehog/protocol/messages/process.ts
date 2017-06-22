@@ -7,21 +7,21 @@ export let ProcessFileno = process_pb.ProcessFileno;
 
 @RequestMsg.message(process_pb.ProcessExecuteAction, PayloadCase.PROCESS_EXECUTE_ACTION)
 export class ExecuteAction extends Message {
-    constructor(public args: string[], public working_dir?: string) {
+    constructor(public args: string[], public workingDir?: string) {
         super();
     }
 
     static parseFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (<any> containerMsg).getProcessExecuteAction();
         let args = msg.getArgsList();
-        let working_dir = msg.getWorkingDir();
-        return new ExecuteAction(args, working_dir);
+        let workingDir = msg.getWorkingDir();
+        return new ExecuteAction(args, workingDir);
     }
 
     serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new process_pb.ProcessExecuteAction();
         msg.setArgsList(this.args);
-        msg.setWorkingDir(this.working_dir);
+        msg.setWorkingDir(this.workingDir);
         (<any> containerMsg).setProcessExecuteAction(msg);
     }
 }
@@ -118,21 +118,21 @@ export class SignalAction extends Message {
 export class ExitUpdate extends Message {
     async = true;
 
-    constructor(public pid: number, public exit_code: number) {
+    constructor(public pid: number, public exitCode: number) {
         super();
     }
 
     static parseFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (<any> containerMsg).getProcessExitUpdate();
         let pid = msg.getPid();
-        let exit_code = msg.getExitCode();
-        return new ExitUpdate(pid, exit_code);
+        let exitCode = msg.getExitCode();
+        return new ExitUpdate(pid, exitCode);
     }
 
     serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new process_pb.ProcessExitUpdate();
         msg.setPid(this.pid);
-        msg.setExitCode(this.exit_code);
+        msg.setExitCode(this.exitCode);
         (<any> containerMsg).setProcessExitUpdate(msg);
     }
 }
