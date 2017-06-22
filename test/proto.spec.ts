@@ -6,6 +6,7 @@ import assert = require('assert');
 let hedgehog_pb: any = require('../hedgehog/protocol/proto/hedgehog_pb');
 let ack_pb: any = require('../hedgehog/protocol/proto/ack_pb');
 let io_pb: any = require('../hedgehog/protocol/proto/io_pb');
+let servo_pb: any = require('../hedgehog/protocol/proto/servo_pb');
 let subscription_pb: any = require('../hedgehog/protocol/proto/subscription_pb');
 
 import { Message, ProtoContainerMessage, ContainerMessage } from '../hedgehog/utils/protobuf/index';
@@ -14,9 +15,8 @@ import * as ack from '../hedgehog/protocol/messages/ack';
 import * as io from '../hedgehog/protocol/messages/io';
 import * as analog from '../hedgehog/protocol/messages/analog';
 import * as digital from '../hedgehog/protocol/messages/digital';
-// import {Message} from '../hedgehog/proto/hedgehog';
-// import {StateAction, IOStateFlags} from '../hedgehog/proto/io';
 // import {MotorAction} from '../hedgehog/proto/motor';
+import * as servo from '../hedgehog/protocol/messages/servo';
 
 describe('Proto', () => {
     function testMessage(msg: Message, wire: ProtoContainerMessage, container: ContainerMessage) {
@@ -248,6 +248,97 @@ describe('Proto', () => {
             sub.setSubscribe(true);
             sub.setTimeout(10);
             let msg = new digital.Update(0, true, sub);
+            testMessage(msg, wire, ReplyMsg);
+        });
+    });
+
+    describe('ServoAction', () =>  {
+        it("should translate `servo.Action` without position successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new servo_pb.ServoAction();
+                proto.setPort(0);
+                proto.setActive(false);
+                wire.setServoAction(proto);
+            });
+
+            let msg = new servo.Action(0, false);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `servo.Action` with position successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new servo_pb.ServoAction();
+                proto.setPort(0);
+                proto.setActive(true);
+                proto.setPosition(1000);
+                wire.setServoAction(proto);
+            });
+
+            let msg = new servo.Action(0, true, 1000);
+            testMessage(msg, wire, RequestMsg);
+        });
+    });
+
+    describe('ServoCommandMessage', () =>  {
+        it("should translate `servo.CommandRequest` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new servo_pb.ServoCommandMessage();
+                proto.setPort(0);
+                wire.setServoCommandMessage(proto);
+            });
+
+            let msg = new servo.CommandRequest(0);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `servo.CommandSubscribe` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new servo_pb.ServoCommandMessage();
+                proto.setPort(0);
+                proto.setSubscription(sub);
+                wire.setServoCommandMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new servo.CommandSubscribe(0, sub);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `servo.CommandReply` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new servo_pb.ServoCommandMessage();
+                proto.setPort(0);
+                proto.setActive(false);
+                wire.setServoCommandMessage(proto);
+            });
+
+            let msg = new servo.CommandReply(0, false, undefined);
+            testMessage(msg, wire, ReplyMsg);
+        });
+
+        it("should translate `servo.CommandUpdate` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new servo_pb.ServoCommandMessage();
+                proto.setPort(0);
+                proto.setActive(false);
+                proto.setSubscription(sub);
+                wire.setServoCommandMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new servo.CommandUpdate(0, false, undefined, sub);
             testMessage(msg, wire, ReplyMsg);
         });
     });

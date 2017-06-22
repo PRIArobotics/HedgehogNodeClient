@@ -5,7 +5,7 @@
   <package>ack</package>
   <package>io</package>
   <!--<package>motor</package>-->
-  <!--<package>servo</package>-->
+  <package>servo</package>
   <!--<package>process</package>-->
 
   <module>ack</module>
@@ -13,6 +13,6 @@
   <module>analog</module>
   <module>digital</module>
   <!--<module>motor</module>-->
-  <!--<module>servo</module>-->
+  <module>servo</module>
   <!--<module>process</module>-->
 </protocol>

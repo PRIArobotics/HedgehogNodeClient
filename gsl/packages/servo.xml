@@ -6,14 +6,17 @@
     <field name="port">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="active">
       <proto type="bool" tag="2"/>
       <python type="bool"/>
+      <typescript type="boolean"/>
     </field>
     <field name="position">
       <proto type="uint32" tag="3"/>
       <python type="int" default="None"/>
+      <typescript type="number" default="undefined"/>
     </field>
   </message>
   <message name="ServoCommandMessage" oneof_name="servo_command_message" oneof_tag="19">
@@ -23,18 +26,22 @@ actual servo movement is not reflected.</description>
     <field name="port">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="active">
       <proto type="bool" tag="2"/>
       <python type="bool"/>
+      <typescript type="boolean"/>
     </field>
     <field name="position">
       <proto type="uint32" tag="3"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="subscription" kind="nested">
       <proto type="Subscription" tag="4"/>
       <python type="Subscription"/>
+      <typescript type="Subscription"/>
     </field>
   </message>
 </package>
