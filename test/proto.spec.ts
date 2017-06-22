@@ -13,7 +13,7 @@ import { RequestMsg, ReplyMsg } from '../hedgehog/protocol/messages/index';
 import * as ack from '../hedgehog/protocol/messages/ack';
 import * as io from '../hedgehog/protocol/messages/io';
 import * as analog from '../hedgehog/protocol/messages/analog';
-// import {DigitalRequest, DigitalUpdate} from '../hedgehog/proto/digital';
+import * as digital from '../hedgehog/protocol/messages/digital';
 // import {Message} from '../hedgehog/proto/hedgehog';
 // import {StateAction, IOStateFlags} from '../hedgehog/proto/io';
 // import {MotorAction} from '../hedgehog/proto/motor';
@@ -184,6 +184,70 @@ describe('Proto', () => {
             sub.setSubscribe(true);
             sub.setTimeout(10);
             let msg = new analog.Update(0, 1000, sub);
+            testMessage(msg, wire, ReplyMsg);
+        });
+    });
+
+    describe('DigitalMessage', () =>  {
+        it("should translate `digital.Request` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new io_pb.DigitalMessage();
+                proto.setPort(0);
+                wire.setDigitalMessage(proto);
+            });
+
+            let msg = new digital.Request(0);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `digital.Subscribe` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new io_pb.DigitalMessage();
+                proto.setPort(0);
+                proto.setSubscription(sub);
+                wire.setDigitalMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new digital.Subscribe(0, sub);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `digital.Reply` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new io_pb.DigitalMessage();
+                proto.setPort(0);
+                proto.setValue(true);
+                wire.setDigitalMessage(proto);
+            });
+
+            let msg = new digital.Reply(0, true);
+            testMessage(msg, wire, ReplyMsg);
+        });
+
+        it("should translate `digital.Update` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new io_pb.DigitalMessage();
+                proto.setPort(0);
+                proto.setValue(true);
+                proto.setSubscription(sub);
+                wire.setDigitalMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new digital.Update(0, true, sub);
             testMessage(msg, wire, ReplyMsg);
         });
     });

@@ -11,7 +11,7 @@
   <module>ack</module>
   <module>io</module>
   <module>analog</module>
-  <!--<module>digital</module>-->
+  <module>digital</module>
   <!--<module>motor</module>-->
   <!--<module>servo</module>-->
   <!--<module>process</module>-->
