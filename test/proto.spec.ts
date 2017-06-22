@@ -3,33 +3,43 @@ import "babel-polyfill";
 
 import assert = require('assert');
 
-let hedgehog_pb: any = require('../hedgehog/protocol/proto/hedgehog_pb');
 let ack_pb: any = require('../hedgehog/protocol/proto/ack_pb');
-import {Acknowledgement, AcknowledgementCode} from '../hedgehog/protocol/messages/ack';
-import {AnalogRequest, AnalogUpdate} from '../hedgehog/proto/analog';
-import {DigitalRequest, DigitalUpdate} from '../hedgehog/proto/digital';
-import {Message} from '../hedgehog/proto/hedgehog';
-import {StateAction, IOStateFlags} from '../hedgehog/proto/io';
-import {MotorAction} from '../hedgehog/proto/motor';
+let hedgehog_pb: any = require('../hedgehog/protocol/proto/hedgehog_pb');
+
+import { Message, ProtoContainerMessage, ContainerMessage } from '../hedgehog/utils/protobuf/index';
+import { RequestMsg, ReplyMsg } from '../hedgehog/protocol/messages/index';
+import { Acknowledgement, AcknowledgementCode } from '../hedgehog/protocol/messages/ack';
+// import {AnalogRequest, AnalogUpdate} from '../hedgehog/proto/analog';
+// import {DigitalRequest, DigitalUpdate} from '../hedgehog/proto/digital';
+// import {Message} from '../hedgehog/proto/hedgehog';
+// import {StateAction, IOStateFlags} from '../hedgehog/proto/io';
+// import {MotorAction} from '../hedgehog/proto/motor';
 
 describe('Proto', () => {
-    function testMessage(msg, wire, MsgClass) {
-        let on_wire = msg.serialize();
+    function testMessage(msg: Message, wire: ProtoContainerMessage, container: ContainerMessage) {
+        let on_wire = container.serialize(msg);
         assert.deepEqual(on_wire, wire.serializeBinary());
-        let received = MsgClass.parse(on_wire);
+        let received = container.parse(on_wire);
         assert.deepEqual(received, msg);
+    }
+
+    function makeWire(fn: (wire) => void): ProtoContainerMessage {
+        let wire = new hedgehog_pb.HedgehogMessage();
+        fn(wire);
+        return wire;
     }
 
     describe('ack.Acknowledgement', () =>  {
         it("should translate `OK` messages successfully", () => {
-            let proto = new ack_pb.Acknowledgement();
-            proto.setCode(AcknowledgementCode.OK);
-            proto.setMessage('');
-            let wire = new hedgehog_pb.HedgehogMessage();
-            wire.setAcknowledgement(proto);
+            let wire = makeWire((wire) => {
+                let proto = new ack_pb.Acknowledgement();
+                proto.setCode(AcknowledgementCode.OK);
+                proto.setMessage('');
+                wire.setAcknowledgement(proto);
+            });
 
             let msg = new Acknowledgement();
-            testMessage(msg, wire, Acknowledgement);
+            testMessage(msg, wire, ReplyMsg);
         });
     });
 
