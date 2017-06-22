@@ -7,27 +7,33 @@ the motor will go into `reached_state` upon reaching the position.</description>
     <field name="port">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="state">
       <proto type="MotorState" tag="2"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="amount">
       <proto type="sint32" tag="3"/>
       <python type="int" default="0"/>
+      <typescript type="number" default="0"/>
     </field>
     <field name="reached_state">
       <proto type="MotorState" tag="4"/>
       <python type="int" default="POWER"/>
+      <typescript type="number" default="MotorState.POWER"/>
     </field>
     <field oneof="position">
       <field name="relative">
         <proto type="sint32" tag="5"/>
         <python type="int"/>
+        <typescript type="number"/>
       </field>
       <field name="absolute">
         <proto type="sint32" tag="6"/>
         <python type="int"/>
+        <typescript type="number"/>
       </field>
     </field>
   </message>
@@ -38,18 +44,22 @@ The command may change by a motor action, or by reaching the goal position of a 
     <field name="port">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="state">
       <proto type="MotorState" tag="2"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="amount">
       <proto type="sint32" tag="3"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="subscription" kind="nested">
       <proto type="Subscription" tag="4"/>
       <python type="Subscription"/>
+      <typescript type="Subscription"/>
     </field>
   </message>
   <message name="MotorStateMessage" oneof_name="motor_state_message" oneof_tag="6">
@@ -59,18 +69,22 @@ but returned values are approximations, and motor state requests may not be supp
     <field name="port">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="velocity">
       <proto type="sint32" tag="2"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="position">
       <proto type="sint32" tag="3"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="subscription" kind="nested">
       <proto type="Subscription" tag="4"/>
       <python type="Subscription"/>
+      <typescript type="Subscription"/>
     </field>
   </message>
   <message name="MotorSetPositionAction" oneof_name="motor_set_position_action" oneof_tag="18">
@@ -79,10 +93,12 @@ but returned values are approximations, and motor state requests may not be supp
     <field name="port">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="position">
       <proto type="sint32" tag="2"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
   </message>
 </package>

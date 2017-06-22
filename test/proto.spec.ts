@@ -6,6 +6,7 @@ import assert = require('assert');
 let hedgehog_pb: any = require('../hedgehog/protocol/proto/hedgehog_pb');
 let ack_pb: any = require('../hedgehog/protocol/proto/ack_pb');
 let io_pb: any = require('../hedgehog/protocol/proto/io_pb');
+let motor_pb: any = require('../hedgehog/protocol/proto/motor_pb');
 let servo_pb: any = require('../hedgehog/protocol/proto/servo_pb');
 let subscription_pb: any = require('../hedgehog/protocol/proto/subscription_pb');
 
@@ -15,7 +16,7 @@ import * as ack from '../hedgehog/protocol/messages/ack';
 import * as io from '../hedgehog/protocol/messages/io';
 import * as analog from '../hedgehog/protocol/messages/analog';
 import * as digital from '../hedgehog/protocol/messages/digital';
-// import {MotorAction} from '../hedgehog/proto/motor';
+import * as motor from '../hedgehog/protocol/messages/motor';
 import * as servo from '../hedgehog/protocol/messages/servo';
 
 describe('Proto', () => {
@@ -248,6 +249,179 @@ describe('Proto', () => {
             sub.setSubscribe(true);
             sub.setTimeout(10);
             let msg = new digital.Update(0, true, sub);
+            testMessage(msg, wire, ReplyMsg);
+        });
+    });
+
+    describe('MotorAction', () =>  {
+        it("should translate `motor.Action` without amount successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new motor_pb.MotorAction();
+                proto.setPort(0);
+                proto.setState(motor.MotorState.POWER);
+                wire.setMotorAction(proto);
+            });
+
+            let msg = new motor.Action(0, motor.MotorState.POWER);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `motor.Action` with amount successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new motor_pb.MotorAction();
+                proto.setPort(0);
+                proto.setState(motor.MotorState.POWER);
+                proto.setAmount(1000);
+                wire.setMotorAction(proto);
+            });
+
+            let msg = new motor.Action(0, motor.MotorState.POWER, 1000);
+            testMessage(msg, wire, RequestMsg);
+        });
+    });
+
+    describe('MotorSetPositionAction', () =>  {
+        it("should translate `motor.SetPositionAction` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new motor_pb.MotorSetPositionAction();
+                proto.setPort(0);
+                proto.setPosition(0);
+                wire.setMotorSetPositionAction(proto);
+            });
+
+            let msg = new motor.SetPositionAction(0, 0);
+            testMessage(msg, wire, RequestMsg);
+        });
+    });
+
+    describe('MotorCommandMessage', () =>  {
+        it("should translate `motor.CommandRequest` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new motor_pb.MotorCommandMessage();
+                proto.setPort(0);
+                wire.setMotorCommandMessage(proto);
+            });
+
+            let msg = new motor.CommandRequest(0);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `motor.CommandSubscribe` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new motor_pb.MotorCommandMessage();
+                proto.setPort(0);
+                proto.setSubscription(sub);
+                wire.setMotorCommandMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new motor.CommandSubscribe(0, sub);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `motor.CommandReply` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new motor_pb.MotorCommandMessage();
+                proto.setPort(0);
+                proto.setState(motor.MotorState.POWER);
+                proto.setAmount(1000);
+                wire.setMotorCommandMessage(proto);
+            });
+
+            let msg = new motor.CommandReply(0, motor.MotorState.POWER, 1000);
+            testMessage(msg, wire, ReplyMsg);
+        });
+
+        it("should translate `motor.CommandUpdate` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new motor_pb.MotorCommandMessage();
+                proto.setPort(0);
+                proto.setState(motor.MotorState.POWER);
+                proto.setAmount(1000);
+                proto.setSubscription(sub);
+                wire.setMotorCommandMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new motor.CommandUpdate(0, motor.MotorState.POWER, 1000, sub);
+            testMessage(msg, wire, ReplyMsg);
+        });
+    });
+
+    describe('MotorStateMessage', () =>  {
+        it("should translate `motor.StateRequest` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new motor_pb.MotorStateMessage();
+                proto.setPort(0);
+                wire.setMotorStateMessage(proto);
+            });
+
+            let msg = new motor.StateRequest(0);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `motor.StateSubscribe` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new motor_pb.MotorStateMessage();
+                proto.setPort(0);
+                proto.setSubscription(sub);
+                wire.setMotorStateMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new motor.StateSubscribe(0, sub);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `motor.StateReply` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new motor_pb.MotorStateMessage();
+                proto.setPort(0);
+                proto.setVelocity(0);
+                proto.setPosition(0);
+                wire.setMotorStateMessage(proto);
+            });
+
+            let msg = new motor.StateReply(0, 0, 0);
+            testMessage(msg, wire, ReplyMsg);
+        });
+
+        it("should translate `motor.StateUpdate` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new motor_pb.MotorStateMessage();
+                proto.setPort(0);
+                proto.setVelocity(0);
+                proto.setPosition(0);
+                proto.setSubscription(sub);
+                wire.setMotorStateMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new motor.StateUpdate(0, 0, 0, sub);
             testMessage(msg, wire, ReplyMsg);
         });
     });
