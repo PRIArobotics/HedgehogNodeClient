@@ -9,8 +9,8 @@ let io_pb: any = require('../hedgehog/protocol/proto/io_pb');
 
 import { Message, ProtoContainerMessage, ContainerMessage } from '../hedgehog/utils/protobuf/index';
 import { RequestMsg, ReplyMsg } from '../hedgehog/protocol/messages/index';
-import { Acknowledgement, AcknowledgementCode } from '../hedgehog/protocol/messages/ack';
-import { Action, CommandRequest, IOFlags } from '../hedgehog/protocol/messages/io';
+import * as ack from '../hedgehog/protocol/messages/ack';
+import * as io from '../hedgehog/protocol/messages/io';
 // import {AnalogRequest, AnalogUpdate} from '../hedgehog/proto/analog';
 // import {DigitalRequest, DigitalUpdate} from '../hedgehog/proto/digital';
 // import {Message} from '../hedgehog/proto/hedgehog';
@@ -35,12 +35,12 @@ describe('Proto', () => {
         it("should translate `OK` messages successfully", () => {
             let wire = makeWire((wire) => {
                 let proto = new ack_pb.Acknowledgement();
-                proto.setCode(AcknowledgementCode.OK);
+                proto.setCode(ack.AcknowledgementCode.OK);
                 proto.setMessage('');
                 wire.setAcknowledgement(proto);
             });
 
-            let msg = new Acknowledgement();
+            let msg = new ack.Acknowledgement();
             testMessage(msg, wire, ReplyMsg);
         });
     });
@@ -50,11 +50,11 @@ describe('Proto', () => {
             let wire = makeWire((wire) => {
                 let proto = new io_pb.IOAction();
                 proto.setPort(0);
-                proto.setFlags(IOFlags.OUTPUT_ON);
+                proto.setFlags(io.IOFlags.OUTPUT_ON);
                 wire.setIoAction(proto);
             });
 
-            let msg = new Action(0, IOFlags.OUTPUT_ON);
+            let msg = new io.Action(0, io.IOFlags.OUTPUT_ON);
             testMessage(msg, wire, RequestMsg);
         });
     });
@@ -67,7 +67,7 @@ describe('Proto', () => {
                 wire.setIoCommandMessage(proto);
             });
 
-            let msg = new CommandRequest(0);
+            let msg = new io.CommandRequest(0);
             testMessage(msg, wire, RequestMsg);
         });
     });
