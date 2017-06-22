@@ -3,12 +3,14 @@ import "babel-polyfill";
 
 import assert = require('assert');
 
-let ack_pb: any = require('../hedgehog/protocol/proto/ack_pb');
 let hedgehog_pb: any = require('../hedgehog/protocol/proto/hedgehog_pb');
+let ack_pb: any = require('../hedgehog/protocol/proto/ack_pb');
+let io_pb: any = require('../hedgehog/protocol/proto/io_pb');
 
 import { Message, ProtoContainerMessage, ContainerMessage } from '../hedgehog/utils/protobuf/index';
 import { RequestMsg, ReplyMsg } from '../hedgehog/protocol/messages/index';
 import { Acknowledgement, AcknowledgementCode } from '../hedgehog/protocol/messages/ack';
+import { Action, CommandRequest, IOFlags } from '../hedgehog/protocol/messages/io';
 // import {AnalogRequest, AnalogUpdate} from '../hedgehog/proto/analog';
 // import {DigitalRequest, DigitalUpdate} from '../hedgehog/proto/digital';
 // import {Message} from '../hedgehog/proto/hedgehog';
@@ -40,6 +42,33 @@ describe('Proto', () => {
 
             let msg = new Acknowledgement();
             testMessage(msg, wire, ReplyMsg);
+        });
+    });
+
+    describe('io.Action', () =>  {
+        it("should translate successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new io_pb.IOAction();
+                proto.setPort(0);
+                proto.setFlags(IOFlags.OUTPUT_ON);
+                wire.setIoAction(proto);
+            });
+
+            let msg = new Action(0, IOFlags.OUTPUT_ON);
+            testMessage(msg, wire, RequestMsg);
+        });
+    });
+
+    describe('io.CommandRequest', () =>  {
+        it("should translate successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new io_pb.IOCommandMessage();
+                proto.setPort(0);
+                wire.setIoCommandMessage(proto);
+            });
+
+            let msg = new CommandRequest(0);
+            testMessage(msg, wire, RequestMsg);
         });
     });
 

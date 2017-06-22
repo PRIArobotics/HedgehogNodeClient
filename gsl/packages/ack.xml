@@ -8,10 +8,12 @@ is expected. Negative acknowledgements may have a `message` describing the error
     <field name="code">
       <proto type="AcknowledgementCode" tag="1"/>
       <python type="int" default="OK"/>
+      <typescript type="number" default="AcknowledgementCode.OK"/>
     </field>
     <field name="message">
       <proto type="string" tag="2"/>
       <python type="str" default="''"/>
+      <typescript type="string" default="''"/>
     </field>
   </message>
 </package>

@@ -139,9 +139,9 @@
  endfor
  directory.create("$(path)/messages/")
  for module
-   # generate python messages
-   output "$(path)/messages/$(name).py"
-     gsl from "gsl/python"
+   # generate typescript messages
+   output "$(path)/messages/$(name).ts"
+     gsl from "gsl/typescript"
    close
  endfor
 .endtemplate

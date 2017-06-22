@@ -6,10 +6,12 @@
     <field name="port">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="flags">
       <proto type="IOFlags" tag="2"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
   </message>
   <message name="IOCommandMessage" oneof_name="io_command_message" oneof_tag="16">
@@ -18,14 +20,17 @@
     <field name="port">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="flags">
       <proto type="IOFlags" tag="2"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="subscription" kind="nested">
       <proto type="Subscription" tag="3"/>
       <python type="Subscription"/>
+      <typescript type="Subscription"/>
     </field>
   </message>
   <message name="AnalogMessage" oneof_name="analog_message" oneof_tag="3">
@@ -34,14 +39,17 @@
     <field name="port">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="value">
       <proto type="uint32" tag="2"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="subscription" kind="nested">
       <proto type="Subscription" tag="3"/>
       <python type="Subscription"/>
+      <typescript type="Subscription"/>
     </field>
   </message>
   <message name="DigitalMessage" oneof_name="digital_message" oneof_tag="4">
@@ -50,14 +58,17 @@
     <field name="port">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="value">
       <proto type="bool" tag="2"/>
       <python type="bool"/>
+      <typescript type="boolean"/>
     </field>
     <field name="subscription" kind="nested">
       <proto type="Subscription" tag="3"/>
       <python type="Subscription"/>
+      <typescript type="Subscription"/>
     </field>
   </message>
 </package>
