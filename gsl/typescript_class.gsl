@@ -21,9 +21,13 @@
        result += "public $(name)?: $(->typescript.type)"
      else
        # regular field
-       result += "public $(name): $(->typescript.type)"
-       if defined(->typescript.default)
-         result += " = $(->typescript.default)"
+       if (->typescript.default ? "") = "undefined"
+         result += "public $(name)?: $(->typescript.type)"
+       else
+         result += "public $(name): $(->typescript.type)"
+         if defined(->typescript.default)
+           result += " = $(->typescript.default)"
+         endif
        endif
      endfor
      if !last()
