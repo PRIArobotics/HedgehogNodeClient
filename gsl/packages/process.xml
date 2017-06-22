@@ -6,10 +6,12 @@
     <field name="args" repeated="1">
       <proto type="string" tag="2"/>
       <python type="str"/>
+      <typescript type="string[]"/>
     </field>
     <field name="working_dir">
       <proto type="string" tag="1"/>
       <python type="str" default="None"/>
+      <typescript type="string" default="undefined"/>
     </field>
   </message>
   <message name="ProcessExecuteReply" oneof_name="process_execute_reply" oneof_tag="21">
@@ -18,6 +20,7 @@
     <field name="pid">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
   </message>
   <message name="ProcessStreamMessage" oneof_name="process_stream_message" oneof_tag="8">
@@ -26,14 +29,17 @@
     <field name="pid">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="fileno">
       <proto type="ProcessFileno" tag="2"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="chunk">
       <proto type="bytes" tag="3"/>
       <python type="bytes" default="b''"/>
+      <typescript type="Uint8Array" default="new Uint8Array(0)"/>
     </field>
   </message>
   <message name="ProcessSignalAction" oneof_name="process_signal_action" oneof_tag="22">
@@ -42,10 +48,12 @@
     <field name="pid">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="signal">
       <proto type="uint32" tag="2"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
   </message>
   <message name="ProcessExitUpdate" oneof_name="process_exit_update" oneof_tag="23">
@@ -54,10 +62,12 @@
     <field name="pid">
       <proto type="uint32" tag="1"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
     <field name="exit_code">
       <proto type="int32" tag="2"/>
       <python type="int"/>
+      <typescript type="number"/>
     </field>
   </message>
 </package>

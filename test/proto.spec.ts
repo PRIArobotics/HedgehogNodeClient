@@ -8,6 +8,7 @@ let ack_pb: any = require('../hedgehog/protocol/proto/ack_pb');
 let io_pb: any = require('../hedgehog/protocol/proto/io_pb');
 let motor_pb: any = require('../hedgehog/protocol/proto/motor_pb');
 let servo_pb: any = require('../hedgehog/protocol/proto/servo_pb');
+let process_pb: any = require('../hedgehog/protocol/proto/process_pb');
 let subscription_pb: any = require('../hedgehog/protocol/proto/subscription_pb');
 
 import { Message, ProtoContainerMessage, ContainerMessage } from '../hedgehog/utils/protobuf/index';
@@ -18,6 +19,7 @@ import * as analog from '../hedgehog/protocol/messages/analog';
 import * as digital from '../hedgehog/protocol/messages/digital';
 import * as motor from '../hedgehog/protocol/messages/motor';
 import * as servo from '../hedgehog/protocol/messages/servo';
+import * as process from '../hedgehog/protocol/messages/process';
 
 describe('Proto', () => {
     function testMessage(msg: Message, wire: ProtoContainerMessage, container: ContainerMessage) {
@@ -513,6 +515,87 @@ describe('Proto', () => {
             sub.setSubscribe(true);
             sub.setTimeout(10);
             let msg = new servo.CommandUpdate(0, false, undefined, sub);
+            testMessage(msg, wire, ReplyMsg);
+        });
+    });
+
+    describe('ProcessExecuteAction', () =>  {
+        it("should translate `process.ExecuteAction` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new process_pb.ProcessExecuteAction();
+                proto.setArgsList(["cat"]);
+                proto.setWorkingDir("/home/pi");
+                wire.setProcessExecuteAction(proto);
+            });
+
+            let msg = new process.ExecuteAction(["cat"], "/home/pi");
+            testMessage(msg, wire, RequestMsg);
+        });
+    });
+
+    describe('ProcessExecuteReply', () =>  {
+        it("should translate `process.ExecuteReply` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new process_pb.ProcessExecuteReply();
+                proto.setPid(1234);
+                wire.setProcessExecuteReply(proto);
+            });
+
+            let msg = new process.ExecuteReply(1234);
+            testMessage(msg, wire, ReplyMsg);
+        });
+    });
+
+    describe('ProcessStreamMessage', () =>  {
+        it("should translate `process.StreamAction` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new process_pb.ProcessStreamMessage();
+                proto.setPid(1234);
+                proto.setFileno(process.ProcessFileno.STDIN);
+                wire.setProcessStreamMessage(proto);
+            });
+
+            let msg = new process.StreamAction(1234, process.ProcessFileno.STDIN);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `process.StreamUpdate` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new process_pb.ProcessStreamMessage();
+                proto.setPid(1234);
+                proto.setFileno(process.ProcessFileno.STDOUT);
+                wire.setProcessStreamMessage(proto);
+            });
+
+            let msg = new process.StreamUpdate(1234, process.ProcessFileno.STDOUT);
+            testMessage(msg, wire, ReplyMsg);
+        });
+    });
+
+    describe('ProcessSignalAction', () =>  {
+        it("should translate `process.SignalAction` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new process_pb.ProcessSignalAction();
+                proto.setPid(1234);
+                proto.setSignal(9);
+                wire.setProcessSignalAction(proto);
+            });
+
+            let msg = new process.SignalAction(1234, 9);
+            testMessage(msg, wire, RequestMsg);
+        });
+    });
+
+    describe('ProcessExitUpdate', () =>  {
+        it("should translate `process.ExitUpdate` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new process_pb.ProcessExitUpdate();
+                proto.setPid(1234);
+                proto.setExitCode(0);
+                wire.setProcessExitUpdate(proto);
+            });
+
+            let msg = new process.ExitUpdate(1234, 0);
             testMessage(msg, wire, ReplyMsg);
         });
     });
