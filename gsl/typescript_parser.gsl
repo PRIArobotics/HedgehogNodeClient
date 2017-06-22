@@ -15,7 +15,9 @@
         let $(name) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
 .  else
 .    # regular field
-.    if (kind ? "") = "nested"
+.    if defined(repeated)
+        let $(name) = msg.get$(name:Pascal)List();
+.    elsif (kind ? "") = "nested"
         let $(name) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
 .    else
         let $(name) = msg.get$(name:Pascal)();
