@@ -19,6 +19,9 @@
      for field
        # oneof
        result += "public $(name)?: $(->typescript.type)"
+       if !last()
+         result += ", "
+       endif
      else
        # regular field
        if (->typescript.default ? "") = "undefined"
@@ -40,11 +43,11 @@
  macro parse_field
 .  for field
 .    # oneof
-        let $(name) = msg.$(name) if msg.HasField('$(name)') else None;
+        let $(name) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
 .  else
 .    # regular field
 .    if (kind ? "") = "nested"
-        let $(name) = msg.$(name) if msg.HasField('$(name)') else None;
+        let $(name) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
 .    else
         let $(name) = msg.get$(name:Pascal)();
 .    endif
@@ -68,8 +71,7 @@
  macro serialize_field
 .  for field
 .    # oneof
-        if this.$(name) is not None:
-            msg.set$(name:Pascal)(this.$(name));
+        msg.set$(name:Pascal)(this.$(name));
 .  else
 .    # regular field
 .    if defined(repeated)
