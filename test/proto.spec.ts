@@ -31,8 +31,8 @@ describe('Proto', () => {
         return wire;
     }
 
-    describe('ack.Acknowledgement', () =>  {
-        it("should translate `OK` messages successfully", () => {
+    describe('Acknowledgement', () =>  {
+        it("should translate `ack.Acknowledgement` successfully", () => {
             let wire = makeWire((wire) => {
                 let proto = new ack_pb.Acknowledgement();
                 proto.setCode(ack.AcknowledgementCode.OK);
@@ -45,8 +45,8 @@ describe('Proto', () => {
         });
     });
 
-    describe('io.Action', () =>  {
-        it("should translate successfully", () => {
+    describe('IOAction', () =>  {
+        it("should translate `io.Action` successfully", () => {
             let wire = makeWire((wire) => {
                 let proto = new io_pb.IOAction();
                 proto.setPort(0);
@@ -59,8 +59,8 @@ describe('Proto', () => {
         });
     });
 
-    describe('io.CommandRequest', () =>  {
-        it("should translate successfully", () => {
+    describe('IOCommandMessage', () =>  {
+        it("should translate `io.CommandRequest` successfully", () => {
             let wire = makeWire((wire) => {
                 let proto = new io_pb.IOCommandMessage();
                 proto.setPort(0);
