@@ -70,6 +70,18 @@ describe('Proto', () => {
             let msg = new io.CommandRequest(0);
             testMessage(msg, wire, RequestMsg);
         });
+
+        it("should translate `io.CommandReply` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new io_pb.IOCommandMessage();
+                proto.setPort(0);
+                proto.setFlags(io.IOFlags.OUTPUT_ON);
+                wire.setIoCommandMessage(proto);
+            });
+
+            let msg = new io.CommandReply(0, io.IOFlags.OUTPUT_ON);
+            testMessage(msg, wire, ReplyMsg);
+        });
     });
 
     /*
