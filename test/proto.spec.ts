@@ -6,6 +6,7 @@ import assert = require('assert');
 let hedgehog_pb: any = require('../hedgehog/protocol/proto/hedgehog_pb');
 let ack_pb: any = require('../hedgehog/protocol/proto/ack_pb');
 let io_pb: any = require('../hedgehog/protocol/proto/io_pb');
+let subscription_pb: any = require('../hedgehog/protocol/proto/subscription_pb');
 
 import { Message, ProtoContainerMessage, ContainerMessage } from '../hedgehog/utils/protobuf/index';
 import { RequestMsg, ReplyMsg } from '../hedgehog/protocol/messages/index';
@@ -71,6 +72,25 @@ describe('Proto', () => {
             testMessage(msg, wire, RequestMsg);
         });
 
+        it("should translate `io.CommandSubscribe` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new io_pb.IOCommandMessage();
+                proto.setPort(0);
+                proto.setSubscription(sub);
+                wire.setIoCommandMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new io.CommandSubscribe(0, sub);
+            testMessage(msg, wire, RequestMsg);
+        });
+
         it("should translate `io.CommandReply` successfully", () => {
             let wire = makeWire((wire) => {
                 let proto = new io_pb.IOCommandMessage();
@@ -80,6 +100,26 @@ describe('Proto', () => {
             });
 
             let msg = new io.CommandReply(0, io.IOFlags.OUTPUT_ON);
+            testMessage(msg, wire, ReplyMsg);
+        });
+
+        it("should translate `io.CommandUpdate` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new io_pb.IOCommandMessage();
+                proto.setPort(0);
+                proto.setFlags(io.IOFlags.OUTPUT_ON);
+                proto.setSubscription(sub);
+                wire.setIoCommandMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new io.CommandUpdate(0, io.IOFlags.OUTPUT_ON, sub);
             testMessage(msg, wire, ReplyMsg);
         });
     });
