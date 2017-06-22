@@ -12,7 +12,7 @@ import { Message, ProtoContainerMessage, ContainerMessage } from '../hedgehog/ut
 import { RequestMsg, ReplyMsg } from '../hedgehog/protocol/messages/index';
 import * as ack from '../hedgehog/protocol/messages/ack';
 import * as io from '../hedgehog/protocol/messages/io';
-// import {AnalogRequest, AnalogUpdate} from '../hedgehog/proto/analog';
+import * as analog from '../hedgehog/protocol/messages/analog';
 // import {DigitalRequest, DigitalUpdate} from '../hedgehog/proto/digital';
 // import {Message} from '../hedgehog/proto/hedgehog';
 // import {StateAction, IOStateFlags} from '../hedgehog/proto/io';
@@ -120,6 +120,70 @@ describe('Proto', () => {
             sub.setSubscribe(true);
             sub.setTimeout(10);
             let msg = new io.CommandUpdate(0, io.IOFlags.OUTPUT_ON, sub);
+            testMessage(msg, wire, ReplyMsg);
+        });
+    });
+
+    describe('AnalogMessage', () =>  {
+        it("should translate `analog.Request` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new io_pb.AnalogMessage();
+                proto.setPort(0);
+                wire.setAnalogMessage(proto);
+            });
+
+            let msg = new analog.Request(0);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `analog.Subscribe` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new io_pb.AnalogMessage();
+                proto.setPort(0);
+                proto.setSubscription(sub);
+                wire.setAnalogMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new analog.Subscribe(0, sub);
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `analog.Reply` successfully", () => {
+            let wire = makeWire((wire) => {
+                let proto = new io_pb.AnalogMessage();
+                proto.setPort(0);
+                proto.setValue(1000);
+                wire.setAnalogMessage(proto);
+            });
+
+            let msg = new analog.Reply(0, 1000);
+            testMessage(msg, wire, ReplyMsg);
+        });
+
+        it("should translate `analog.Update` successfully", () => {
+            let wire = makeWire((wire) => {
+                let sub = new subscription_pb.Subscription();
+                sub.setSubscribe(true);
+                sub.setTimeout(10);
+
+                let proto = new io_pb.AnalogMessage();
+                proto.setPort(0);
+                proto.setValue(1000);
+                proto.setSubscription(sub);
+                wire.setAnalogMessage(proto);
+            });
+
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+            let msg = new analog.Update(0, 1000, sub);
             testMessage(msg, wire, ReplyMsg);
         });
     });
