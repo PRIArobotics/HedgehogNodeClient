@@ -13,10 +13,10 @@ import * as process from '../protocol/messages/process';
 
 import zmq = require('zmq');
 
-interface CommandHandler<T> {
+type CommandHandler<T> = {
     resolve: (value?: T | PromiseLike<T>) => void;
     reject: (reason?: any) => void;
-}
+};
 
 export class HedgehogClient {
     private socket = zmq.socket('dealer');
@@ -27,15 +27,15 @@ export class HedgehogClient {
 
         this.socket.on('message', (delimiter, ...data) => {
             let msgs = data.map(msg => ReplyMsg.parse(msg));
-            //TODO check whether msgs contains asynchronous updates
+            // TODO check whether msgs contains asynchronous updates
             this.commandQueue.shift().resolve(msgs);
         });
     }
 
     public async send<T extends Message>(msg: Message): Promise<T> {
         let reply = (await this.sendMultipart(msg))[0];
-        if(reply instanceof ack.Acknowledgement && reply.code != ack.AcknowledgementCode.OK) {
-            //TODO throw error
+        if(reply instanceof ack.Acknowledgement && reply.code !== ack.AcknowledgementCode.OK) {
+            // TODO throw error
             return null;
         }
         return <T> reply;
@@ -47,10 +47,7 @@ export class HedgehogClient {
             msgsRaw.push(...msgs.map(msg => Buffer.from(<any> RequestMsg.serialize(msg))));
 
             this.socket.send(msgsRaw);
-            this.commandQueue.push({
-                resolve: resolve,
-                reject: reject,
-            });
+            this.commandQueue.push({ resolve, reject });
         });
     }
 
@@ -78,9 +75,9 @@ export class HedgehogClient {
     }
 
     public async setMotor(port: number, state: number, amount: number = 0,
-                          reached_state: number = motor.MotorState.POWER,
+                          reachedState: number = motor.MotorState.POWER,
                           relative?: number, absolute?: number): Promise<void> {
-        await this.send(new motor.Action(port, state, amount, reached_state, relative, absolute));
+        await this.send(new motor.Action(port, state, amount, reachedState, relative, absolute));
     }
 
     public async move(port: number, amount: number, state: number = motor.MotorState.POWER): Promise<void> {
@@ -89,14 +86,14 @@ export class HedgehogClient {
 
     public async moveRelativePosition(port: number, amount: number, relative: number,
                                       state: number = motor.MotorState.POWER,
-                                      reached_state: number = motor.MotorState.POWER): Promise<void> {
-        await this.setMotor(port, state, amount, reached_state, relative, undefined);
+                                      reachedState: number = motor.MotorState.POWER): Promise<void> {
+        await this.setMotor(port, state, amount, reachedState, relative, undefined);
     }
 
     public async moveAbsolutePosition(port: number, amount: number, absolute: number,
                                       state: number = motor.MotorState.POWER,
-                                      reached_state: number = motor.MotorState.POWER): Promise<void> {
-        await this.setMotor(port, state, amount, reached_state, undefined, absolute);
+                                      reachedState: number = motor.MotorState.POWER): Promise<void> {
+        await this.setMotor(port, state, amount, reachedState, undefined, absolute);
     }
 
     public async getMotorCommand(port: number): Promise<[number, number]> {
