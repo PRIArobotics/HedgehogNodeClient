@@ -11,6 +11,11 @@ import * as motor from '../protocol/messages/motor';
 import * as servo from '../protocol/messages/servo';
 import * as process from '../protocol/messages/process';
 
+export { AcknowledgementCode } from '../protocol/messages/ack';
+export { IOFlags } from '../protocol/messages/io';
+export { MotorState } from '../protocol/messages/motor';
+export { ProcessFileno } from '../protocol/messages/process';
+
 import zmq = require('zmq');
 
 type CommandHandler<T> = {
