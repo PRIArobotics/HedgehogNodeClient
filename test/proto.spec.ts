@@ -605,7 +605,8 @@ describe('Proto', () => {
     });
 });
 
-describe('Client', () => {
+// TODO make this CI-able, by mocking the Hedgehog server
+describe.skip('Client', () => {
     let hedgehog = new HedgehogClient('tcp://localhost:10789');
 
     it('`send` should work', async () => {
