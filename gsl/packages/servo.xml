@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<package name="servo">
+  <message name="ServoAction" oneof_name="servo_action" oneof_tag="7">
+    <description>Set one servo target position</description>
+
+    <field name="port">
+      <proto type="uint32" tag="1"/>
+      <python type="int"/>
+      <typescript type="number"/>
+    </field>
+    <field name="active">
+      <proto type="bool" tag="2"/>
+      <python type="bool"/>
+      <typescript type="boolean"/>
+    </field>
+    <field name="position">
+      <proto type="uint32" tag="3"/>
+      <python type="int" default="None"/>
+      <typescript type="number" default="undefined"/>
+    </field>
+  </message>
+  <message name="ServoCommandMessage" oneof_name="servo_command_message" oneof_tag="19">
+    <description>Request or reply for one servo's current command. The command may change by a servo action,
+actual servo movement is not reflected.</description>
+
+    <field name="port">
+      <proto type="uint32" tag="1"/>
+      <python type="int"/>
+      <typescript type="number"/>
+    </field>
+    <field name="active">
+      <proto type="bool" tag="2"/>
+      <python type="bool"/>
+      <typescript type="boolean"/>
+    </field>
+    <field name="position">
+      <proto type="uint32" tag="3"/>
+      <python type="int"/>
+      <typescript type="number"/>
+    </field>
+    <field name="subscription" kind="nested">
+      <proto type="Subscription" tag="4"/>
+      <python type="Subscription"/>
+      <typescript type="Subscription"/>
+    </field>
+  </message>
+</package>

@@ -5,9 +5,27 @@ package hedgehog.protocol.proto;
 option java_package = "at.pria.hedgehog.protocol.proto";
 option java_outer_classname = "ServoP";
 
+import "hedgehog/protocol/proto/subscription.proto";
+
 // Set one servo target position
+//
+// => (port, active, position):  servo action => ack
 message ServoAction {
     uint32 port = 1;
     bool active = 2;
     uint32 position = 3;
+}
+
+// Request or reply for one servo's current command. The command may change by a servo action,
+// actual servo movement is not reflected.                                                    
+//
+// => (port):                servo command request => servo command reply
+// <= (port, active, position):  servo command reply
+// => (port, subscription):  servo command subscribe => ack
+// <- (port, active, position, subscription):  servo command update
+message ServoCommandMessage {
+    uint32 port = 1;
+    bool active = 2;
+    uint32 position = 3;
+    Subscription subscription = 4;
 }

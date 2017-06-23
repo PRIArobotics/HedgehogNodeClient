@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package hedgehog.protocol.proto;
+
+option java_package = "at.pria.hedgehog.protocol.proto";
+option java_outer_classname = "SubscriptionP";
+
+// Describes a subscription to a value.
+// Generally, a value may change, and subscribers are informed about these changes.
+// Limits on the granularity in the time- and value domains might be set.
+// An update is sent
+// - at the earliest `timeout` milliseconds after the previous update
+// - when the value is different from the value in the last update (if there was one already)
+// but, if a (type-specific) value granularity is specified, only if
+// - the change is big enough, determined in a type-specific way; or
+// - the `granularity_timeout` has run out
+// for values that show spurious small changes (e.g. sensor noise), at least one kind of
+// timeout should be greater than zero.
+//
+// A subscription is identified by its subscription details (i.e. timeout, granularity, and
+// granularity timeout), plus any value-specific identifying information (e.g. a sensor port).
+// Updates to a subscription contain the same identifying information.
+// Subscriptions that differ in either receive separate updates, and can be cancelled
+// separately by sending a subscription message with `subscribe = False`.
+//
+// Establishing a subscription with the same identifying information multiple times does not
+// result in more frequent updates. However, to cancel that subscription, it needs to be
+// unsubscribed that many times as well. This way, multiple pieces of software on the same
+// client can subscribe to a value, and only after the last cancellation will the server stop
+// sending updates. It is the client's responsibility to serve the updates to all currently
+// subscribed pieces of software.
+//
+// When re-establishing the same subscription, the timeout will still be observed, meaning
+// that the re-subscribing software piece may receive its first update slightly later than the
+// initial subscriber.
+message Subscription {
+    bool subscribe = 1;
+    uint32 timeout = 2;
+    uint32 granularity_timeout = 3;
+    oneof granularity {
+        // check whether the absolute change of an integer value is greater or equal to `int_granularity`
+        uint32 int_granularity = 4;
+    }
+}

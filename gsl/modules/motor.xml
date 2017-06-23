@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<module name="motor">
+  <class type="req" syntax="(port, state, amount, [reached_state, relative/absolute])"
+         name="Action" message="MotorAction">
+    <description>motor action => ack</description>
+  </class>
+  <class type="req" syntax="(port)"
+         name="CommandRequest">
+    <description>motor command request => motor command reply</description>
+    <field>port</field>
+  </class>
+  <class type="rep" syntax="(port, state, amount)"
+         name="CommandReply">
+    <description>motor command reply</description>
+    <field>port</field>
+    <field>state</field>
+    <field>amount</field>
+  </class>
+  <class type="req" syntax="(port, subscription)"
+         name="CommandSubscribe">
+    <description>motor command subscribe => ack</description>
+    <field>port</field>
+    <field>subscription</field>
+  </class>
+  <class type="upd" syntax="(port, state, amount, subscription)"
+         name="CommandUpdate">
+    <description>motor command update</description>
+  </class>
+  <class type="req" syntax="(port)"
+         name="StateRequest">
+    <description>motor state request => motor state reply</description>
+    <field>port</field>
+  </class>
+  <class type="rep" syntax="(port, velocity, position)"
+         name="StateReply">
+    <description>motor state reply</description>
+    <field>port</field>
+    <field>velocity</field>
+    <field>position</field>
+  </class>
+  <class type="req" syntax="(port, subscription)"
+         name="StateSubscribe">
+    <description>motor state subscribe => ack</description>
+    <field>port</field>
+    <field>subscription</field>
+  </class>
+  <class type="upd" syntax="(port, velocity, position, subscription)"
+         name="StateUpdate">
+    <description>motor state update</description>
+  </class>
+
+  <complex dir="req" id="command" message="MotorCommandMessage">
+    <class>CommandRequest</class>
+    <class>CommandSubscribe</class>
+  </complex>
+  <complex dir="rep" id="command" message="MotorCommandMessage">
+    <class>CommandReply</class>
+    <class>CommandUpdate</class>
+  </complex>
+
+  <complex dir="req" id="state" message="MotorStateMessage">
+    <class>StateRequest</class>
+    <class>StateSubscribe</class>
+  </complex>
+  <complex dir="rep" id="state" message="MotorStateMessage">
+    <class>StateReply</class>
+    <class>StateUpdate</class>
+  </complex>
+  <class type="req" syntax="(port, position)"
+         name="SetPositionAction" message="MotorSetPositionAction">
+    <description>set motor position action => ack</description>
+  </class>
+</module>

@@ -5,6 +5,8 @@ package hedgehog.protocol.proto;
 option java_package = "at.pria.hedgehog.protocol.proto";
 option java_outer_classname = "ProcessP";
 
+// TODO allow environment variables
+
 enum ProcessFileno {
     STDIN = 0;
     STDOUT = 1;
@@ -12,36 +14,46 @@ enum ProcessFileno {
 }
 
 // Invoke a process on the controller
-message ProcessExecuteRequest {
-    string working_dir = 1;
+//
+// => (*args, [working_dir]):  process execute action => process execute reply
+message ProcessExecuteAction {
     repeated string args = 2;
+    string working_dir = 1;
 }
 
 // Reply with the process' PID for communication purposes
+//
+// <= (pid):                 process execute reply
 message ProcessExecuteReply {
     uint32 pid = 1;
 }
 
-// send stream data to a process' STDIN
-message ProcessStreamAction {
+// send data to/receive data from a process' file streams
+//
+// => (pid, fileno, chunk):  stream data action => ack
+// <- (pid, fileno, chunk):  stream data update
+message ProcessStreamMessage {
     uint32 pid = 1;
-    //must be STDIN, as only STDIN is writable
+    //must be STDIN for actions, as only STDIN is writable
+    //can't be STDIN for updates, as STDIN is not readable
     ProcessFileno fileno = 2;
-    //an empty chunk closes the stream
+    //for actions, an empty chunk closes the stream
+    //for update, an empty chunk closes signals EOF
     bytes chunk = 3;
 }
 
-// receive stream data from a process' STDOUT or STDERR
-message ProcessStreamUpdate {
+// Send signal to a process
+//
+// => (pid, signal):         process signal action => ack
+message ProcessSignalAction {
     uint32 pid = 1;
-    //can't be STDIN, as STDIN is only readable
-    ProcessFileno fileno = 2;
-    //an empty chunk signals EOF
-    bytes chunk = 3;
+    uint32 signal = 2;
 }
 
 // Signals that the process has exited
+//
+// <- (pid, exit_code):      process exit update
 message ProcessExitUpdate {
     uint32 pid = 1;
-    uint32 exit_code = 2;
+    int32 exit_code = 2;
 }

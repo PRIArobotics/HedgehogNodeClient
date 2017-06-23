@@ -1,0 +1,110 @@
+.template 0
+ ignorecase = 0
+
+ function fields_list
+  if count(field) = count(->message.field)
+    return ""
+  else
+    result = ""
+    for field
+      result += "'$(name)'$(!last() ?? ", " ? (first() ?? "," ? ""))"
+    endfor
+    return ", fields=($(result))"
+  endif
+ endfunction
+
+ function init_param_list
+   result = "self"
+   for field
+     for field
+       # oneof
+       result += ", $(name): $(->python.type)=None"
+     else
+       # regular field
+       result += ", $(name): $(->python.type)"
+       if defined(->python.default)
+         result += "=$(->python.default)"
+       endif
+     endfor
+   endfor
+   return result
+ endfunction
+
+ macro parse_field
+.  for field
+.    # oneof
+        $(name) = msg.$(name) if msg.HasField('$(name)') else None
+.  else
+.    # regular field
+.    if (kind ? "") = "nested"
+        $(name) = msg.$(name) if msg.HasField('$(name)') else None
+.    else
+        $(name) = msg.$(name)
+.    endif
+.  endfor
+.endmacro
+
+ function msg_param_list
+   result = ""
+   for field
+     for field
+       # oneof
+       result += "$(name)$(last() ?? "" ? ", ")"
+     else
+       # regular field
+       result += "$(name)$(last() ?? "" ? ", ")"
+     endfor
+   endfor
+   return result
+ endfunction
+
+ macro serialize_field
+.  for field
+.    # oneof
+        if self.$(name) is not None:
+            msg.$(name) = self.$(name)
+.  else
+.    # regular field
+.    if defined(repeated)
+        msg.$(name).extend(self.$(name))
+.    elsif (kind ? "") = "nested"
+        msg.$(name).CopyFrom(self.$(name))
+.    else
+        msg.$(name) = self.$(name)
+.    endif
+.  endfor
+.endmacro
+
+.endtemplate
+.template 1
+@$(Msg).message($(->message.full_name), '$(->message.oneof_name)'$(fields_list()))
+class $(name)($(Superclass)):
+.if type = "upd"
+    async = True
+
+.endif
+    def __init__($(init_param_list())) -> None:
+.for field
+.  for field
+.    # oneof
+        self.$(name) = $(name)
+.  else
+.    # regular field
+        self.$(name) = $(name)
+.  endfor
+.endfor
+.if !defined(complex)
+
+    @classmethod
+    def _parse(cls, msg: $(->message.full_name)) -> '$(name)':
+.for field
+.  parse_field()
+.endfor
+        return cls($(msg_param_list()))
+.endif
+
+    def _serialize(self, msg: $(->message.full_name)) -> None:
+.for field
+.  serialize_field()
+.endfor
+.endtemplate

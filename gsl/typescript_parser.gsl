@@ -1,0 +1,57 @@
+.template 0
+ ignorecase = 0
+
+ function classes_list
+   result = ""
+   for class
+     result += "$(name)$(last() ?? "" ? " | ")"
+   endfor
+   return result
+ endfunction
+
+ macro parse_field
+.  for field
+.    # oneof
+        let $(name:camel) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
+.  else
+.    # regular field
+.    if defined(repeated)
+        let $(name:camel) = msg.get$(name:Pascal)List();
+.    elsif (kind ? "") = "nested"
+        let $(name:camel) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
+.    else
+        let $(name:camel) = msg.get$(name:Pascal)();
+.    endif
+.  endfor
+.endmacro
+
+ function msg_param_list
+   result = ""
+   for field
+     for field
+       # oneof
+       result += "$(name:camel)$(last() ?? "" ? ", ")"
+     else
+       # regular field
+       result += "$(name:camel)$(last() ?? "" ? ", ")"
+     endfor
+   endfor
+   return result
+ endfunction
+
+.endtemplate
+.template 1
+$(Msg).parser(PayloadCase.$(->message.oneof_name:Upper))(
+    function $(parse_name)(containerMsg: ProtoContainerMessage): Message {
+        let msg = (<any> containerMsg).get$(->message.oneof_name:Pascal)();
+.for ->message.field
+.  parse_field()
+.endfor
+        // TODO return correct message instance
+.for class
+        //return new $(name)($(msg_param_list()));
+.endfor
+        return null;
+    }
+);
+.endtemplate

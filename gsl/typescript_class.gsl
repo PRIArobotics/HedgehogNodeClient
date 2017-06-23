@@ -1,0 +1,117 @@
+.template 0
+ ignorecase = 0
+
+ function fields_list
+  if count(field) = count(->message.field)
+    return ""
+  else
+    result = ""
+    for field
+      result += "'$(name:camel)'$(!last() ?? ", " ? (first() ?? "," ? ""))"
+    endfor
+    return ", fields=($(result))"
+  endif
+ endfunction
+
+ function init_param_list
+   result = ""
+   for field
+     for field
+       # oneof
+       result += "public $(name:camel)?: $(->typescript.type)"
+       if !last()
+         result += ", "
+       endif
+     else
+       # regular field
+       if (->typescript.default ? "") = "undefined"
+         result += "public $(name:camel)?: $(->typescript.type)"
+       else
+         result += "public $(name:camel): $(->typescript.type)"
+         if defined(->typescript.default)
+           result += " = $(->typescript.default)"
+         endif
+       endif
+     endfor
+     if !last()
+       result += ", "
+     endif
+   endfor
+   return result
+ endfunction
+
+ macro parse_field
+.  for field
+.    # oneof
+        let $(name:camel) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
+.  else
+.    # regular field
+.    if defined(repeated)
+        let $(name:camel) = msg.get$(name:Pascal)List();
+.    elsif (kind ? "") = "nested"
+        let $(name:camel) = msg.has$(name:Pascal)()? msg.get$(name:Pascal)() : undefined;
+.    else
+        let $(name:camel) = msg.get$(name:Pascal)();
+.    endif
+.  endfor
+.endmacro
+
+ function msg_param_list
+   result = ""
+   for field
+     for field
+       # oneof
+       result += "$(name:camel)$(last() ?? "" ? ", ")"
+     else
+       # regular field
+       result += "$(name:camel)$(last() ?? "" ? ", ")"
+     endfor
+   endfor
+   return result
+ endfunction
+
+ macro serialize_field
+.  for field
+.    # oneof
+        msg.set$(name:Pascal)(this.$(name:camel));
+.  else
+.    # regular field
+.    if defined(repeated)
+        msg.set$(name:Pascal)List(this.$(name:camel));
+.    else
+        msg.set$(name:Pascal)(this.$(name:camel));
+.    endif
+.  endfor
+.endmacro
+
+.endtemplate
+.template 1
+@$(decorator)($(->message.full_name), PayloadCase.$(->message.oneof_name:Upper))
+export class $(name) extends Message {
+.if type = "upd"
+    async = true;
+
+.endif
+    constructor($(init_param_list())) {
+        super();
+    }
+.if !defined(complex)
+
+    static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (<any> containerMsg).get$(->message.oneof_name:Pascal)();
+.for field
+.  parse_field()
+.endfor
+        return new $(name)($(msg_param_list()));
+    }
+.endif
+
+    serializeTo(containerMsg: ProtoContainerMessage): void {
+        let msg = new $(->message.full_name)();
+.for field
+.  serialize_field()
+.endfor
+        (<any> containerMsg).set$(->message.oneof_name:Pascal)(msg);
+    }
+}
+.endtemplate
