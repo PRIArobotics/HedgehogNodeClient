@@ -551,7 +551,7 @@ describe('Proto', () => {
     });
 
     describe('ProcessStreamMessage', () =>  {
-        it("should translate `process.StreamAction` successfully", () => {
+        it("should translate `process.StreamAction` without chunk successfully", () => {
             let wire = makeWire((_wire) => {
                 let proto = new process_pb.ProcessStreamMessage();
                 proto.setPid(1234);
@@ -563,15 +563,28 @@ describe('Proto', () => {
             testMessage(msg, wire, RequestMsg);
         });
 
-        it("should translate `process.StreamUpdate` successfully", () => {
+        it("should translate `process.StreamAction` with empty chunk successfully", () => {
+            let wire = makeWire((_wire) => {
+                let proto = new process_pb.ProcessStreamMessage();
+                proto.setPid(1234);
+                proto.setFileno(process.ProcessFileno.STDIN);
+                _wire.setProcessStreamMessage(proto);
+            });
+
+            let msg = new process.StreamAction(1234, process.ProcessFileno.STDIN, Uint8Array.from(<any> ''));
+            testMessage(msg, wire, RequestMsg);
+        });
+
+        it("should translate `process.StreamUpdate` with nonempty chunk successfully", () => {
             let wire = makeWire((_wire) => {
                 let proto = new process_pb.ProcessStreamMessage();
                 proto.setPid(1234);
                 proto.setFileno(process.ProcessFileno.STDOUT);
+                proto.setChunk(Uint8Array.from(<any> '\x00'));
                 _wire.setProcessStreamMessage(proto);
             });
 
-            let msg = new process.StreamUpdate(1234, process.ProcessFileno.STDOUT);
+            let msg = new process.StreamUpdate(1234, process.ProcessFileno.STDOUT, Uint8Array.from(<any> '\x00'));
             testMessage(msg, wire, ReplyMsg);
         });
     });

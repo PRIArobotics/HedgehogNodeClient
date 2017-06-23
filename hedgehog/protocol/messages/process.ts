@@ -47,8 +47,10 @@ export class ExecuteReply extends Message {
 
 @RequestMsg.message(process_pb.ProcessStreamMessage, PayloadCase.PROCESS_STREAM_MESSAGE)
 export class StreamAction extends Message {
-    constructor(public pid: number, public fileno: number, public chunk: Uint8Array = new Uint8Array(0)) {
+    constructor(public pid: number, public fileno: number, public chunk?: Uint8Array) {
         super();
+        if(chunk && chunk.length === 0)
+            this.chunk = undefined;
     }
 
     static parseFrom(containerMsg: ProtoContainerMessage): Message {
@@ -72,8 +74,10 @@ export class StreamAction extends Message {
 export class StreamUpdate extends Message {
     async = true;
 
-    constructor(public pid: number, public fileno: number, public chunk: Uint8Array = new Uint8Array(0)) {
+    constructor(public pid: number, public fileno: number, public chunk?: Uint8Array) {
         super();
+        if(chunk && chunk.length === 0)
+            this.chunk = undefined;
     }
 
     static parseFrom(containerMsg: ProtoContainerMessage): Message {
