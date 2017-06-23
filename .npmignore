@@ -49,4 +49,4 @@ typings
 hedgehog/test
 
 # protolibs
-hedgehog/protocol
+hedgehog/protocol/proto/*_pb.js
