@@ -23,9 +23,7 @@ import * as motor from '../hedgehog/protocol/messages/motor';
 import * as servo from '../hedgehog/protocol/messages/servo';
 import * as process from '../hedgehog/protocol/messages/process';
 
-import { HedgehogClient } from "../hedgehog/client/hedgehogClient";
-
-describe('Proto', () => {
+describe('Protocol', () => {
     function testMessage(msg: Message, wire: ProtoContainerMessage, container: ContainerMessage) {
         let onWire = container.serialize(msg);
         assert.deepEqual(onWire, wire.serializeBinary());
@@ -615,27 +613,5 @@ describe('Proto', () => {
             let msg = new process.ExitUpdate(1234, 0);
             testMessage(msg, wire, ReplyMsg);
         });
-    });
-});
-
-// TODO make this CI-able, by mocking the Hedgehog server
-describe.skip('Client', () => {
-    let hedgehog = new HedgehogClient('tcp://localhost:10789');
-
-    it('`send` should work', async () => {
-        let result = await hedgehog.send(new io.Action(0, io.IOFlags.INPUT_PULLUP));
-        assert.deepEqual(result, new ack.Acknowledgement());
-    });
-
-    it('`sendMultipart` should work', async () => {
-        let [a, b] = await hedgehog.sendMultipart(
-            new analog.Request(0),
-            new analog.Request(1));
-        assert.deepEqual(a, new analog.Reply(0, 0));
-        assert.deepEqual(b, new analog.Reply(1, 0));
-    });
-
-    it('`getAnalog` should work', async () => {
-        assert.equal(await hedgehog.getAnalog(0), 0);
     });
 });
