@@ -76,6 +76,7 @@ export class ContainerMessage {
 }
 
 export abstract class Message {
+    async = false;
     meta: MessageMeta;
 
     abstract serializeTo(containerMsg: ProtoContainerMessage): void;
