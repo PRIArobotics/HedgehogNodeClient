@@ -31,9 +31,11 @@ export class HedgehogClient {
         this.socket.connect(this.endpoint);
 
         this.socket.on('message', (delimiter, ...data) => {
-            let msgs = data.map(msg => ReplyMsg.parse(msg));
-            // TODO check whether msgs contains asynchronous updates
-            this.commandQueue.shift().resolve(msgs);
+            setTimeout(() => {
+                let msgs = data.map(msg => ReplyMsg.parse(msg));
+                // TODO check whether msgs contains asynchronous updates
+                this.commandQueue.shift().resolve(msgs);
+            }, 0);
         });
     }
 
