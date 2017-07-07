@@ -18,14 +18,15 @@ export { ProcessFileno } from '../protocol/messages/process';
 
 import zmq = require('zmq');
 
-type CommandHandler<T> = {
+// tslint:disable-next-line:interface-name
+interface CommandHandler<T> {
     resolve: (value?: T | PromiseLike<T>) => void;
     reject: (reason?: any) => void;
-};
+}
 
 export class HedgehogClient {
     private socket = zmq.socket('dealer');
-    private commandQueue: CommandHandler<Message[]>[] = [];
+    private commandQueue: Array<CommandHandler<Message[]>> = [];
 
     constructor (public endpoint: string = 'tcp://127.0.0.1:10789') {
         this.socket.connect(this.endpoint);
@@ -45,13 +46,13 @@ export class HedgehogClient {
             // TODO throw error
             return null;
         }
-        return <T> reply;
+        return reply as T;
     }
 
     public sendMultipart(...msgs: Message[]): Promise<Message[]> {
         return new Promise((resolve, reject) => {
             let msgsRaw: Array<string | Buffer> = [''];
-            msgsRaw.push(...msgs.map(msg => Buffer.from(<any> RequestMsg.serialize(msg))));
+            msgsRaw.push(...msgs.map(msg => Buffer.from(RequestMsg.serialize(msg) as any)));
 
             this.socket.send(msgsRaw);
             this.commandQueue.push({ resolve, reject });

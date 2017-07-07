@@ -9,10 +9,16 @@
     "no-consecutive-blank-lines": false,
     "whitespace": [false, "check-branch"],
     "ordered-imports": false,
-    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
-    "no-unused-variable": [false],
-    "no-bitwise": false,
-    "no-var-requires": false
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+    "no-string-literal": false,
+    "no-unused-new": false,
+    "prefer-const": false,
+    "space-before-function-paren": false,
+    "max-classes-per-file": [true, 10],
+    "callable-types": false,
+    "arrow-parens": [true, "ban-single-arg-parens"],
+    "ban-types": [true, [["String"]]],
+    "prefer-conditional-expression": false
   },
   "rulesDirectory": [
     "node_modules/codelyzer"

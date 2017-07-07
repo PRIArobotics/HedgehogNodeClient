@@ -3,7 +3,7 @@ import "babel-polyfill";
 
 import assert = require('assert');
 
-// tslint:disable:variable-name
+// tslint:disable:variable-name no-var-requires
 let hedgehog_pb: any = require('../hedgehog/protocol/proto/hedgehog_pb');
 let ack_pb: any = require('../hedgehog/protocol/proto/ack_pb');
 let io_pb: any = require('../hedgehog/protocol/proto/io_pb');
@@ -11,7 +11,7 @@ let motor_pb: any = require('../hedgehog/protocol/proto/motor_pb');
 let servo_pb: any = require('../hedgehog/protocol/proto/servo_pb');
 let process_pb: any = require('../hedgehog/protocol/proto/process_pb');
 let subscription_pb: any = require('../hedgehog/protocol/proto/subscription_pb');
-// tslint:enable:variable-name
+// tslint:enable:variable-name no-var-requires
 
 import { Message, ProtoContainerMessage, ContainerMessage } from '../hedgehog/utils/protobuf/index';
 import { RequestMsg, ReplyMsg } from '../hedgehog/protocol/messages/index';
@@ -39,7 +39,7 @@ describe('Protocol', () => {
 
     describe('Acknowledgement', () =>  {
         it("should translate `ack.Acknowledgement` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new ack_pb.Acknowledgement();
                 proto.setCode(ack.AcknowledgementCode.OK);
                 proto.setMessage('');
@@ -53,7 +53,7 @@ describe('Protocol', () => {
 
     describe('IOAction', () =>  {
         it("should translate `io.Action` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.IOAction();
                 proto.setPort(0);
                 proto.setFlags(io.IOFlags.OUTPUT_ON);
@@ -67,7 +67,7 @@ describe('Protocol', () => {
 
     describe('IOCommandMessage', () =>  {
         it("should translate `io.CommandRequest` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.IOCommandMessage();
                 proto.setPort(0);
                 _wire.setIoCommandMessage(proto);
@@ -78,26 +78,23 @@ describe('Protocol', () => {
         });
 
         it("should translate `io.CommandSubscribe` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.IOCommandMessage();
                 proto.setPort(0);
                 proto.setSubscription(sub);
                 _wire.setIoCommandMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new io.CommandSubscribe(0, sub);
             testMessage(msg, wire, RequestMsg);
         });
 
         it("should translate `io.CommandReply` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.IOCommandMessage();
                 proto.setPort(0);
                 proto.setFlags(io.IOFlags.OUTPUT_ON);
@@ -109,11 +106,11 @@ describe('Protocol', () => {
         });
 
         it("should translate `io.CommandUpdate` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.IOCommandMessage();
                 proto.setPort(0);
                 proto.setFlags(io.IOFlags.OUTPUT_ON);
@@ -121,9 +118,6 @@ describe('Protocol', () => {
                 _wire.setIoCommandMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new io.CommandUpdate(0, io.IOFlags.OUTPUT_ON, sub);
             testMessage(msg, wire, ReplyMsg);
         });
@@ -131,7 +125,7 @@ describe('Protocol', () => {
 
     describe('AnalogMessage', () =>  {
         it("should translate `analog.Request` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.AnalogMessage();
                 proto.setPort(0);
                 _wire.setAnalogMessage(proto);
@@ -142,26 +136,23 @@ describe('Protocol', () => {
         });
 
         it("should translate `analog.Subscribe` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.AnalogMessage();
                 proto.setPort(0);
                 proto.setSubscription(sub);
                 _wire.setAnalogMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new analog.Subscribe(0, sub);
             testMessage(msg, wire, RequestMsg);
         });
 
         it("should translate `analog.Reply` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.AnalogMessage();
                 proto.setPort(0);
                 proto.setValue(1000);
@@ -173,11 +164,11 @@ describe('Protocol', () => {
         });
 
         it("should translate `analog.Update` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.AnalogMessage();
                 proto.setPort(0);
                 proto.setValue(1000);
@@ -185,9 +176,6 @@ describe('Protocol', () => {
                 _wire.setAnalogMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new analog.Update(0, 1000, sub);
             testMessage(msg, wire, ReplyMsg);
         });
@@ -195,7 +183,7 @@ describe('Protocol', () => {
 
     describe('DigitalMessage', () =>  {
         it("should translate `digital.Request` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.DigitalMessage();
                 proto.setPort(0);
                 _wire.setDigitalMessage(proto);
@@ -206,26 +194,23 @@ describe('Protocol', () => {
         });
 
         it("should translate `digital.Subscribe` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.DigitalMessage();
                 proto.setPort(0);
                 proto.setSubscription(sub);
                 _wire.setDigitalMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new digital.Subscribe(0, sub);
             testMessage(msg, wire, RequestMsg);
         });
 
         it("should translate `digital.Reply` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.DigitalMessage();
                 proto.setPort(0);
                 proto.setValue(true);
@@ -237,11 +222,11 @@ describe('Protocol', () => {
         });
 
         it("should translate `digital.Update` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new io_pb.DigitalMessage();
                 proto.setPort(0);
                 proto.setValue(true);
@@ -249,9 +234,6 @@ describe('Protocol', () => {
                 _wire.setDigitalMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new digital.Update(0, true, sub);
             testMessage(msg, wire, ReplyMsg);
         });
@@ -259,7 +241,7 @@ describe('Protocol', () => {
 
     describe('MotorAction', () =>  {
         it("should translate `motor.Action` without amount successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorAction();
                 proto.setPort(0);
                 proto.setState(motor.MotorState.POWER);
@@ -271,7 +253,7 @@ describe('Protocol', () => {
         });
 
         it("should translate `motor.Action` with amount successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorAction();
                 proto.setPort(0);
                 proto.setState(motor.MotorState.POWER);
@@ -286,7 +268,7 @@ describe('Protocol', () => {
 
     describe('MotorSetPositionAction', () =>  {
         it("should translate `motor.SetPositionAction` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorSetPositionAction();
                 proto.setPort(0);
                 proto.setPosition(0);
@@ -300,7 +282,7 @@ describe('Protocol', () => {
 
     describe('MotorCommandMessage', () =>  {
         it("should translate `motor.CommandRequest` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorCommandMessage();
                 proto.setPort(0);
                 _wire.setMotorCommandMessage(proto);
@@ -311,26 +293,23 @@ describe('Protocol', () => {
         });
 
         it("should translate `motor.CommandSubscribe` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorCommandMessage();
                 proto.setPort(0);
                 proto.setSubscription(sub);
                 _wire.setMotorCommandMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new motor.CommandSubscribe(0, sub);
             testMessage(msg, wire, RequestMsg);
         });
 
         it("should translate `motor.CommandReply` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorCommandMessage();
                 proto.setPort(0);
                 proto.setState(motor.MotorState.POWER);
@@ -343,11 +322,11 @@ describe('Protocol', () => {
         });
 
         it("should translate `motor.CommandUpdate` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorCommandMessage();
                 proto.setPort(0);
                 proto.setState(motor.MotorState.POWER);
@@ -356,9 +335,6 @@ describe('Protocol', () => {
                 _wire.setMotorCommandMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new motor.CommandUpdate(0, motor.MotorState.POWER, 1000, sub);
             testMessage(msg, wire, ReplyMsg);
         });
@@ -366,7 +342,7 @@ describe('Protocol', () => {
 
     describe('MotorStateMessage', () =>  {
         it("should translate `motor.StateRequest` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorStateMessage();
                 proto.setPort(0);
                 _wire.setMotorStateMessage(proto);
@@ -377,26 +353,23 @@ describe('Protocol', () => {
         });
 
         it("should translate `motor.StateSubscribe` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorStateMessage();
                 proto.setPort(0);
                 proto.setSubscription(sub);
                 _wire.setMotorStateMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new motor.StateSubscribe(0, sub);
             testMessage(msg, wire, RequestMsg);
         });
 
         it("should translate `motor.StateReply` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorStateMessage();
                 proto.setPort(0);
                 proto.setVelocity(0);
@@ -409,11 +382,11 @@ describe('Protocol', () => {
         });
 
         it("should translate `motor.StateUpdate` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorStateMessage();
                 proto.setPort(0);
                 proto.setVelocity(0);
@@ -422,9 +395,6 @@ describe('Protocol', () => {
                 _wire.setMotorStateMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new motor.StateUpdate(0, 0, 0, sub);
             testMessage(msg, wire, ReplyMsg);
         });
@@ -432,7 +402,7 @@ describe('Protocol', () => {
 
     describe('ServoAction', () =>  {
         it("should translate `servo.Action` without position successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new servo_pb.ServoAction();
                 proto.setPort(0);
                 proto.setActive(false);
@@ -444,7 +414,7 @@ describe('Protocol', () => {
         });
 
         it("should translate `servo.Action` with position successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new servo_pb.ServoAction();
                 proto.setPort(0);
                 proto.setActive(true);
@@ -459,7 +429,7 @@ describe('Protocol', () => {
 
     describe('ServoCommandMessage', () =>  {
         it("should translate `servo.CommandRequest` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new servo_pb.ServoCommandMessage();
                 proto.setPort(0);
                 _wire.setServoCommandMessage(proto);
@@ -470,26 +440,23 @@ describe('Protocol', () => {
         });
 
         it("should translate `servo.CommandSubscribe` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new servo_pb.ServoCommandMessage();
                 proto.setPort(0);
                 proto.setSubscription(sub);
                 _wire.setServoCommandMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new servo.CommandSubscribe(0, sub);
             testMessage(msg, wire, RequestMsg);
         });
 
         it("should translate `servo.CommandReply` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new servo_pb.ServoCommandMessage();
                 proto.setPort(0);
                 proto.setActive(false);
@@ -501,11 +468,11 @@ describe('Protocol', () => {
         });
 
         it("should translate `servo.CommandUpdate` successfully", () => {
-            let wire = makeWire((_wire) => {
-                let sub = new subscription_pb.Subscription();
-                sub.setSubscribe(true);
-                sub.setTimeout(10);
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
 
+            let wire = makeWire(_wire => {
                 let proto = new servo_pb.ServoCommandMessage();
                 proto.setPort(0);
                 proto.setActive(false);
@@ -513,9 +480,6 @@ describe('Protocol', () => {
                 _wire.setServoCommandMessage(proto);
             });
 
-            let sub = new subscription_pb.Subscription();
-            sub.setSubscribe(true);
-            sub.setTimeout(10);
             let msg = new servo.CommandUpdate(0, false, undefined, sub);
             testMessage(msg, wire, ReplyMsg);
         });
@@ -523,7 +487,7 @@ describe('Protocol', () => {
 
     describe('ProcessExecuteAction', () =>  {
         it("should translate `process.ExecuteAction` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new process_pb.ProcessExecuteAction();
                 proto.setArgsList(["cat"]);
                 proto.setWorkingDir("/home/pi");
@@ -537,7 +501,7 @@ describe('Protocol', () => {
 
     describe('ProcessExecuteReply', () =>  {
         it("should translate `process.ExecuteReply` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new process_pb.ProcessExecuteReply();
                 proto.setPid(1234);
                 _wire.setProcessExecuteReply(proto);
@@ -550,7 +514,7 @@ describe('Protocol', () => {
 
     describe('ProcessStreamMessage', () =>  {
         it("should translate `process.StreamAction` without chunk successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new process_pb.ProcessStreamMessage();
                 proto.setPid(1234);
                 proto.setFileno(process.ProcessFileno.STDIN);
@@ -562,34 +526,34 @@ describe('Protocol', () => {
         });
 
         it("should translate `process.StreamAction` with empty chunk successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new process_pb.ProcessStreamMessage();
                 proto.setPid(1234);
                 proto.setFileno(process.ProcessFileno.STDIN);
                 _wire.setProcessStreamMessage(proto);
             });
 
-            let msg = new process.StreamAction(1234, process.ProcessFileno.STDIN, Uint8Array.from(<any> ''));
+            let msg = new process.StreamAction(1234, process.ProcessFileno.STDIN, Uint8Array.from('' as any));
             testMessage(msg, wire, RequestMsg);
         });
 
         it("should translate `process.StreamUpdate` with nonempty chunk successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new process_pb.ProcessStreamMessage();
                 proto.setPid(1234);
                 proto.setFileno(process.ProcessFileno.STDOUT);
-                proto.setChunk(Uint8Array.from(<any> '\x00'));
+                proto.setChunk(Uint8Array.from('\x00' as any));
                 _wire.setProcessStreamMessage(proto);
             });
 
-            let msg = new process.StreamUpdate(1234, process.ProcessFileno.STDOUT, Uint8Array.from(<any> '\x00'));
+            let msg = new process.StreamUpdate(1234, process.ProcessFileno.STDOUT, Uint8Array.from('\x00' as any));
             testMessage(msg, wire, ReplyMsg);
         });
     });
 
     describe('ProcessSignalAction', () =>  {
         it("should translate `process.SignalAction` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new process_pb.ProcessSignalAction();
                 proto.setPid(1234);
                 proto.setSignal(9);
@@ -603,7 +567,7 @@ describe('Protocol', () => {
 
     describe('ProcessExitUpdate', () =>  {
         it("should translate `process.ExitUpdate` successfully", () => {
-            let wire = makeWire((_wire) => {
+            let wire = makeWire(_wire => {
                 let proto = new process_pb.ProcessExitUpdate();
                 proto.setPid(1234);
                 proto.setExitCode(0);
