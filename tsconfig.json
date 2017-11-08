@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
@@ -8,11 +8,13 @@
     "experimentalDecorators": true,
     "removeComments": false,
     "noImplicitAny": false,
-    "allowJs": true,
-    "outDir": "build"
+    "outDir": "build",
+    "lib": ["es2015", "es6", "es5", "DOM", "ScriptHost"],
+    "downlevelIteration": true
   },
   "include": [
-    "**/*.ts"
+    "src/**/*.ts",
+    "test/**/*.ts"
   ],
   "files": [
     "typings/index.d.ts"
