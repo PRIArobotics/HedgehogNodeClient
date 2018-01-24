@@ -44,10 +44,10 @@ hedgehog.setServo(0, true, 1023);
 // Read sensor values
 // hedgehog.getAnalog(0) returns a promise which resolves to the sensor value
 // Thus, with async await syntax, we can do:
-const value = await hedgehog.getAnalog(0)
+const value = await hedgehog.getAnalog(0);
 
 // Same with digital sensors
-const value = await hedgehog.getDigital(8)
+const value = await hedgehog.getDigital(8);
 ```
 
 ### Coding Styleguide
