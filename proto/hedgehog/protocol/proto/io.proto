@@ -3,8 +3,9 @@ syntax = "proto3";
 package hedgehog.protocol.proto;
 
 option java_package = "at.pria.hedgehog.protocol.proto";
-option java_outer_classname = "IOP";
+option java_outer_classname = "IoP";
 
+// <GSL customizable: module-extras>
 import "hedgehog/protocol/proto/subscription.proto";
 
 // IO flags and flag combinations
@@ -22,6 +23,7 @@ enum IOFlags {
     PULLDOWN = 0x04; // pulldown/no pulldown
     LEVEL = 0x08; // on/off
 }
+// </GSL customizable: module-extras>
 
 // Changes the configuration of one IO port
 //

@@ -5,7 +5,9 @@
   "main": "build/hedgehog/index.js",
   "typings": "hedgehog/index.ts",
   "scripts": {
-    "test": "mocha --reporter spec --check-leaks --recursive build/test/"
+    "test": "mocha --reporter spec --check-leaks --recursive build/test/",
+    "gsl-protocol": "python -m gsl_protocol_typescript",
+    "protoc": "grunt protoc"
   },
   "repository": {
     "type": "git",

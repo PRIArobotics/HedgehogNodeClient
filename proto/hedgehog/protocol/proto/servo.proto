@@ -5,7 +5,9 @@ package hedgehog.protocol.proto;
 option java_package = "at.pria.hedgehog.protocol.proto";
 option java_outer_classname = "ServoP";
 
+// <GSL customizable: module-extras>
 import "hedgehog/protocol/proto/subscription.proto";
+// </GSL customizable: module-extras>
 
 // Set one servo target position
 //
@@ -17,7 +19,7 @@ message ServoAction {
 }
 
 // Request or reply for one servo's current command. The command may change by a servo action,
-// actual servo movement is not reflected.                                                    
+// actual servo movement is not reflected.
 //
 // => (port):                servo command request => servo command reply
 // <= (port, active, position):  servo command reply

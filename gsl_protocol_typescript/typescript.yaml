@@ -1,0 +1,130 @@
+ack.Acknowledgement:
+  code:
+    typ: number
+    default: AcknowledgementCode.OK
+  message:
+    typ: string
+    default: "''"
+
+io.IOAction:
+  port:
+    typ: number
+  flags:
+    typ: number
+
+io.IOCommandMessage:
+  port:
+    typ: number
+  flags:
+    typ: number
+  subscription:
+    typ: Subscription
+
+io.AnalogMessage:
+  port:
+    typ: number
+  value:
+    typ: number
+  subscription:
+    typ: Subscription
+
+io.DigitalMessage:
+  port:
+    typ: number
+  value:
+    typ: boolean
+  subscription:
+    typ: Subscription
+
+motor.MotorAction:
+  port:
+    typ: number
+  state:
+    typ: number
+  amount:
+    typ: number
+    default: 0
+  reached_state:
+    typ: number
+    default: MotorState.POWER
+  relative:
+    typ: number
+  absolute:
+    typ: number
+
+motor.MotorCommandMessage:
+  port:
+    typ: number
+  state:
+    typ: number
+  amount:
+    typ: number
+  subscription:
+    typ: Subscription
+
+motor.MotorStateMessage:
+  port:
+    typ: number
+  velocity:
+    typ: number
+  position:
+    typ: number
+  subscription:
+    typ: Subscription
+
+motor.MotorSetPositionAction:
+  port:
+    typ: number
+  position:
+    typ: number
+
+servo.ServoAction:
+  port:
+    typ: number
+  active:
+    typ: boolean
+  position:
+    typ: number
+    default: undefined
+
+servo.ServoCommandMessage:
+  port:
+    typ: number
+  active:
+    typ: boolean
+  position:
+    typ: number
+  subscription:
+    typ: Subscription
+
+process.ProcessExecuteAction:
+  args:
+    typ: string[]
+  working_dir:
+    typ: string
+    default: undefined
+
+process.ProcessExecuteReply:
+  pid:
+    typ: number
+
+process.ProcessStreamMessage:
+  pid:
+    typ: number
+  fileno:
+    typ: number
+  chunk:
+    typ: Uint8Array
+    default: undefined
+
+process.ProcessSignalAction:
+  pid:
+    typ: number
+  signal:
+    typ: number
+
+process.ProcessExitUpdate:
+  pid:
+    typ: number
+  exit_code:
+    typ: number

@@ -3,7 +3,9 @@ import "babel-polyfill";
 import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage } from './index';
 let io_pb: any = require('../proto/io_pb');
 
+// <GSL customizable: module-header>
 type Subscription = any;
+// </GSL customizable: module-header>
 
 @message(io_pb.AnalogMessage, PayloadCase.ANALOG_MESSAGE)
 export class Request extends Message {
@@ -11,9 +13,27 @@ export class Request extends Message {
         super();
     }
 
+    // <default GSL customizable: Request-extra-members />
+
     serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.AnalogMessage();
         msg.setPort(this.port);
+        (<any> containerMsg).setAnalogMessage(msg);
+    }
+}
+
+@message(io_pb.AnalogMessage, PayloadCase.ANALOG_MESSAGE)
+export class Reply extends Message {
+    constructor(public port: number, public value: number) {
+        super();
+    }
+
+    // <default GSL customizable: Reply-extra-members />
+
+    serializeTo(containerMsg: ProtoContainerMessage): void {
+        let msg = new io_pb.AnalogMessage();
+        msg.setPort(this.port);
+        msg.setValue(this.value);
         (<any> containerMsg).setAnalogMessage(msg);
     }
 }
@@ -24,37 +44,12 @@ export class Subscribe extends Message {
         super();
     }
 
+    // <default GSL customizable: Subscribe-extra-members />
+
     serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.AnalogMessage();
         msg.setPort(this.port);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setAnalogMessage(msg);
-    }
-}
-
-RequestMsg.parser(PayloadCase.ANALOG_MESSAGE)(
-    function parseRequestFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getAnalogMessage();
-        let port = msg.getPort();
-        let value = msg.getValue();
-        let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
-        if(subscription === undefined)
-            return new Request(port);
-        else
-            return new Subscribe(port, subscription);
-    }
-);
-
-@message(io_pb.AnalogMessage, PayloadCase.ANALOG_MESSAGE)
-export class Reply extends Message {
-    constructor(public port: number, public value: number) {
-        super();
-    }
-
-    serializeTo(containerMsg: ProtoContainerMessage): void {
-        let msg = new io_pb.AnalogMessage();
-        msg.setPort(this.port);
-        msg.setValue(this.value);
         (<any> containerMsg).setAnalogMessage(msg);
     }
 }
@@ -67,6 +62,8 @@ export class Update extends Message {
         super();
     }
 
+    // <default GSL customizable: Update-extra-members />
+
     serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.AnalogMessage();
         msg.setPort(this.port);
@@ -76,15 +73,32 @@ export class Update extends Message {
     }
 }
 
-ReplyMsg.parser(PayloadCase.ANALOG_MESSAGE)(
-    function parseReplyFrom(containerMsg: ProtoContainerMessage): Message {
+RequestMsg.parser(PayloadCase.ANALOG_MESSAGE)(
+    function parseAnalogMessageRequestFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (<any> containerMsg).getAnalogMessage();
         let port = msg.getPort();
         let value = msg.getValue();
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
+        // <GSL customizable: parseAnalogMessageRequestFrom-return>
+        if(subscription === undefined)
+            return new Request(port);
+        else
+            return new Subscribe(port, subscription);
+        // </GSL customizable: parseAnalogMessageRequestFrom-return>
+    }
+);
+
+ReplyMsg.parser(PayloadCase.ANALOG_MESSAGE)(
+    function parseAnalogMessageReplyFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (<any> containerMsg).getAnalogMessage();
+        let port = msg.getPort();
+        let value = msg.getValue();
+        let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
+        // <GSL customizable: parseAnalogMessageReplyFrom-return>
         if(subscription === undefined)
             return new Reply(port, value);
         else
             return new Update(port, value, subscription);
+        // </GSL customizable: parseAnalogMessageReplyFrom-return>
     }
 );

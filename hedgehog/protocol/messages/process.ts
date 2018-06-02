@@ -3,13 +3,17 @@ import "babel-polyfill";
 import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage } from './index';
 let process_pb: any = require('../proto/process_pb');
 
+// <GSL customizable: module-header>
 export let ProcessFileno = process_pb.ProcessFileno;
+// </GSL customizable: module-header>
 
 @RequestMsg.message(process_pb.ProcessExecuteAction, PayloadCase.PROCESS_EXECUTE_ACTION)
 export class ExecuteAction extends Message {
     constructor(public args: string[], public workingDir?: string) {
         super();
     }
+
+    // <default GSL customizable: ExecuteAction-extra-members />
 
     static parseFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (<any> containerMsg).getProcessExecuteAction();
@@ -32,6 +36,8 @@ export class ExecuteReply extends Message {
         super();
     }
 
+    // <default GSL customizable: ExecuteReply-extra-members />
+
     static parseFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (<any> containerMsg).getProcessExecuteReply();
         let pid = msg.getPid();
@@ -52,6 +58,8 @@ export class StreamAction extends Message {
         if(chunk && chunk.length === 0)
             this.chunk = undefined;
     }
+
+    // <default GSL customizable: StreamAction-extra-members />
 
     static parseFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (<any> containerMsg).getProcessStreamMessage();
@@ -80,6 +88,8 @@ export class StreamUpdate extends Message {
             this.chunk = undefined;
     }
 
+    // <default GSL customizable: StreamUpdate-extra-members />
+
     static parseFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (<any> containerMsg).getProcessStreamMessage();
         let pid = msg.getPid();
@@ -103,6 +113,8 @@ export class SignalAction extends Message {
         super();
     }
 
+    // <default GSL customizable: SignalAction-extra-members />
+
     static parseFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (<any> containerMsg).getProcessSignalAction();
         let pid = msg.getPid();
@@ -125,6 +137,8 @@ export class ExitUpdate extends Message {
     constructor(public pid: number, public exitCode: number) {
         super();
     }
+
+    // <default GSL customizable: ExitUpdate-extra-members />
 
     static parseFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (<any> containerMsg).getProcessExitUpdate();

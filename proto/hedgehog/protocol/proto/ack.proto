@@ -5,6 +5,7 @@ package hedgehog.protocol.proto;
 option java_package = "at.pria.hedgehog.protocol.proto";
 option java_outer_classname = "AckP";
 
+// <GSL customizable: module-extras>
 // Acknowledgement codes
 enum AcknowledgementCode {
     // the command completed successfully
@@ -33,10 +34,11 @@ enum AcknowledgementCode {
     //      a process can't be started because of an OS error (e.g. the executable or working directory is not found)
     FAILED_COMMAND = 4;
 }
+// </GSL customizable: module-extras>
 
-// Reply messages for actions that have no response data. Code `OK` means a positive acknowledgement, other codes      
+// Reply messages for actions that have no response data. Code `OK` means a positive acknowledgement, other codes
 // negative acknowledgements. A negative acknowledgement may be sent as the reply to any message, even if another reply
-// is expected. Negative acknowledgements may have a `message` describing the error condition.                         
+// is expected. Negative acknowledgements may have a `message` describing the error condition.
 //
 // <= (code, [message]):     ack
 message Acknowledgement {

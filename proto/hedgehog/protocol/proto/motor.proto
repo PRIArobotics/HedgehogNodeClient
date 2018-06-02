@@ -5,6 +5,7 @@ package hedgehog.protocol.proto;
 option java_package = "at.pria.hedgehog.protocol.proto";
 option java_outer_classname = "MotorP";
 
+// <GSL customizable: module-extras>
 import "hedgehog/protocol/proto/subscription.proto";
 
 enum MotorState {
@@ -19,9 +20,10 @@ enum MotorState {
     // set amount to 0 (or skip it) to actively keeping in one position
     VELOCITY = 2;
 }
+// </GSL customizable: module-extras>
 
 // Command for one motor. By setting a relative or absolute goal position,
-// the motor will go into `reached_state` upon reaching the position.     
+// the motor will go into `reached_state` upon reaching the position.
 //
 // => (port, state, amount):  indefinite motor action => ack
 // => (port, state, amount, reached_state, relative/absolute):  terminating motor action => ack
@@ -44,7 +46,7 @@ message MotorAction {
     }
 }
 
-// Request or reply for one motor's current command.                                                        
+// Request or reply for one motor's current command.
 // The command may change by a motor action, or by reaching the goal position of a terminating motor action.
 //
 // => (port):                motor command request => motor command reply
@@ -58,7 +60,7 @@ message MotorCommandMessage {
     Subscription subscription = 4;
 }
 
-// Request or reply for one motor's state. The motor state may generally change at any time,    
+// Request or reply for one motor's state. The motor state may generally change at any time,
 // but returned values are approximations, and motor state requests may not be supported at all.
 //
 // => (port):                motor state request => motor state reply

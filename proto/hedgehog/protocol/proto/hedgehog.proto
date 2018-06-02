@@ -11,6 +11,8 @@ import "hedgehog/protocol/proto/motor.proto";
 import "hedgehog/protocol/proto/servo.proto";
 import "hedgehog/protocol/proto/process.proto";
 
+// <default GSL customizable: module-extras />
+
 // `HedgehogMessage` represents a message of any kind of the Hedgehog protocol.
 message HedgehogMessage {
     // Contains any one of the different Hedgehog commands.

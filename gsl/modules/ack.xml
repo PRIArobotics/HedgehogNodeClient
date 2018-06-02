@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<module name="ack">
-  <class type="rep" syntax="(code, [message])"
-         name="Acknowledgement" message="Acknowledgement">
-    <description>ack</description>
-  </class>
-</module>
