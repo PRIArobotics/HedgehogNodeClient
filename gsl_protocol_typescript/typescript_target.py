@@ -135,7 +135,7 @@ def generate_module_code(model, mod, root):
     }}""")
 
             request = messageClass.direction == "=>"
-            async = messageClass.direction == "<-"
+            is_async = messageClass.direction == "<-"
             complex = len(message.requestClasses if request else message.replyClasses) > 1
 
             decorator = "message" if complex else "RequestMsg.message" if request else "ReplyMsg.message"
@@ -145,7 +145,7 @@ def generate_module_code(model, mod, root):
 @{decorator}({proto.name}_pb.{message.name}, PayloadCase.{message.discriminator.upper()})
 export class {messageClass.name} extends Message {{""")
 
-            if async:
+            if is_async:
                 yield from lines(f"""\
     async = true;
 
