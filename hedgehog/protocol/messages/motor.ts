@@ -1,5 +1,3 @@
-import "babel-polyfill";
-
 import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage } from './index';
 let motor_pb: any = require('../proto/motor_pb');
 

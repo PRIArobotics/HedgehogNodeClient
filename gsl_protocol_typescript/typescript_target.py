@@ -215,8 +215,6 @@ export class {messageClass.name} extends Message {{""")
 );""")
 
         yield from lines(f"""\
-import "babel-polyfill";
-
 import {{ RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage }} from './index';""")
         for protoPath, protoName in unique((proto.path, proto.name)
                                            for messageClass in mod.messageClasses

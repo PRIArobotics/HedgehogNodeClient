@@ -1,5 +1,3 @@
-import "babel-polyfill";
-
 import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage } from './index';
 let process_pb: any = require('../proto/process_pb');
 
