@@ -17,18 +17,18 @@ export class Action extends Message {
 
     // <default GSL customizable: Action-extra-members />
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getIoAction();
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getIoAction();
         let port = msg.getPort();
         let flags = msg.getFlags();
         return new Action(port, flags);
     }
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.IOAction();
         msg.setPort(this.port);
         msg.setFlags(this.flags);
-        (<any> containerMsg).setIoAction(msg);
+        (containerMsg as any).setIoAction(msg);
     }
 }
 
@@ -40,10 +40,10 @@ export class CommandRequest extends Message {
 
     // <default GSL customizable: CommandRequest-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.IOCommandMessage();
         msg.setPort(this.port);
-        (<any> containerMsg).setIoCommandMessage(msg);
+        (containerMsg as any).setIoCommandMessage(msg);
     }
 }
 
@@ -55,11 +55,11 @@ export class CommandReply extends Message {
 
     // <default GSL customizable: CommandReply-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.IOCommandMessage();
         msg.setPort(this.port);
         msg.setFlags(this.flags);
-        (<any> containerMsg).setIoCommandMessage(msg);
+        (containerMsg as any).setIoCommandMessage(msg);
     }
 }
 
@@ -71,17 +71,17 @@ export class CommandSubscribe extends Message {
 
     // <default GSL customizable: CommandSubscribe-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.IOCommandMessage();
         msg.setPort(this.port);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setIoCommandMessage(msg);
+        (containerMsg as any).setIoCommandMessage(msg);
     }
 }
 
 @message(io_pb.IOCommandMessage, PayloadCase.IO_COMMAND_MESSAGE)
 export class CommandUpdate extends Message {
-    isAsync = true;
+    public isAsync = true;
 
     constructor(public port: number, public flags: number, public subscription: Subscription) {
         super();
@@ -89,18 +89,18 @@ export class CommandUpdate extends Message {
 
     // <default GSL customizable: CommandUpdate-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.IOCommandMessage();
         msg.setPort(this.port);
         msg.setFlags(this.flags);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setIoCommandMessage(msg);
+        (containerMsg as any).setIoCommandMessage(msg);
     }
 }
 
 RequestMsg.parser(PayloadCase.IO_COMMAND_MESSAGE)(
     function parseIOCommandMessageRequestFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getIoCommandMessage();
+        let msg = (containerMsg as any).getIoCommandMessage();
         let port = msg.getPort();
         let flags = msg.getFlags();
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
@@ -115,7 +115,7 @@ RequestMsg.parser(PayloadCase.IO_COMMAND_MESSAGE)(
 
 ReplyMsg.parser(PayloadCase.IO_COMMAND_MESSAGE)(
     function parseIOCommandMessageReplyFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getIoCommandMessage();
+        let msg = (containerMsg as any).getIoCommandMessage();
         let port = msg.getPort();
         let flags = msg.getFlags();
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;

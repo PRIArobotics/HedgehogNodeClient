@@ -15,18 +15,18 @@ export class ExecuteAction extends Message {
 
     // <default GSL customizable: ExecuteAction-extra-members />
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getProcessExecuteAction();
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getProcessExecuteAction();
         let args = msg.getArgsList();
         let workingDir = msg.getWorkingDir();
         return new ExecuteAction(args, workingDir);
     }
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new process_pb.ProcessExecuteAction();
         msg.setArgsList(this.args);
         msg.setWorkingDir(this.workingDir);
-        (<any> containerMsg).setProcessExecuteAction(msg);
+        (containerMsg as any).setProcessExecuteAction(msg);
     }
 }
 
@@ -38,16 +38,16 @@ export class ExecuteReply extends Message {
 
     // <default GSL customizable: ExecuteReply-extra-members />
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getProcessExecuteReply();
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getProcessExecuteReply();
         let pid = msg.getPid();
         return new ExecuteReply(pid);
     }
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new process_pb.ProcessExecuteReply();
         msg.setPid(this.pid);
-        (<any> containerMsg).setProcessExecuteReply(msg);
+        (containerMsg as any).setProcessExecuteReply(msg);
     }
 }
 
@@ -61,26 +61,26 @@ export class StreamAction extends Message {
 
     // <default GSL customizable: StreamAction-extra-members />
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getProcessStreamMessage();
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getProcessStreamMessage();
         let pid = msg.getPid();
         let fileno = msg.getFileno();
         let chunk = Uint8Array.from(msg.getChunk());
         return new StreamAction(pid, fileno, chunk);
     }
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new process_pb.ProcessStreamMessage();
         msg.setPid(this.pid);
         msg.setFileno(this.fileno);
         msg.setChunk(this.chunk);
-        (<any> containerMsg).setProcessStreamMessage(msg);
+        (containerMsg as any).setProcessStreamMessage(msg);
     }
 }
 
 @ReplyMsg.message(process_pb.ProcessStreamMessage, PayloadCase.PROCESS_STREAM_MESSAGE)
 export class StreamUpdate extends Message {
-    isAsync = true;
+    public isAsync = true;
 
     constructor(public pid: number, public fileno: number, public chunk?: Uint8Array) {
         super();
@@ -90,20 +90,20 @@ export class StreamUpdate extends Message {
 
     // <default GSL customizable: StreamUpdate-extra-members />
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getProcessStreamMessage();
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getProcessStreamMessage();
         let pid = msg.getPid();
         let fileno = msg.getFileno();
         let chunk = Uint8Array.from(msg.getChunk());
         return new StreamUpdate(pid, fileno, chunk);
     }
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new process_pb.ProcessStreamMessage();
         msg.setPid(this.pid);
         msg.setFileno(this.fileno);
         msg.setChunk(this.chunk);
-        (<any> containerMsg).setProcessStreamMessage(msg);
+        (containerMsg as any).setProcessStreamMessage(msg);
     }
 }
 
@@ -115,24 +115,24 @@ export class SignalAction extends Message {
 
     // <default GSL customizable: SignalAction-extra-members />
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getProcessSignalAction();
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getProcessSignalAction();
         let pid = msg.getPid();
         let signal = msg.getSignal();
         return new SignalAction(pid, signal);
     }
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new process_pb.ProcessSignalAction();
         msg.setPid(this.pid);
         msg.setSignal(this.signal);
-        (<any> containerMsg).setProcessSignalAction(msg);
+        (containerMsg as any).setProcessSignalAction(msg);
     }
 }
 
 @ReplyMsg.message(process_pb.ProcessExitUpdate, PayloadCase.PROCESS_EXIT_UPDATE)
 export class ExitUpdate extends Message {
-    isAsync = true;
+    public isAsync = true;
 
     constructor(public pid: number, public exitCode: number) {
         super();
@@ -140,17 +140,17 @@ export class ExitUpdate extends Message {
 
     // <default GSL customizable: ExitUpdate-extra-members />
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getProcessExitUpdate();
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getProcessExitUpdate();
         let pid = msg.getPid();
         let exitCode = msg.getExitCode();
         return new ExitUpdate(pid, exitCode);
     }
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new process_pb.ProcessExitUpdate();
         msg.setPid(this.pid);
         msg.setExitCode(this.exitCode);
-        (<any> containerMsg).setProcessExitUpdate(msg);
+        (containerMsg as any).setProcessExitUpdate(msg);
     }
 }

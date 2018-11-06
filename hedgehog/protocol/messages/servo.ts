@@ -17,20 +17,20 @@ export class Action extends Message {
 
     // <default GSL customizable: Action-extra-members />
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getServoAction();
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getServoAction();
         let port = msg.getPort();
         let active = msg.getActive();
         let position = msg.getPosition();
         return new Action(port, active, position);
     }
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new servo_pb.ServoAction();
         msg.setPort(this.port);
         msg.setActive(this.active);
         msg.setPosition(this.position);
-        (<any> containerMsg).setServoAction(msg);
+        (containerMsg as any).setServoAction(msg);
     }
 }
 
@@ -42,10 +42,10 @@ export class CommandRequest extends Message {
 
     // <default GSL customizable: CommandRequest-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new servo_pb.ServoCommandMessage();
         msg.setPort(this.port);
-        (<any> containerMsg).setServoCommandMessage(msg);
+        (containerMsg as any).setServoCommandMessage(msg);
     }
 }
 
@@ -59,12 +59,12 @@ export class CommandReply extends Message {
 
     // <default GSL customizable: CommandReply-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new servo_pb.ServoCommandMessage();
         msg.setPort(this.port);
         msg.setActive(this.active);
         msg.setPosition(this.position);
-        (<any> containerMsg).setServoCommandMessage(msg);
+        (containerMsg as any).setServoCommandMessage(msg);
     }
 }
 
@@ -76,17 +76,17 @@ export class CommandSubscribe extends Message {
 
     // <default GSL customizable: CommandSubscribe-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new servo_pb.ServoCommandMessage();
         msg.setPort(this.port);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setServoCommandMessage(msg);
+        (containerMsg as any).setServoCommandMessage(msg);
     }
 }
 
 @message(servo_pb.ServoCommandMessage, PayloadCase.SERVO_COMMAND_MESSAGE)
 export class CommandUpdate extends Message {
-    isAsync = true;
+    public isAsync = true;
 
     constructor(public port: number, public active: boolean, public position: number, public subscription: Subscription) {
         super();
@@ -96,19 +96,19 @@ export class CommandUpdate extends Message {
 
     // <default GSL customizable: CommandUpdate-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new servo_pb.ServoCommandMessage();
         msg.setPort(this.port);
         msg.setActive(this.active);
         msg.setPosition(this.position);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setServoCommandMessage(msg);
+        (containerMsg as any).setServoCommandMessage(msg);
     }
 }
 
 RequestMsg.parser(PayloadCase.SERVO_COMMAND_MESSAGE)(
     function parseServoCommandMessageRequestFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getServoCommandMessage();
+        let msg = (containerMsg as any).getServoCommandMessage();
         let port = msg.getPort();
         let active = msg.getActive();
         let position = msg.getPosition();
@@ -124,7 +124,7 @@ RequestMsg.parser(PayloadCase.SERVO_COMMAND_MESSAGE)(
 
 ReplyMsg.parser(PayloadCase.SERVO_COMMAND_MESSAGE)(
     function parseServoCommandMessageReplyFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getServoCommandMessage();
+        let msg = (containerMsg as any).getServoCommandMessage();
         let port = msg.getPort();
         let active = msg.getActive();
         let position = msg.getPosition();

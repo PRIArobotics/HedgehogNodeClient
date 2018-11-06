@@ -15,10 +15,10 @@ export class Request extends Message {
 
     // <default GSL customizable: Request-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.DigitalMessage();
         msg.setPort(this.port);
-        (<any> containerMsg).setDigitalMessage(msg);
+        (containerMsg as any).setDigitalMessage(msg);
     }
 }
 
@@ -30,11 +30,11 @@ export class Reply extends Message {
 
     // <default GSL customizable: Reply-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.DigitalMessage();
         msg.setPort(this.port);
         msg.setValue(this.value);
-        (<any> containerMsg).setDigitalMessage(msg);
+        (containerMsg as any).setDigitalMessage(msg);
     }
 }
 
@@ -46,17 +46,17 @@ export class Subscribe extends Message {
 
     // <default GSL customizable: Subscribe-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.DigitalMessage();
         msg.setPort(this.port);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setDigitalMessage(msg);
+        (containerMsg as any).setDigitalMessage(msg);
     }
 }
 
 @message(io_pb.DigitalMessage, PayloadCase.DIGITAL_MESSAGE)
 export class Update extends Message {
-    isAsync = true;
+    public isAsync = true;
 
     constructor(public port: number, public value: boolean, public subscription: Subscription) {
         super();
@@ -64,18 +64,18 @@ export class Update extends Message {
 
     // <default GSL customizable: Update-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.DigitalMessage();
         msg.setPort(this.port);
         msg.setValue(this.value);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setDigitalMessage(msg);
+        (containerMsg as any).setDigitalMessage(msg);
     }
 }
 
 RequestMsg.parser(PayloadCase.DIGITAL_MESSAGE)(
     function parseDigitalMessageRequestFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getDigitalMessage();
+        let msg = (containerMsg as any).getDigitalMessage();
         let port = msg.getPort();
         let value = msg.getValue();
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
@@ -90,7 +90,7 @@ RequestMsg.parser(PayloadCase.DIGITAL_MESSAGE)(
 
 ReplyMsg.parser(PayloadCase.DIGITAL_MESSAGE)(
     function parseDigitalMessageReplyFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getDigitalMessage();
+        let msg = (containerMsg as any).getDigitalMessage();
         let port = msg.getPort();
         let value = msg.getValue();
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;

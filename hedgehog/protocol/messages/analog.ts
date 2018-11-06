@@ -15,10 +15,10 @@ export class Request extends Message {
 
     // <default GSL customizable: Request-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.AnalogMessage();
         msg.setPort(this.port);
-        (<any> containerMsg).setAnalogMessage(msg);
+        (containerMsg as any).setAnalogMessage(msg);
     }
 }
 
@@ -30,11 +30,11 @@ export class Reply extends Message {
 
     // <default GSL customizable: Reply-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.AnalogMessage();
         msg.setPort(this.port);
         msg.setValue(this.value);
-        (<any> containerMsg).setAnalogMessage(msg);
+        (containerMsg as any).setAnalogMessage(msg);
     }
 }
 
@@ -46,17 +46,17 @@ export class Subscribe extends Message {
 
     // <default GSL customizable: Subscribe-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.AnalogMessage();
         msg.setPort(this.port);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setAnalogMessage(msg);
+        (containerMsg as any).setAnalogMessage(msg);
     }
 }
 
 @message(io_pb.AnalogMessage, PayloadCase.ANALOG_MESSAGE)
 export class Update extends Message {
-    isAsync = true;
+    public isAsync = true;
 
     constructor(public port: number, public value: number, public subscription: Subscription) {
         super();
@@ -64,18 +64,18 @@ export class Update extends Message {
 
     // <default GSL customizable: Update-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new io_pb.AnalogMessage();
         msg.setPort(this.port);
         msg.setValue(this.value);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setAnalogMessage(msg);
+        (containerMsg as any).setAnalogMessage(msg);
     }
 }
 
 RequestMsg.parser(PayloadCase.ANALOG_MESSAGE)(
     function parseAnalogMessageRequestFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getAnalogMessage();
+        let msg = (containerMsg as any).getAnalogMessage();
         let port = msg.getPort();
         let value = msg.getValue();
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
@@ -90,7 +90,7 @@ RequestMsg.parser(PayloadCase.ANALOG_MESSAGE)(
 
 ReplyMsg.parser(PayloadCase.ANALOG_MESSAGE)(
     function parseAnalogMessageReplyFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getAnalogMessage();
+        let msg = (containerMsg as any).getAnalogMessage();
         let port = msg.getPort();
         let value = msg.getValue();
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;

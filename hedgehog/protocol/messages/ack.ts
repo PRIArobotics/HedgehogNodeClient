@@ -15,17 +15,17 @@ export class Acknowledgement extends Message {
 
     // <default GSL customizable: Acknowledgement-extra-members />
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getAcknowledgement();
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getAcknowledgement();
         let code = msg.getCode();
         let message = msg.getMessage();
         return new Acknowledgement(code, message);
     }
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new ack_pb.Acknowledgement();
         msg.setCode(this.code);
         msg.setMessage(this.message);
-        (<any> containerMsg).setAcknowledgement(msg);
+        (containerMsg as any).setAcknowledgement(msg);
     }
 }

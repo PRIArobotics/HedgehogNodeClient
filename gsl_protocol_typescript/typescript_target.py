@@ -86,8 +86,8 @@ def generate_module_code(model, mod, root):
 
                 yield from lines(f"""\
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {{
-        let msg = (<any> containerMsg).get{case(snake=message.discriminator, to='pascal')}();""")
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {{
+        let msg = (containerMsg as any).get{case(snake=message.discriminator, to='pascal')}();""")
 
                 yield from map_params_code(
                     messageClass,
@@ -108,7 +108,7 @@ def generate_module_code(model, mod, root):
             def message_serialize_code():
                 yield from lines(f"""\
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {{
+    public serializeTo(containerMsg: ProtoContainerMessage): void {{
         let msg = new {proto.name}_pb.{message.name}();""")
 
                 def assignment_str(name, nested=False, repeated=False):
@@ -131,7 +131,7 @@ def generate_module_code(model, mod, root):
         {assignment_str(param.options[i], nested=param.fields[i].nested)}"""),
                 )
                 yield from lines(f"""\
-        (<any> containerMsg).set{case(snake=message.discriminator, to='pascal')}(msg);
+        (containerMsg as any).set{case(snake=message.discriminator, to='pascal')}(msg);
     }}""")
 
             request = messageClass.direction == "=>"
@@ -147,7 +147,7 @@ export class {messageClass.name} extends Message {{""")
 
             if is_async:
                 yield from lines(f"""\
-    isAsync = true;
+    public isAsync = true;
 
 """)
 
@@ -183,7 +183,7 @@ export class {messageClass.name} extends Message {{""")
 
 {direction}Msg.parser(PayloadCase.{message.discriminator.upper()})(
     function {function_name}(containerMsg: ProtoContainerMessage): Message {{
-        let msg = (<any> containerMsg).get{case(snake=message.discriminator, to='pascal')}();""")
+        let msg = (containerMsg as any).get{case(snake=message.discriminator, to='pascal')}();""")
 
             for field in message.fields:
                 if isinstance(field, Field):

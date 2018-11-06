@@ -17,8 +17,8 @@ export class Action extends Message {
 
     // <default GSL customizable: Action-extra-members />
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getMotorAction();
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getMotorAction();
         let port = msg.getPort();
         let state = msg.getState();
         let amount = msg.getAmount();
@@ -28,7 +28,7 @@ export class Action extends Message {
         return new Action(port, state, amount, reachedState, relative, absolute);
     }
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorAction();
         msg.setPort(this.port);
         msg.setState(this.state);
@@ -36,7 +36,7 @@ export class Action extends Message {
         msg.setReachedState(this.reachedState);
         msg.setRelative(this.relative);
         msg.setAbsolute(this.absolute);
-        (<any> containerMsg).setMotorAction(msg);
+        (containerMsg as any).setMotorAction(msg);
     }
 }
 
@@ -48,10 +48,10 @@ export class CommandRequest extends Message {
 
     // <default GSL customizable: CommandRequest-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorCommandMessage();
         msg.setPort(this.port);
-        (<any> containerMsg).setMotorCommandMessage(msg);
+        (containerMsg as any).setMotorCommandMessage(msg);
     }
 }
 
@@ -63,12 +63,12 @@ export class CommandReply extends Message {
 
     // <default GSL customizable: CommandReply-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorCommandMessage();
         msg.setPort(this.port);
         msg.setState(this.state);
         msg.setAmount(this.amount);
-        (<any> containerMsg).setMotorCommandMessage(msg);
+        (containerMsg as any).setMotorCommandMessage(msg);
     }
 }
 
@@ -80,17 +80,17 @@ export class CommandSubscribe extends Message {
 
     // <default GSL customizable: CommandSubscribe-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorCommandMessage();
         msg.setPort(this.port);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setMotorCommandMessage(msg);
+        (containerMsg as any).setMotorCommandMessage(msg);
     }
 }
 
 @message(motor_pb.MotorCommandMessage, PayloadCase.MOTOR_COMMAND_MESSAGE)
 export class CommandUpdate extends Message {
-    isAsync = true;
+    public isAsync = true;
 
     constructor(public port: number, public state: number, public amount: number, public subscription: Subscription) {
         super();
@@ -98,13 +98,13 @@ export class CommandUpdate extends Message {
 
     // <default GSL customizable: CommandUpdate-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorCommandMessage();
         msg.setPort(this.port);
         msg.setState(this.state);
         msg.setAmount(this.amount);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setMotorCommandMessage(msg);
+        (containerMsg as any).setMotorCommandMessage(msg);
     }
 }
 
@@ -116,10 +116,10 @@ export class StateRequest extends Message {
 
     // <default GSL customizable: StateRequest-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorStateMessage();
         msg.setPort(this.port);
-        (<any> containerMsg).setMotorStateMessage(msg);
+        (containerMsg as any).setMotorStateMessage(msg);
     }
 }
 
@@ -131,12 +131,12 @@ export class StateReply extends Message {
 
     // <default GSL customizable: StateReply-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorStateMessage();
         msg.setPort(this.port);
         msg.setVelocity(this.velocity);
         msg.setPosition(this.position);
-        (<any> containerMsg).setMotorStateMessage(msg);
+        (containerMsg as any).setMotorStateMessage(msg);
     }
 }
 
@@ -148,17 +148,17 @@ export class StateSubscribe extends Message {
 
     // <default GSL customizable: StateSubscribe-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorStateMessage();
         msg.setPort(this.port);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setMotorStateMessage(msg);
+        (containerMsg as any).setMotorStateMessage(msg);
     }
 }
 
 @message(motor_pb.MotorStateMessage, PayloadCase.MOTOR_STATE_MESSAGE)
 export class StateUpdate extends Message {
-    isAsync = true;
+    public isAsync = true;
 
     constructor(public port: number, public velocity: number, public position: number, public subscription: Subscription) {
         super();
@@ -166,13 +166,13 @@ export class StateUpdate extends Message {
 
     // <default GSL customizable: StateUpdate-extra-members />
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorStateMessage();
         msg.setPort(this.port);
         msg.setVelocity(this.velocity);
         msg.setPosition(this.position);
         msg.setSubscription(this.subscription);
-        (<any> containerMsg).setMotorStateMessage(msg);
+        (containerMsg as any).setMotorStateMessage(msg);
     }
 }
 
@@ -184,24 +184,24 @@ export class SetPositionAction extends Message {
 
     // <default GSL customizable: SetPositionAction-extra-members />
 
-    static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getMotorSetPositionAction();
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getMotorSetPositionAction();
         let port = msg.getPort();
         let position = msg.getPosition();
         return new SetPositionAction(port, position);
     }
 
-    serializeTo(containerMsg: ProtoContainerMessage): void {
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorSetPositionAction();
         msg.setPort(this.port);
         msg.setPosition(this.position);
-        (<any> containerMsg).setMotorSetPositionAction(msg);
+        (containerMsg as any).setMotorSetPositionAction(msg);
     }
 }
 
 RequestMsg.parser(PayloadCase.MOTOR_COMMAND_MESSAGE)(
     function parseMotorCommandMessageRequestFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getMotorCommandMessage();
+        let msg = (containerMsg as any).getMotorCommandMessage();
         let port = msg.getPort();
         let state = msg.getState();
         let amount = msg.getAmount();
@@ -217,7 +217,7 @@ RequestMsg.parser(PayloadCase.MOTOR_COMMAND_MESSAGE)(
 
 ReplyMsg.parser(PayloadCase.MOTOR_COMMAND_MESSAGE)(
     function parseMotorCommandMessageReplyFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getMotorCommandMessage();
+        let msg = (containerMsg as any).getMotorCommandMessage();
         let port = msg.getPort();
         let state = msg.getState();
         let amount = msg.getAmount();
@@ -233,7 +233,7 @@ ReplyMsg.parser(PayloadCase.MOTOR_COMMAND_MESSAGE)(
 
 RequestMsg.parser(PayloadCase.MOTOR_STATE_MESSAGE)(
     function parseMotorStateMessageRequestFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getMotorStateMessage();
+        let msg = (containerMsg as any).getMotorStateMessage();
         let port = msg.getPort();
         let velocity = msg.getVelocity();
         let position = msg.getPosition();
@@ -249,7 +249,7 @@ RequestMsg.parser(PayloadCase.MOTOR_STATE_MESSAGE)(
 
 ReplyMsg.parser(PayloadCase.MOTOR_STATE_MESSAGE)(
     function parseMotorStateMessageReplyFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (<any> containerMsg).getMotorStateMessage();
+        let msg = (containerMsg as any).getMotorStateMessage();
         let port = msg.getPort();
         let velocity = msg.getVelocity();
         let position = msg.getPosition();
