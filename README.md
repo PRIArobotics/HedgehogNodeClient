@@ -7,21 +7,31 @@ NodeJS client library for the Hedgehog Educational Robotics Controller
 
 ## Development
 ### Tools
-For following tools are used for development the Hedgehog NodeJS library.
-Thus, if you want to start working on the API, you will need to install them first.
+The following tools are used for development of the Hedgehog NodeJS library.
 - Dependency Management: [NPM](https://www.npmjs.com/)
-- Build Automation: [Grunt](http://gruntjs.com/)
-- Typings Management: [Typings](https://github.com/typings/typings)
-- Testing: [Mocha](http://mochajs.org/)
-- Linting: [TSLint](https://palantir.github.io/tslint/) (Available via Grunt task. No installation required!)
-- Protobuffer Compiler: [Protoc](https://github.com/google/protobuf) can be downloaded [here](https://github.com/google/protobuf/releases)  
+- Build Automation: [Grunt](http://gruntjs.com/) (installing Grunt CLI globally is advisable)
+- Testing: [Mocha](http://mochajs.org/) (installed via NPM, run via `npm test`)
+- Coverage: [Istanbul/nyc](https://istanbul.js.org/) (installed via NPM, run via `npm test`)
+- Linting: [TSLint](https://palantir.github.io/tslint/) (installed via NPM, run via `grunt tslint`)
+- Protobuf Compiler: [protoc](https://github.com/google/protobuf) (can be downloaded [here](https://github.com/google/protobuf/releases), run via `grunt protoc`)
+- Code generation: [gsl](https://github.com/SillyFreak/gsl) (optional; requires Python 3.6, installed via `pip install gsl[antlr,yaml]`, run via `npm run gsl-protocol`)
 
 ### Setup
 ```
-$ npm install     # Install required NPM modules
-$ typings install # Install TypeScript type definitions
-$ grunt protoc    # Generate Protobuffer Javascript files
+$ npm install       # Install required NPM modules
+$ grunt protoc      # Generate Protobuf Javascript files
+$ grunt build       # compile TypeScript sources
 ```
+
+Optionally, set up code generation to adapt the TypeScript implementation of the Hedgehog protocol (requires Python 3.6):
+
+```
+$ pip install gsl[antlr,yaml] hedgehog-protocol-spec
+$ npm run gsl-protocol
+```
+
+The generated code is tweaked in a few places, so make sure to diff the output against the git version,
+and re-apply any tweaks.
 
 ### Running tests
 In order to execute all tests, simply execute:
@@ -36,11 +46,11 @@ let hedgehog = new HedgehogClient('tcp://127.0.0.1:10789');
 
 // Control motors and servos
 // hedgehog.move(port, power)
-hedgehog.move(0, 100);
-hedgehog.move(2, 100);
+await hedgehog.move(0, 100);
+await hedgehog.move(2, 100);
 
 // hedgehog.set_servo(port, enabled, position)
-hedgehog.setServo(0, true, 1023);
+await hedgehog.setServo(0, true, 1023);
 
 // Read sensor values
 // hedgehog.getAnalog(0) returns a promise which resolves to the sensor value
