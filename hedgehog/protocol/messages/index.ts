@@ -5,6 +5,8 @@ export { message, Message, ProtoContainerMessage } from '../../utils/protobuf/in
 
 export let PayloadCase = hedgehog.HedgehogMessage.PayloadCase;
 
+// tslint:disable-next-line:variable-name
 export let RequestMsg = new ContainerMessage(hedgehog.HedgehogMessage);
+// tslint:disable-next-line:variable-name
 export let ReplyMsg = new ContainerMessage(hedgehog.HedgehogMessage);
 

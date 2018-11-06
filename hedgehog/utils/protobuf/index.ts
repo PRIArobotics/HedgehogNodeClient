@@ -26,15 +26,12 @@ interface MessageMeta {
 }
 
 export function message(protoClass: ProtoMessageCls, payloadCase: number) {
-    let meta: MessageMeta = {
-        payloadCase: payloadCase,
-        protoClass: protoClass,
-    };
+    let meta: MessageMeta = {payloadCase, protoClass};
 
     return function<T extends MessageCls>(messageClass: T): T {
         (<any> messageClass).meta = meta;
         return messageClass;
-    }
+    };
 }
 
 export class ContainerMessage {
@@ -42,7 +39,7 @@ export class ContainerMessage {
 
     constructor(private protoClass: ProtoContainerMessageCls) {}
 
-    message(protoClass: ProtoMessageCls, payloadCase: number) {
+    public message(protoClass: ProtoMessageCls, payloadCase: number) {
         let messageDecorator = message(protoClass, payloadCase);
         let parserDecorator = this.parser(payloadCase);
 
@@ -50,25 +47,25 @@ export class ContainerMessage {
             messageClass = messageDecorator(messageClass);
             parserDecorator(messageClass.parseFrom);
             return messageClass;
-        }
+        };
     }
 
-    parser(payloadCase: number) {
+    public parser(payloadCase: number) {
         let _this = this;
         return function(parseFn: (ProtoMessage) => Message) {
             _this.registry[payloadCase] = parseFn;
             return parseFn;
-        }
+        };
     }
 
-    parse(data: Uint8Array): Message {
+    public parse(data: Uint8Array): Message {
         let msg = this.protoClass.deserializeBinary(data);
         let payloadCase = msg.getPayloadCase();
         let parseFn = this.registry[payloadCase];
         return parseFn(msg);
     }
 
-    serialize(msg: Message): Uint8Array {
+    public serialize(msg: Message): Uint8Array {
         let containerMsg = new this.protoClass();
         msg.serializeTo(containerMsg);
         return containerMsg.serializeBinary();
@@ -76,8 +73,8 @@ export class ContainerMessage {
 }
 
 export abstract class Message {
-    isAsync = false;
-    meta: MessageMeta;
+    public isAsync = false;
+    public meta: MessageMeta;
 
-    abstract serializeTo(containerMsg: ProtoContainerMessage): void;
+    public abstract serializeTo(containerMsg: ProtoContainerMessage): void;
 }
