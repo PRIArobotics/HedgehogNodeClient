@@ -28,8 +28,8 @@ interface MessageMeta {
 export function message(protoClass: ProtoMessageCls, payloadCase: number) {
     let meta: MessageMeta = {payloadCase, protoClass};
 
-    return function<T extends MessageCls>(messageClass: T): T {
-        (<any> messageClass).meta = meta;
+    return <T extends MessageCls>(messageClass: T) => {
+        (messageClass as any).meta = meta;
         return messageClass;
     };
 }
@@ -43,7 +43,7 @@ export class ContainerMessage {
         let messageDecorator = message(protoClass, payloadCase);
         let parserDecorator = this.parser(payloadCase);
 
-        return function<T extends SimpleMessageCls>(messageClass: T): T {
+        return <T extends SimpleMessageCls>(messageClass: T) => {
             messageClass = messageDecorator(messageClass);
             parserDecorator(messageClass.parseFrom);
             return messageClass;
@@ -51,9 +51,8 @@ export class ContainerMessage {
     }
 
     public parser(payloadCase: number) {
-        let _this = this;
-        return function(parseFn: (ProtoMessage) => Message) {
-            _this.registry[payloadCase] = parseFn;
+        return (parseFn: (ProtoMessage) => Message) => {
+            this.registry[payloadCase] = parseFn;
             return parseFn;
         };
     }
