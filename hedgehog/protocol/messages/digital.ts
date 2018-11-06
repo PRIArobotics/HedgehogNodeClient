@@ -1,3 +1,5 @@
+// tslint:disable
+
 import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage } from './index';
 let io_pb: any = require('../proto/io_pb');
 
