@@ -1,5 +1,6 @@
 # HedgehogNodeClient
 [![Build Status](https://travis-ci.org/PRIArobotics/HedgehogNodeClient.svg?branch=master)](https://travis-ci.org/PRIArobotics/HedgehogNodeClient)
+[![Code Coverage](https://coveralls.io/repos/github/PRIArobotics/HedgehogNodeClient/badge.svg?branch=master)](https://coveralls.io/github/PRIArobotics/HedgehogNodeClient?branch=master)
 [![Dependency Status](https://david-dm.org/priarobotics/HedgehogNodeClient/status.svg)](https://david-dm.org/priarobotics/HedgehogNodeClient)
 
 NodeJS client library for the Hedgehog Educational Robotics Controller
