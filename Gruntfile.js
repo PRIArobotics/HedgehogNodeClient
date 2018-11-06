@@ -28,8 +28,7 @@ module.exports = function(grunt) {
             options: {
                 configuration: "tslint.json"
             },
-            proto: 'hedgehog/proto/**/*.ts',
-            client: 'hedgehog/client/**/*.ts',
+            src: 'hedgehog/**/*.ts',
             test: 'test/**/*.ts'
         }
     });
@@ -38,7 +37,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-tslint");
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-symlink');
 
     grunt.registerTask('protoc', function() {
         var exec = require('child_process').execSync;
