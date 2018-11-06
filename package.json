@@ -30,6 +30,9 @@
   },
   "homepage": "https://github.com/PRIArobotics/HedgehogNodeClient#readme",
   "devDependencies": {
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.2",
+    "@types/zmq": "0.0.22",
     "codelyzer": "^3.0.1",
     "grunt": "^1.0.1",
     "grunt-concurrent": "^2.3.1",
@@ -41,8 +44,7 @@
     "grunt-tslint": "^5.0.1",
     "mocha": "^5.2.0",
     "tslint": "^5.2.0",
-    "typescript": "~2.4.1",
-    "typings": "^2.1.0"
+    "typescript": "~2.4.1"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
