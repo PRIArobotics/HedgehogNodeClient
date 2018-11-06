@@ -25,6 +25,8 @@ interface MessageMeta {
     protoClass: ProtoMessageCls;
 }
 
+type ParseFn = (msg: ProtoContainerMessage) => Message;
+
 export function message(protoClass: ProtoMessageCls, payloadCase: number) {
     let meta: MessageMeta = {payloadCase, protoClass};
 
@@ -35,7 +37,7 @@ export function message(protoClass: ProtoMessageCls, payloadCase: number) {
 }
 
 export class ContainerMessage {
-    private registry: { [key: number]: (ProtoMessage) => Message; } = {};
+    private registry: { [key: number]: ParseFn; } = {};
 
     constructor(private protoClass: ProtoContainerMessageCls) {}
 
@@ -51,7 +53,7 @@ export class ContainerMessage {
     }
 
     public parser(payloadCase: number) {
-        return (parseFn: (ProtoMessage) => Message) => {
+        return (parseFn: ParseFn) => {
             this.registry[payloadCase] = parseFn;
             return parseFn;
         };
