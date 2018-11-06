@@ -6,7 +6,7 @@
   "typings": "hedgehog/index.ts",
   "scripts": {
     "build": "grunt build",
-    "test": "mocha --require ts-node/register --reporter spec --check-leaks test/**/*.spec.ts",
+    "test": "nyc mocha --require ts-node/register --reporter spec --check-leaks test/**/*.spec.ts",
     "gsl-protocol": "python -m gsl_protocol_typescript",
     "protoc": "grunt protoc"
   },
@@ -39,6 +39,7 @@
     "grunt-ts": "^6.0.0-beta.17",
     "grunt-tslint": "^5.0.1",
     "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
     "ts-node": "^7.0.1",
     "tslint": "^5.2.0",
     "typescript": "~2.4.1"
@@ -47,5 +48,17 @@
     "@babel/polyfill": "^7.0.0",
     "google-protobuf": "^3.4.0",
     "zmq": "^2.15.3"
+  },
+  "nyc": {
+    "reporter": "html",
+    "all": true,
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "hedgehog/**/*.ts"
+    ],
+    "sourceMap": true,
+    "instrument": true
   }
 }
