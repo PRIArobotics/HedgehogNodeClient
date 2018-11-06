@@ -4,21 +4,21 @@ type DefaultCtorClass<T> = new () => T;
 export interface ProtoMessage {
     serializeBinary(): Uint8Array;
 }
-export type ProtoContainerMessage = ProtoMessage & {
+export interface ProtoContainerMessage extends ProtoMessage {
     getPayloadCase(): number;
 }
 
-export type ProtoMessageCls = DefaultCtorClass<ProtoMessage> & {
+export interface ProtoMessageCls extends DefaultCtorClass<ProtoMessage> {
     deserializeBinary(data: Uint8Array): ProtoMessage;
-};
-export type ProtoContainerMessageCls = DefaultCtorClass<ProtoContainerMessage> & {
+}
+export interface ProtoContainerMessageCls extends DefaultCtorClass<ProtoContainerMessage> {
     deserializeBinary(data: Uint8Array): ProtoContainerMessage;
-};
+}
 
 type MessageCls = Class<Message>;
-type SimpleMessageCls = MessageCls & {
+interface SimpleMessageCls extends MessageCls {
     parseFrom(containerMsg: ProtoContainerMessage): Message;
-};
+}
 
 interface MessageMeta {
     payloadCase: number;
