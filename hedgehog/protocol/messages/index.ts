@@ -1,5 +1,5 @@
 import { ContainerMessage } from '../../utils/protobuf/index';
-let hedgehog: any = require('../proto/hedgehog_pb');
+import hedgehog = require('../proto/hedgehog_pb');
 
 export { message, Message, ProtoContainerMessage } from '../../utils/protobuf/index';
 

@@ -1,7 +1,7 @@
 // tslint:disable
 
 import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage } from './index';
-let ack_pb: any = require('../proto/ack_pb');
+import ack_pb = require('../proto/ack_pb');
 
 // <GSL customizable: module-header>
 export let AcknowledgementCode = ack_pb.AcknowledgementCode;

@@ -3,15 +3,15 @@ import "@babel/polyfill";
 
 import assert = require('assert');
 
-// tslint:disable:variable-name no-var-requires
-let hedgehog_pb: any = require('../hedgehog/protocol/proto/hedgehog_pb');
-let ack_pb: any = require('../hedgehog/protocol/proto/ack_pb');
-let io_pb: any = require('../hedgehog/protocol/proto/io_pb');
-let motor_pb: any = require('../hedgehog/protocol/proto/motor_pb');
-let servo_pb: any = require('../hedgehog/protocol/proto/servo_pb');
-let process_pb: any = require('../hedgehog/protocol/proto/process_pb');
-let subscription_pb: any = require('../hedgehog/protocol/proto/subscription_pb');
-// tslint:enable:variable-name no-var-requires
+// tslint:disable:variable-name
+import hedgehog_pb = require('../hedgehog/protocol/proto/hedgehog_pb');
+import ack_pb = require('../hedgehog/protocol/proto/ack_pb');
+import io_pb = require('../hedgehog/protocol/proto/io_pb');
+import motor_pb = require('../hedgehog/protocol/proto/motor_pb');
+import servo_pb = require('../hedgehog/protocol/proto/servo_pb');
+import process_pb = require('../hedgehog/protocol/proto/process_pb');
+import subscription_pb = require('../hedgehog/protocol/proto/subscription_pb');
+// tslint:enable:variable-name
 
 import { Message, ProtoContainerMessage, ContainerMessage } from '../hedgehog/utils/protobuf/index';
 import { RequestMsg, ReplyMsg } from '../hedgehog/protocol/messages/index';

@@ -1,7 +1,7 @@
 // tslint:disable
 
 import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage } from './index';
-let motor_pb: any = require('../proto/motor_pb');
+import motor_pb = require('../proto/motor_pb');
 
 // <GSL customizable: module-header>
 export let MotorState = motor_pb.MotorState;

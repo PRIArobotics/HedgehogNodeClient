@@ -1,7 +1,7 @@
 // tslint:disable
 
 import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage } from './index';
-let servo_pb: any = require('../proto/servo_pb');
+import servo_pb = require('../proto/servo_pb');
 
 // <GSL customizable: module-header>
 type Subscription = any;
