@@ -33,7 +33,6 @@
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.2",
     "@types/zmq": "0.0.22",
-    "codelyzer": "^3.0.1",
     "grunt": "^1.0.1",
     "grunt-contrib-clean": "^1.1.0",
     "grunt-contrib-copy": "^1.0.0",
