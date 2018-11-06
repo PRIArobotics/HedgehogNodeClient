@@ -18,7 +18,6 @@ export { ProcessFileno } from '../protocol/messages/process';
 
 import zmq = require('zmq');
 
-// tslint:disable-next-line:interface-name
 interface CommandHandler<T> {
     resolve: (value?: T | PromiseLike<T>) => void;
     reject: (reason?: any) => void;
