@@ -13,8 +13,7 @@
     "downlevelIteration": true
   },
   "include": [
-    "hedgehog/**/*.ts",
-    "test/**/*.ts"
+    "hedgehog/**/*.ts"
   ],
   "exclude": [
     "node_modules"

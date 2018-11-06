@@ -6,7 +6,7 @@
   "typings": "hedgehog/index.ts",
   "scripts": {
     "build": "grunt build",
-    "test": "mocha --reporter spec --check-leaks --recursive build/test/",
+    "test": "mocha --require ts-node/register --reporter spec --check-leaks test/**/*.spec.ts",
     "gsl-protocol": "python -m gsl_protocol_typescript",
     "protoc": "grunt protoc"
   },
@@ -39,6 +39,7 @@
     "grunt-ts": "^6.0.0-beta.17",
     "grunt-tslint": "^5.0.1",
     "mocha": "^5.2.0",
+    "ts-node": "^7.0.1",
     "tslint": "^5.2.0",
     "typescript": "~2.4.1"
   },

@@ -19,7 +19,7 @@ module.exports = function(grunt) {
                         expand: true,
                         cwd: 'hedgehog/protocol/proto',
                         src: ['*.js'],
-                        dest: 'build/hedgehog/protocol/proto'
+                        dest: 'build/protocol/proto'
                     }
                 ]
             }
