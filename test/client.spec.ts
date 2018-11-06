@@ -11,7 +11,11 @@ import { HedgehogClient } from "../hedgehog/client/hedgehogClient";
 
 // TODO make this CI-able, by mocking the Hedgehog server
 describe.skip('Client', () => {
-    let hedgehog = new HedgehogClient('tcp://localhost:10789');
+    let hedgehog = null;
+
+    before(() => {
+        hedgehog = new HedgehogClient('tcp://localhost:10789');
+    });
 
     it('`send` should work', async () => {
         let result = await hedgehog.send(new io.Action(0, io.IOFlags.INPUT_PULLUP));
@@ -28,5 +32,10 @@ describe.skip('Client', () => {
 
     it('`getAnalog` should work', async () => {
         assert.equal(await hedgehog.getAnalog(0), 0);
+    });
+
+    after(() => {
+        hedgehog.close();
+        hedgehog = null;
     });
 });
