@@ -147,7 +147,7 @@ export class {messageClass.name} extends Message {{""")
 
             if is_async:
                 yield from lines(f"""\
-    async = true;
+    isAsync = true;
 
 """)
 

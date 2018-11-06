@@ -88,7 +88,7 @@ export class CommandSubscribe extends Message {
 
 @message(motor_pb.MotorCommandMessage, PayloadCase.MOTOR_COMMAND_MESSAGE)
 export class CommandUpdate extends Message {
-    async = true;
+    isAsync = true;
 
     constructor(public port: number, public state: number, public amount: number, public subscription: Subscription) {
         super();
@@ -156,7 +156,7 @@ export class StateSubscribe extends Message {
 
 @message(motor_pb.MotorStateMessage, PayloadCase.MOTOR_STATE_MESSAGE)
 export class StateUpdate extends Message {
-    async = true;
+    isAsync = true;
 
     constructor(public port: number, public velocity: number, public position: number, public subscription: Subscription) {
         super();

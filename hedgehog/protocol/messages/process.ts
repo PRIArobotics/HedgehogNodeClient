@@ -78,7 +78,7 @@ export class StreamAction extends Message {
 
 @ReplyMsg.message(process_pb.ProcessStreamMessage, PayloadCase.PROCESS_STREAM_MESSAGE)
 export class StreamUpdate extends Message {
-    async = true;
+    isAsync = true;
 
     constructor(public pid: number, public fileno: number, public chunk?: Uint8Array) {
         super();
@@ -130,7 +130,7 @@ export class SignalAction extends Message {
 
 @ReplyMsg.message(process_pb.ProcessExitUpdate, PayloadCase.PROCESS_EXIT_UPDATE)
 export class ExitUpdate extends Message {
-    async = true;
+    isAsync = true;
 
     constructor(public pid: number, public exitCode: number) {
         super();

@@ -84,7 +84,7 @@ export class CommandSubscribe extends Message {
 
 @message(servo_pb.ServoCommandMessage, PayloadCase.SERVO_COMMAND_MESSAGE)
 export class CommandUpdate extends Message {
-    async = true;
+    isAsync = true;
 
     constructor(public port: number, public active: boolean, public position: number, public subscription: Subscription) {
         super();

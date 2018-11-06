@@ -79,7 +79,7 @@ export class CommandSubscribe extends Message {
 
 @message(io_pb.IOCommandMessage, PayloadCase.IO_COMMAND_MESSAGE)
 export class CommandUpdate extends Message {
-    async = true;
+    isAsync = true;
 
     constructor(public port: number, public flags: number, public subscription: Subscription) {
         super();

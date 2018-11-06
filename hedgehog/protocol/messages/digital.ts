@@ -54,7 +54,7 @@ export class Subscribe extends Message {
 
 @message(io_pb.DigitalMessage, PayloadCase.DIGITAL_MESSAGE)
 export class Update extends Message {
-    async = true;
+    isAsync = true;
 
     constructor(public port: number, public value: boolean, public subscription: Subscription) {
         super();
