@@ -1,4 +1,5 @@
 language: node_js
+sudo: false
 
 node_js:
   - 11
@@ -7,16 +8,6 @@ node_js:
   - 8
   - 7
   - 6
-env:
-  - CXX=g++-4.8
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
-      - libzmq3
-      - libzmq3-dev
 
 install:
   - wget https://github.com/google/protobuf/releases/download/v3.6.1/protoc-3.6.1-linux-x86_64.zip
