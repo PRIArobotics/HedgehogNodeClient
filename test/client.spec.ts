@@ -16,13 +16,12 @@ describe('Client', () => {
     let hedgehog = null;
 
     before(() => {
-        // TODO the server terminates slowly for some reason
         server = zmq.socket('router');
-        server.bindSync('inproc://controller');
+        server.bindSync('tcp://*:0');
     });
 
     before(() => {
-        hedgehog = new HedgehogClient('inproc://controller');
+        hedgehog = new HedgehogClient(server.last_endpoint);
     });
 
     async function mock_server(...pairs: Array<[Message[], Message[]]>) {
@@ -37,8 +36,7 @@ describe('Client', () => {
         }
 
         for(let [expected, responses] of pairs) {
-            let parts = await recv();
-            let [ident, delimiter, ...data] = parts;
+            let [ident, delimiter, ...data] = await recv();
             let requests = data.map(msg => RequestMsg.parse(msg));
 
             assert.deepEqual(requests, expected);
