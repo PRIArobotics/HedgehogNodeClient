@@ -1,7 +1,7 @@
 type Class<T> = new (...args: any[]) => T;
 type DefaultCtorClass<T> = new () => T;
 
-export interface ProtoMessage {
+interface ProtoMessage {
     serializeBinary(): Uint8Array;
 }
 export interface ProtoContainerMessage extends ProtoMessage {
@@ -75,7 +75,7 @@ export class ContainerMessage {
 
 export abstract class Message {
     public isAsync = false;
-    public meta: MessageMeta;
+    private meta: MessageMeta;
 
     public abstract serializeTo(containerMsg: ProtoContainerMessage): void;
 }
