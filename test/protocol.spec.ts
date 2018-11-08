@@ -1,18 +1,10 @@
 import "@babel/polyfill";
 
 
-import assert = require('assert');
+import * as assert from 'assert';
 
-// tslint:disable:variable-name
-import hedgehog_pb = require('../hedgehog/protocol/proto/hedgehog_pb');
-import ack_pb = require('../hedgehog/protocol/proto/ack_pb');
-import io_pb = require('../hedgehog/protocol/proto/io_pb');
-import motor_pb = require('../hedgehog/protocol/proto/motor_pb');
-import servo_pb = require('../hedgehog/protocol/proto/servo_pb');
-import process_pb = require('../hedgehog/protocol/proto/process_pb');
-import subscription_pb = require('../hedgehog/protocol/proto/subscription_pb');
-// tslint:enable:variable-name
-
+import { hedgehog_pb, ack_pb, io_pb, motor_pb, servo_pb, process_pb,
+         subscription_pb } from '../hedgehog/protocol/proto';
 import { RequestMsg, ReplyMsg, Message, ProtoContainerMessage, ContainerMessage,
          ack, io, analog, digital, motor, servo, process } from '../hedgehog/protocol';
 

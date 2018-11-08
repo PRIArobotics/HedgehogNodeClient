@@ -222,7 +222,7 @@ import {{ RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMes
                                            for messageClass in mod.messageClasses
                                            for proto in (messageClass.message.proto,)):
             yield from lines(f"""\
-import {protoName}_pb = require('../proto{'/'.join(('',) + protoPath)}/{protoName}_pb');""")
+import {{ {protoName}_pb }} from '../proto{'/'.join(('',) + protoPath)}';""")
         yield from lines(f"""\
 
 // <default GSL customizable: module-header />""")

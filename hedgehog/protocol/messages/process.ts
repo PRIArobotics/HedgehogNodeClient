@@ -1,7 +1,7 @@
 // tslint:disable
 
 import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage } from './index';
-import process_pb = require('../proto/process_pb');
+import { process_pb } from '../proto';
 
 // <GSL customizable: module-header>
 export let ProcessFileno = process_pb.ProcessFileno;

@@ -10,7 +10,7 @@ export { IOFlags } from '../protocol/messages/io';
 export { MotorState } from '../protocol/messages/motor';
 export { ProcessFileno } from '../protocol/messages/process';
 
-import zmq = require('zeromq');
+import * as zmq from 'zeromq';
 
 interface CommandHandler<T> {
     resolve: (value?: T | PromiseLike<T>) => void;

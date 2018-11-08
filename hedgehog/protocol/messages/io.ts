@@ -1,7 +1,7 @@
 // tslint:disable
 
 import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage } from './index';
-import io_pb = require('../proto/io_pb');
+import { io_pb } from '../proto';
 
 // <GSL customizable: module-header>
 export let IOFlags = io_pb.IOFlags;

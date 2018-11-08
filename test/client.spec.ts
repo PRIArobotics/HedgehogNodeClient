@@ -1,8 +1,8 @@
 import "@babel/polyfill";
 
 
-import assert = require('assert');
-import zmq = require('zeromq');
+import * as assert from 'assert';
+import * as zmq from 'zeromq';
 
 import { HedgehogClient } from "../hedgehog";
 import { Message, RequestMsg, ReplyMsg,
