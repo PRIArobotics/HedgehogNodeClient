@@ -2,14 +2,8 @@
  * Created by tfellner on 30.11.16.
  */
 
-import { Message, RequestMsg, ReplyMsg } from '../protocol/messages/index';
-import * as ack from '../protocol/messages/ack';
-import * as io from '../protocol/messages/io';
-import * as analog from '../protocol/messages/analog';
-import * as digital from '../protocol/messages/digital';
-import * as motor from '../protocol/messages/motor';
-import * as servo from '../protocol/messages/servo';
-import * as process from '../protocol/messages/process';
+import { RequestMsg, ReplyMsg, Message,
+         ack, io, analog, digital, motor, servo, process } from '../protocol';
 
 export { AcknowledgementCode } from '../protocol/messages/ack';
 export { IOFlags } from '../protocol/messages/io';

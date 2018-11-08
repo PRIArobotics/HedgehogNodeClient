@@ -10,3 +10,5 @@ export {
     ack, io, analog, digital,
     motor, servo, process,
 };
+
+export { RequestMsg, ReplyMsg, message, Message, ContainerMessage, ProtoContainerMessage } from './messages';

@@ -1,7 +1,7 @@
-import { ContainerMessage } from '../../utils/protobuf/index';
+import { ContainerMessage } from '../../utils/protobuf';
 import hedgehog = require('../proto/hedgehog_pb');
 
-export { message, Message, ProtoContainerMessage } from '../../utils/protobuf/index';
+export { message, Message, ContainerMessage, ProtoContainerMessage } from '../../utils/protobuf';
 
 export let PayloadCase = hedgehog.HedgehogMessage.PayloadCase;
 

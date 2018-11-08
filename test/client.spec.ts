@@ -4,12 +4,9 @@ import "@babel/polyfill";
 import assert = require('assert');
 import zmq = require('zeromq');
 
-import * as ack from '../hedgehog/protocol/messages/ack';
-import * as io from '../hedgehog/protocol/messages/io';
-import * as analog from '../hedgehog/protocol/messages/analog';
-
-import { Message, RequestMsg, ReplyMsg } from '../hedgehog/protocol/messages/index';
-import { HedgehogClient } from "../hedgehog/client/hedgehogClient";
+import { HedgehogClient } from "../hedgehog";
+import { Message, RequestMsg, ReplyMsg,
+         ack, io, analog } from '../hedgehog/protocol';
 
 describe('Client', () => {
     let server = null;

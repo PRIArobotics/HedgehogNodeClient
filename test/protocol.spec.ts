@@ -13,15 +13,8 @@ import process_pb = require('../hedgehog/protocol/proto/process_pb');
 import subscription_pb = require('../hedgehog/protocol/proto/subscription_pb');
 // tslint:enable:variable-name
 
-import { Message, ProtoContainerMessage, ContainerMessage } from '../hedgehog/utils/protobuf/index';
-import { RequestMsg, ReplyMsg } from '../hedgehog/protocol/messages/index';
-import * as ack from '../hedgehog/protocol/messages/ack';
-import * as io from '../hedgehog/protocol/messages/io';
-import * as analog from '../hedgehog/protocol/messages/analog';
-import * as digital from '../hedgehog/protocol/messages/digital';
-import * as motor from '../hedgehog/protocol/messages/motor';
-import * as servo from '../hedgehog/protocol/messages/servo';
-import * as process from '../hedgehog/protocol/messages/process';
+import { RequestMsg, ReplyMsg, Message, ProtoContainerMessage, ContainerMessage,
+         ack, io, analog, digital, motor, servo, process } from '../hedgehog/protocol';
 
 describe('Protocol', () => {
     function testMessage(msg: Message, wire: ProtoContainerMessage, container: ContainerMessage) {
