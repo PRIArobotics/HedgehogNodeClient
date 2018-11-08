@@ -5,8 +5,9 @@ import * as assert from 'assert';
 
 import { hedgehog_pb, ack_pb, io_pb, motor_pb, servo_pb, process_pb,
          subscription_pb } from '../hedgehog/protocol/proto';
-import { RequestMsg, ReplyMsg, Message, ProtoContainerMessage, ContainerMessage,
+import { RequestMsg, ReplyMsg, Message, ContainerMessage,
          ack, io, analog, digital, motor, servo, process } from '../hedgehog/protocol';
+import { ProtoContainerMessage } from "../hedgehog/utils/protobuf";
 
 describe('Protocol', () => {
     function testMessage(msg: Message, wire: ProtoContainerMessage, container: ContainerMessage) {
