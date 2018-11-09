@@ -43,22 +43,25 @@ $ npm test
 ```TypeScript
 // Create a hedgehog client instance
 let hedgehog = new HedgehogClient('tcp://127.0.0.1:10789');
-
-// Control motors and servos
-// hedgehog.move(port, power)
-await hedgehog.move(0, 100);
-await hedgehog.move(2, 100);
-
-// hedgehog.set_servo(port, enabled, position)
-await hedgehog.setServo(0, true, 1023);
-
-// Read sensor values
-// hedgehog.getAnalog(0) returns a promise which resolves to the sensor value
-// Thus, with async await syntax, we can do:
-const value = await hedgehog.getAnalog(0);
-
-// Same with digital sensors
-const value = await hedgehog.getDigital(8);
+try {
+    // Control motors and servos
+    // hedgehog.move(port, power)
+    await hedgehog.move(0, 100);
+    await hedgehog.move(2, 100);
+    
+    // hedgehog.set_servo(port, enabled, position)
+    await hedgehog.setServo(0, true, 1023);
+    
+    // Read sensor values
+    // hedgehog.getAnalog(0) returns a promise which resolves to the sensor value
+    // Thus, with async await syntax, we can do:
+    const value = await hedgehog.getAnalog(0);
+    
+    // Same with digital sensors
+    const value = await hedgehog.getDigital(8);
+} finally {
+    hedgehog.close();
+}
 ```
 
 ### Coding Styleguide
