@@ -4,8 +4,7 @@ import "@babel/polyfill";
 import * as assert from 'assert';
 import * as zmq from 'zeromq';
 
-import { HedgehogClient, Message, ack, io, analog } from "../hedgehog";
-import { RequestMsg, ReplyMsg } from '../hedgehog/protocol';
+import { HedgehogClient, protocol, Message, ack, io, analog } from "../hedgehog";
 
 describe('Client', () => {
     let server = null;
@@ -33,13 +32,13 @@ describe('Client', () => {
 
         for(let [expected, responses] of pairs) {
             let [ident, delimiter, ...data] = await recv();
-            let requests = data.map(msg => RequestMsg.parse(msg));
+            let requests = data.map(msg => protocol.RequestMsg.parse(msg));
 
             assert.deepEqual(requests, expected);
 
             server.send([
                 ident, delimiter,
-                ...responses.map(msg => Buffer.from(ReplyMsg.serialize(msg)))
+                ...responses.map(msg => Buffer.from(protocol.ReplyMsg.serialize(msg)))
             ]);
         }
     }

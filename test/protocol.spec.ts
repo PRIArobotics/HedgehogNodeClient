@@ -5,12 +5,11 @@ import * as assert from 'assert';
 
 import { hedgehog_pb, ack_pb, io_pb, motor_pb, servo_pb, process_pb,
          subscription_pb } from '../hedgehog/protocol/proto';
-import { Message, ack, io, analog, digital, motor, servo, process } from "../hedgehog";
-import { RequestMsg, ReplyMsg, ContainerMessage} from '../hedgehog/protocol';
+import { protocol, Message, ack, io, analog, digital, motor, servo, process } from "../hedgehog";
 import { ProtoContainerMessage } from "../hedgehog/utils/protobuf";
 
 describe('Protocol', () => {
-    function testMessage(msg: Message, wire: ProtoContainerMessage, container: ContainerMessage) {
+    function testMessage(msg: Message, wire: ProtoContainerMessage, container: protocol.ContainerMessage) {
         let onWire = container.serialize(msg);
         assert.deepEqual(onWire, wire.serializeBinary());
         let received = container.parse(onWire);
@@ -33,7 +32,7 @@ describe('Protocol', () => {
             });
 
             let msg = new ack.Acknowledgement();
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
 
@@ -47,7 +46,7 @@ describe('Protocol', () => {
             });
 
             let msg = new io.Action(0, io.IOFlags.OUTPUT_ON);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
     });
 
@@ -60,7 +59,7 @@ describe('Protocol', () => {
             });
 
             let msg = new io.CommandRequest(0);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `io.CommandSubscribe` successfully", () => {
@@ -76,7 +75,7 @@ describe('Protocol', () => {
             });
 
             let msg = new io.CommandSubscribe(0, sub);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `io.CommandReply` successfully", () => {
@@ -88,7 +87,7 @@ describe('Protocol', () => {
             });
 
             let msg = new io.CommandReply(0, io.IOFlags.OUTPUT_ON);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
 
         it("should translate `io.CommandUpdate` successfully", () => {
@@ -105,7 +104,7 @@ describe('Protocol', () => {
             });
 
             let msg = new io.CommandUpdate(0, io.IOFlags.OUTPUT_ON, sub);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
 
@@ -118,7 +117,7 @@ describe('Protocol', () => {
             });
 
             let msg = new analog.Request(0);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `analog.Subscribe` successfully", () => {
@@ -134,7 +133,7 @@ describe('Protocol', () => {
             });
 
             let msg = new analog.Subscribe(0, sub);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `analog.Reply` successfully", () => {
@@ -146,7 +145,7 @@ describe('Protocol', () => {
             });
 
             let msg = new analog.Reply(0, 1000);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
 
         it("should translate `analog.Update` successfully", () => {
@@ -163,7 +162,7 @@ describe('Protocol', () => {
             });
 
             let msg = new analog.Update(0, 1000, sub);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
 
@@ -176,7 +175,7 @@ describe('Protocol', () => {
             });
 
             let msg = new digital.Request(0);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `digital.Subscribe` successfully", () => {
@@ -192,7 +191,7 @@ describe('Protocol', () => {
             });
 
             let msg = new digital.Subscribe(0, sub);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `digital.Reply` successfully", () => {
@@ -204,7 +203,7 @@ describe('Protocol', () => {
             });
 
             let msg = new digital.Reply(0, true);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
 
         it("should translate `digital.Update` successfully", () => {
@@ -221,7 +220,7 @@ describe('Protocol', () => {
             });
 
             let msg = new digital.Update(0, true, sub);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
 
@@ -235,7 +234,7 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.Action(0, motor.MotorState.POWER);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `motor.Action` with amount successfully", () => {
@@ -248,7 +247,7 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.Action(0, motor.MotorState.POWER, 1000);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
     });
 
@@ -262,7 +261,7 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.SetPositionAction(0, 0);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
     });
 
@@ -275,7 +274,7 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.CommandRequest(0);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `motor.CommandSubscribe` successfully", () => {
@@ -291,7 +290,7 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.CommandSubscribe(0, sub);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `motor.CommandReply` successfully", () => {
@@ -304,7 +303,7 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.CommandReply(0, motor.MotorState.POWER, 1000);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
 
         it("should translate `motor.CommandUpdate` successfully", () => {
@@ -322,7 +321,7 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.CommandUpdate(0, motor.MotorState.POWER, 1000, sub);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
 
@@ -335,7 +334,7 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.StateRequest(0);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `motor.StateSubscribe` successfully", () => {
@@ -351,7 +350,7 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.StateSubscribe(0, sub);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `motor.StateReply` successfully", () => {
@@ -364,7 +363,7 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.StateReply(0, 0, 0);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
 
         it("should translate `motor.StateUpdate` successfully", () => {
@@ -382,7 +381,7 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.StateUpdate(0, 0, 0, sub);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
 
@@ -396,7 +395,7 @@ describe('Protocol', () => {
             });
 
             let msg = new servo.Action(0, false);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `servo.Action` with position successfully", () => {
@@ -409,7 +408,7 @@ describe('Protocol', () => {
             });
 
             let msg = new servo.Action(0, true, 1000);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
     });
 
@@ -422,7 +421,7 @@ describe('Protocol', () => {
             });
 
             let msg = new servo.CommandRequest(0);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `servo.CommandSubscribe` successfully", () => {
@@ -438,7 +437,7 @@ describe('Protocol', () => {
             });
 
             let msg = new servo.CommandSubscribe(0, sub);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `servo.CommandReply` successfully", () => {
@@ -450,7 +449,7 @@ describe('Protocol', () => {
             });
 
             let msg = new servo.CommandReply(0, false, undefined);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
 
         it("should translate `servo.CommandUpdate` successfully", () => {
@@ -467,7 +466,7 @@ describe('Protocol', () => {
             });
 
             let msg = new servo.CommandUpdate(0, false, undefined, sub);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
 
@@ -481,7 +480,7 @@ describe('Protocol', () => {
             });
 
             let msg = new process.ExecuteAction(["cat"], "/home/pi");
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
     });
 
@@ -494,7 +493,7 @@ describe('Protocol', () => {
             });
 
             let msg = new process.ExecuteReply(1234);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
 
@@ -508,7 +507,7 @@ describe('Protocol', () => {
             });
 
             let msg = new process.StreamAction(1234, process.ProcessFileno.STDIN);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `process.StreamAction` with empty chunk successfully", () => {
@@ -520,7 +519,7 @@ describe('Protocol', () => {
             });
 
             let msg = new process.StreamAction(1234, process.ProcessFileno.STDIN, Uint8Array.from('' as any));
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
 
         it("should translate `process.StreamUpdate` with nonempty chunk successfully", () => {
@@ -533,7 +532,7 @@ describe('Protocol', () => {
             });
 
             let msg = new process.StreamUpdate(1234, process.ProcessFileno.STDOUT, Uint8Array.from('\x00' as any));
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
 
@@ -547,7 +546,7 @@ describe('Protocol', () => {
             });
 
             let msg = new process.SignalAction(1234, 9);
-            testMessage(msg, wire, RequestMsg);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
     });
 
@@ -561,7 +560,7 @@ describe('Protocol', () => {
             });
 
             let msg = new process.ExitUpdate(1234, 0);
-            testMessage(msg, wire, ReplyMsg);
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
 });
