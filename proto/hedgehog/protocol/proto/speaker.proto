@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package hedgehog.protocol.proto;
+
+option java_package = "at.pria.hedgehog.protocol.proto";
+option java_outer_classname = "SpeakerP";
+
+// <default GSL customizable: module-extras />
+
+// Sets the speaker frequency in Hertz; a frequency of zero turns the speaker off.
+// Only a range of frequencies may be valid depending on the Hardware.
+//
+// => (frequency):           servo action => ack
+message SpeakerAction {
+    uint32 frequency = 1;
+}

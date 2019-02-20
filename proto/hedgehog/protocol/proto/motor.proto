@@ -20,6 +20,13 @@ enum MotorState {
     // set amount to 0 (or skip it) to actively keeping in one position
     VELOCITY = 2;
 }
+
+message Dummy {}
+
+message EncoderConfig {
+    uint32 encoder_a_port = 1;
+    uint32 encoder_b_port = 2;
+}
 // </GSL customizable: module-extras>
 
 // Command for one motor. By setting a relative or absolute goal position,
@@ -46,15 +53,34 @@ message MotorAction {
     }
 }
 
+// Configures one motor for DC, encoder, or stepper operation.
+// Stepper configuration requires two motor ports to be combined into one stepper
+// motor and thus only works for even motor ports (i.e. 0 and 2).
+//
+// => (port, config):        motor config action => ack
+message MotorConfigAction {
+    uint32 port = 1;
+    oneof config {
+        Dummy dc = 2;
+        EncoderConfig encoder = 3;
+        Dummy stepper = 4;
+    }
+}
+
 // Request or reply for one motor's current command.
 // The command may change by a motor action, or by reaching the goal position of a terminating motor action.
 //
 // => (port):                motor command request => motor command reply
-// <= (port, state, amount):  motor command reply
+// <= (port, config, state, amount):  motor command reply
 // => (port, subscription):  motor command subscribe => ack
-// <- (port, state, amount, subscription):  motor command update
+// <- (port, config, state, amount, subscription):  motor command update
 message MotorCommandMessage {
     uint32 port = 1;
+    oneof config {
+        Dummy dc = 5;
+        EncoderConfig encoder = 6;
+        Dummy stepper = 7;
+    }
     MotorState state = 2;
     sint32 amount = 3;
     Subscription subscription = 4;

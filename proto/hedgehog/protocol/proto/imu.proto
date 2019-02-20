@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package hedgehog.protocol.proto;
+
+option java_package = "at.pria.hedgehog.protocol.proto";
+option java_outer_classname = "ImuP";
+
+// <GSL customizable: module-extras>
+import "hedgehog/protocol/proto/subscription.proto";
+
+// IMU request kinds
+enum ImuKind {
+    RATE = 0;
+    ACCELERATION = 1;
+    POSE = 2;
+}
+// </GSL customizable: module-extras>
+
+// Request or reply for Hedgehog's IMU.
+//   A request queries either the `RATE``, `ACCELERATION`, or `POSE` of the IMU,
+//   and the result contains data for all three axes.
+//
+// => ():                    IMU rate request => IMU rate reply
+// <= (x, y, z):             IMU rate reply
+// => (subscription):        IMU rate subscribe => ack
+// <- (x, y, z, subscription):  IMU rate update
+// => ():                    IMU acceleration request => IMU acceleration reply
+// <= (x, y, z):             IMU acceleration reply
+// => (subscription):        IMU acceleration subscribe => ack
+// <- (x, y, z, subscription):  IMU acceleration update
+// => ():                    IMU pose request => IMU pose reply
+// <= (x, y, z):             IMU pose reply
+// => (subscription):        IMU pose subscribe => ack
+// <- (x, y, z, subscription):  IMU pose update
+message ImuMessage {
+    ImuKind kind = 1;
+    sint32 x = 2;
+    sint32 y = 3;
+    sint32 z = 4;
+    Subscription subscription = 5;
+}

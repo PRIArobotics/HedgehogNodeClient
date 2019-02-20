@@ -30,7 +30,10 @@ message ProcessExecuteReply {
     uint32 pid = 1;
 }
 
-// send data to/receive data from a process' file streams
+// Send data to/receive data from a process' file streams.
+// The `STDIN` fileno may only be used for sending data to the process,
+// the others only for receiving data from the process.
+// An empty chunk means `EOF`.
 //
 // => (pid, fileno, chunk):  stream data action => ack
 // <- (pid, fileno, chunk):  stream data update
@@ -52,7 +55,8 @@ message ProcessSignalAction {
     uint32 signal = 2;
 }
 
-// Signals that the process has exited
+// Signals that the process has exited.
+// A negative value `-N` indicates that the child was terminated by signal `N`.
 //
 // <- (pid, exit_code):      process exit update
 message ProcessExitUpdate {
