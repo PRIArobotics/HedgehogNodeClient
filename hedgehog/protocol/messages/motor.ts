@@ -5,6 +5,17 @@ import { motor_pb } from '../proto';
 
 // <GSL customizable: module-header>
 export let MotorState = motor_pb.MotorState;
+export enum ConfigKind {
+    DC,
+    ENCODER,
+    STEPPER,
+}
+
+export interface MotorConfig {
+    kind: ConfigKind;
+    encoderAPort?: number;
+    encoderBPort?: number;
+}
 
 type Subscription = any;
 // </GSL customizable: module-header>
@@ -40,6 +51,35 @@ export class Action extends Message {
     }
 }
 
+@RequestMsg.message(motor_pb.MotorConfigAction, PayloadCase.MOTOR_CONFIG_ACTION)
+export class ConfigAction extends Message {
+    constructor(public port: number, public config) {
+        super();
+    }
+
+    // <default GSL customizable: ConfigAction-extra-members />
+
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getMotorConfigAction();
+        let port = msg.getPort();
+        // <default GSL customizable: ConfigAction-parse-config>
+        // TODO parse custom field 'config'
+        let config = msg.getConfig();
+        // </GSL customizable: ConfigAction-parse-config>
+        return new ConfigAction(port, config);
+    }
+
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
+        let msg = new motor_pb.MotorConfigAction();
+        msg.setPort(this.port);
+        // <default GSL customizable: ConfigAction-serialize-config>
+        // TODO serialize custom field 'config'
+        msg.setConfig(this.config);
+        // </GSL customizable: ConfigAction-serialize-config>
+        (containerMsg as any).setMotorConfigAction(msg);
+    }
+}
+
 @message(motor_pb.MotorCommandMessage, PayloadCase.MOTOR_COMMAND_MESSAGE)
 export class CommandRequest extends Message {
     constructor(public port: number) {
@@ -57,7 +97,7 @@ export class CommandRequest extends Message {
 
 @message(motor_pb.MotorCommandMessage, PayloadCase.MOTOR_COMMAND_MESSAGE)
 export class CommandReply extends Message {
-    constructor(public port: number, public state: number, public amount: number) {
+    constructor(public port: number, public config: MotorConfig, public state: number, public amount: number) {
         super();
     }
 
@@ -66,6 +106,24 @@ export class CommandReply extends Message {
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorCommandMessage();
         msg.setPort(this.port);
+        // <GSL customizable: CommandReply-serialize-config>
+        switch(this.config.kind) {
+            case ConfigKind.DC:
+                msg.setDc(new motor_pb.Dummy());
+                break;
+            case ConfigKind.ENCODER:
+                let config = new motor_pb.EncoderConfig();
+                config.setEncoderAPort(this.config.encoderAPort);
+                config.setEncoderBPort(this.config.encoderBPort);
+                msg.setEncoder(config);
+                break;
+            case ConfigKind.STEPPER:
+                msg.setStepper(new motor_pb.Dummy());
+                break;
+            default:
+                throw new Error("unreachable");
+        }
+        // </GSL customizable: CommandReply-serialize-config>
         msg.setState(this.state);
         msg.setAmount(this.amount);
         (containerMsg as any).setMotorCommandMessage(msg);
@@ -92,7 +150,7 @@ export class CommandSubscribe extends Message {
 export class CommandUpdate extends Message {
     public isAsync = true;
 
-    constructor(public port: number, public state: number, public amount: number, public subscription: Subscription) {
+    constructor(public port: number, public config: MotorConfig, public state: number, public amount: number, public subscription: Subscription) {
         super();
     }
 
@@ -101,6 +159,24 @@ export class CommandUpdate extends Message {
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorCommandMessage();
         msg.setPort(this.port);
+        // <GSL customizable: CommandUpdate-serialize-config>
+        switch(this.config.kind) {
+            case ConfigKind.DC:
+                msg.setDc(new motor_pb.Dummy());
+                break;
+            case ConfigKind.ENCODER:
+                let config = new motor_pb.EncoderConfig();
+                config.setEncoderAPort(this.config.encoderAPort);
+                config.setEncoderBPort(this.config.encoderBPort);
+                msg.setEncoder(config);
+                break;
+            case ConfigKind.STEPPER:
+                msg.setStepper(new motor_pb.Dummy());
+                break;
+            default:
+                throw new Error("unreachable");
+        }
+        // </GSL customizable: CommandUpdate-serialize-config>
         msg.setState(this.state);
         msg.setAmount(this.amount);
         msg.setSubscription(this.subscription);
@@ -203,6 +279,9 @@ RequestMsg.parser(PayloadCase.MOTOR_COMMAND_MESSAGE)(
     function parseMotorCommandMessageRequestFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (containerMsg as any).getMotorCommandMessage();
         let port = msg.getPort();
+        let dc = msg.hasDc()? msg.getDc() : undefined;
+        let encoder = msg.hasEncoder()? msg.getEncoder() : undefined;
+        let stepper = msg.hasStepper()? msg.getStepper() : undefined;
         let state = msg.getState();
         let amount = msg.getAmount();
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
@@ -219,14 +298,36 @@ ReplyMsg.parser(PayloadCase.MOTOR_COMMAND_MESSAGE)(
     function parseMotorCommandMessageReplyFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (containerMsg as any).getMotorCommandMessage();
         let port = msg.getPort();
+        let dc = msg.hasDc()? msg.getDc() : undefined;
+        let encoder = msg.hasEncoder()? msg.getEncoder() : undefined;
+        let stepper = msg.hasStepper()? msg.getStepper() : undefined;
         let state = msg.getState();
         let amount = msg.getAmount();
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
         // <GSL customizable: parseMotorCommandMessageReplyFrom-return>
+        let config: MotorConfig;
+        if(dc !== undefined) {
+            config = {
+                kind: ConfigKind.DC,
+            }
+        } else if(encoder !== undefined) {
+            config = {
+                kind: ConfigKind.ENCODER,
+                encoderAPort: encoder.getEncoderAPort(),
+                encoderBPort: encoder.getEncoderBPort(),
+            }
+        } else if(encoder !== undefined) {
+            config = {
+                kind: ConfigKind.STEPPER,
+            }
+        } else {
+            throw new Error("unreachable");
+        }
+
         if(subscription === undefined)
-            return new CommandReply(port, state, amount);
+            return new CommandReply(port, config, state, amount);
         else
-            return new CommandUpdate(port, state, amount, subscription);
+            return new CommandUpdate(port, config, state, amount, subscription);
         // </GSL customizable: parseMotorCommandMessageReplyFrom-return>
     }
 );

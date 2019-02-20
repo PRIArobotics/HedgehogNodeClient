@@ -36,6 +36,18 @@ io.DigitalMessage:
   subscription:
     typ: Subscription
 
+imu.ImuMessage:
+  kind:
+    typ: ImuKind
+  x:
+    typ: number
+  y:
+    typ: number
+  z:
+    typ: number
+  subscription:
+    typ: Subscription
+
 motor.MotorAction:
   port:
     typ: number
@@ -50,6 +62,10 @@ motor.MotorAction:
   relative:
     typ: number
   absolute:
+    typ: number
+
+motor.MotorConfigAction:
+  port:
     typ: number
 
 motor.MotorCommandMessage:
@@ -127,4 +143,8 @@ process.ProcessExitUpdate:
   pid:
     typ: number
   exit_code:
+    typ: number
+
+speaker.SpeakerAction:
+  frequency:
     typ: number

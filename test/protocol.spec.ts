@@ -297,12 +297,13 @@ describe('Protocol', () => {
             let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorCommandMessage();
                 proto.setPort(0);
+                proto.setDc(new motor_pb.Dummy());
                 proto.setState(motor.MotorState.POWER);
                 proto.setAmount(1000);
                 _wire.setMotorCommandMessage(proto);
             });
 
-            let msg = new motor.CommandReply(0, motor.MotorState.POWER, 1000);
+            let msg = new motor.CommandReply(0, { kind: motor.ConfigKind.DC }, motor.MotorState.POWER, 1000);
             testMessage(msg, wire, protocol.ReplyMsg);
         });
 
@@ -314,13 +315,14 @@ describe('Protocol', () => {
             let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorCommandMessage();
                 proto.setPort(0);
+                proto.setDc(new motor_pb.Dummy());
                 proto.setState(motor.MotorState.POWER);
                 proto.setAmount(1000);
                 proto.setSubscription(sub);
                 _wire.setMotorCommandMessage(proto);
             });
 
-            let msg = new motor.CommandUpdate(0, motor.MotorState.POWER, 1000, sub);
+            let msg = new motor.CommandUpdate(0, { kind: motor.ConfigKind.DC }, motor.MotorState.POWER, 1000, sub);
             testMessage(msg, wire, protocol.ReplyMsg);
         });
     });

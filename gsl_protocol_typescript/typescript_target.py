@@ -18,18 +18,30 @@ def generate_module_code(model, mod, root):
 
     @generate(out_file)
     def code():
-        def map_params(messageClass, mandatory, repeated, optional):
+        def map_params(messageClass, mandatory, repeated, optional, custom=None):
+            def has(attr_caller):
+                try:
+                    attr_caller()
+                except AttributeError:
+                    return False
+                else:
+                    return True
+
             for param in messageClass.params:
-                if isinstance(param, MandatoryParam):
+                if isinstance(param, MandatoryParam) and has(lambda: param.field.typescript_spec):
                     yield mandatory(param)
-                elif isinstance(param, RepeatedParam):
+                elif isinstance(param, RepeatedParam) and has(lambda: param.field.typescript_spec):
                     yield repeated(param)
-                elif isinstance(param, OptionalParam):
+                elif isinstance(param, OptionalParam) and has(lambda: [field.typescript_spec for field in param.fields]):
                     for i in range(len(param.options)):
                         yield optional(param, i)
+                elif custom:
+                    yield custom(param)
+                else:
+                    raise RuntimeError(f"Unexpected custom parameter: {param}")
 
-        def map_params_code(messageClass, mandatory, repeated, optional):
-            for generator in map_params(messageClass, mandatory, repeated, optional):
+        def map_params_code(messageClass, mandatory, repeated, optional, custom=None):
+            for generator in map_params(messageClass, mandatory, repeated, optional, custom):
                 yield from generator
 
         def field_names(messageClass):
@@ -38,6 +50,7 @@ def generate_module_code(model, mod, root):
                 mandatory=lambda param: param.name,
                 repeated=lambda param: param.name,
                 optional=lambda param, i: param.options[i],
+                custom=lambda param: param.name,
             )
 
         def message_class_code(messageClass):
@@ -68,7 +81,10 @@ def generate_module_code(model, mod, root):
                         typescript = param.fields[i].typescript_spec
                         return param_str(param.options[i], typescript.typ, typescript.default, optional=True)
 
-                    yield from map_params(messageClass, mandatory, repeated, optional)
+                    def custom(param):
+                        return f"public {param.name}"
+
+                    yield from map_params(messageClass, mandatory, repeated, optional, custom)
 
                 yield from lines(f"""\
     constructor({", ".join(init_param_strs())}) {{
@@ -82,6 +98,7 @@ def generate_module_code(model, mod, root):
                         mandatory=lambda param: case(snake=param.name, to='camel'),
                         repeated=lambda param: case(snake=param.name, to='camel'),
                         optional=lambda param, i: case(snake=param.options[i], to='camel'),
+                        custom=lambda param: case(snake=param.name, to='camel'),
                     )
 
                 yield from lines(f"""\
@@ -99,6 +116,11 @@ def generate_module_code(model, mod, root):
         let {case(snake=param.options[i], to='camel')} = msg.get{case(snake=param.options[i], to='pascal')}();""")
                     if len(param.options) == 1 else lines(f"""\
         let {case(snake=param.options[i], to='camel')} = msg.has{case(snake=param.options[i], to='pascal')}()? msg.get{case(snake=param.options[i], to='pascal')}() : undefined;"""),
+                    custom=lambda param: lines(f"""\
+        // <default GSL customizable: {messageClass.name}-parse-{param.name}>
+        // TODO parse custom field '{param.name}'
+        let {case(snake=param.name, to='camel')} = msg.get{case(snake=param.name, to='pascal')}();
+        // </GSL customizable: {messageClass.name}-parse-{param.name}>"""),
                 )
 
                 yield from lines(f"""\
@@ -129,6 +151,11 @@ def generate_module_code(model, mod, root):
         {assignment_str(param.options[i], nested=param.fields[i].nested)}""")
                     if len(param.options) == 1 else lines(f"""\
         {assignment_str(param.options[i], nested=param.fields[i].nested)}"""),
+                    custom=lambda param: lines(f"""\
+        // <default GSL customizable: {messageClass.name}-serialize-{param.name}>
+        // TODO serialize custom field '{param.name}'
+        {assignment_str(param.name)}
+        // </GSL customizable: {messageClass.name}-serialize-{param.name}>"""),
                 )
                 yield from lines(f"""\
         (containerMsg as any).set{case(snake=message.discriminator, to='pascal')}(msg);
@@ -171,6 +198,7 @@ export class {messageClass.name} extends Message {{""")
                     mandatory=lambda param: param.name,
                     repeated=lambda param: param.name,
                     optional=lambda param, i: param.options[i],
+                    custom=lambda param: param.name,
                 )
 
             messageClasses = message.requestClasses if request else message.replyClasses
