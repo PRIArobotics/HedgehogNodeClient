@@ -36,6 +36,190 @@ describe('Protocol', () => {
         });
     });
 
+    describe('IMUMessage', () =>  {
+        it("should translate `imu.RateRequest` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.RATE);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.RateRequest();
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+
+        it("should translate `imu.RateSubscribe` successfully", () => {
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.RATE);
+                proto.setSubscription(sub);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.RateSubscribe(sub);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+
+        it("should translate `imu.RateReply` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.RATE);
+                proto.setX(0);
+                proto.setY(0);
+                proto.setZ(-100);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.RateReply(0, 0, -100);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+        it("should translate `imu.RateUpdate` successfully", () => {
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.RATE);
+                proto.setX(0);
+                proto.setY(0);
+                proto.setZ(-100);
+                proto.setSubscription(sub);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.RateUpdate(0, 0, -100, sub);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+
+        it("should translate `imu.AccelerationRequest` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.ACCELERATION);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.AccelerationRequest();
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+
+        it("should translate `imu.AccelerationSubscribe` successfully", () => {
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.ACCELERATION);
+                proto.setSubscription(sub);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.AccelerationSubscribe(sub);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+
+        it("should translate `imu.AccelerationReply` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.ACCELERATION);
+                proto.setX(0);
+                proto.setY(0);
+                proto.setZ(-100);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.AccelerationReply(0, 0, -100);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+        it("should translate `imu.AccelerationUpdate` successfully", () => {
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.ACCELERATION);
+                proto.setX(0);
+                proto.setY(0);
+                proto.setZ(-100);
+                proto.setSubscription(sub);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.AccelerationUpdate(0, 0, -100, sub);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+
+        it("should translate `imu.PoseRequest` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.POSE);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.PoseRequest();
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+
+        it("should translate `imu.PoseSubscribe` successfully", () => {
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.POSE);
+                proto.setSubscription(sub);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.PoseSubscribe(sub);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+
+        it("should translate `imu.PoseReply` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.POSE);
+                proto.setX(0);
+                proto.setY(0);
+                proto.setZ(-100);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.PoseReply(0, 0, -100);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+        it("should translate `imu.PoseUpdate` successfully", () => {
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+
+            let wire = makeWire(_wire => {
+                let proto = new imu_pb.ImuMessage();
+                proto.setKind(imu.ImuKind.POSE);
+                proto.setX(0);
+                proto.setY(0);
+                proto.setZ(-100);
+                proto.setSubscription(sub);
+                _wire.setImuMessage(proto);
+            });
+
+            let msg = new imu.PoseUpdate(0, 0, -100, sub);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+    });
+
     describe('IOAction', () =>  {
         it("should translate `io.Action` successfully", () => {
             let wire = makeWire(_wire => {

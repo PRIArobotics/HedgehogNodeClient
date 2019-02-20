@@ -4,6 +4,8 @@ import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMess
 import { imu_pb } from '../proto';
 
 // <GSL customizable: module-header>
+export let ImuKind = imu_pb.ImuKind;
+
 type Subscription = any;
 // </GSL customizable: module-header>
 
@@ -17,6 +19,7 @@ export class RateRequest extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.RATE);
         (containerMsg as any).setImuMessage(msg);
     }
 }
@@ -31,6 +34,7 @@ export class RateReply extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.RATE);
         msg.setX(this.x);
         msg.setY(this.y);
         msg.setZ(this.z);
@@ -48,6 +52,7 @@ export class RateSubscribe extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.RATE);
         msg.setSubscription(this.subscription);
         (containerMsg as any).setImuMessage(msg);
     }
@@ -65,6 +70,7 @@ export class RateUpdate extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.RATE);
         msg.setX(this.x);
         msg.setY(this.y);
         msg.setZ(this.z);
@@ -83,6 +89,7 @@ export class AccelerationRequest extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.ACCELERATION);
         (containerMsg as any).setImuMessage(msg);
     }
 }
@@ -97,6 +104,7 @@ export class AccelerationReply extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.ACCELERATION);
         msg.setX(this.x);
         msg.setY(this.y);
         msg.setZ(this.z);
@@ -114,6 +122,7 @@ export class AccelerationSubscribe extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.ACCELERATION);
         msg.setSubscription(this.subscription);
         (containerMsg as any).setImuMessage(msg);
     }
@@ -131,6 +140,7 @@ export class AccelerationUpdate extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.ACCELERATION);
         msg.setX(this.x);
         msg.setY(this.y);
         msg.setZ(this.z);
@@ -149,6 +159,7 @@ export class PoseRequest extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.POSE);
         (containerMsg as any).setImuMessage(msg);
     }
 }
@@ -163,6 +174,7 @@ export class PoseReply extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.POSE);
         msg.setX(this.x);
         msg.setY(this.y);
         msg.setZ(this.z);
@@ -180,6 +192,7 @@ export class PoseSubscribe extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.POSE);
         msg.setSubscription(this.subscription);
         (containerMsg as any).setImuMessage(msg);
     }
@@ -197,6 +210,7 @@ export class PoseUpdate extends Message {
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new imu_pb.ImuMessage();
+        msg.setKind(ImuKind.POSE);
         msg.setX(this.x);
         msg.setY(this.y);
         msg.setZ(this.z);
@@ -213,15 +227,30 @@ RequestMsg.parser(PayloadCase.IMU_MESSAGE)(
         let y = msg.getY();
         let z = msg.getZ();
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
-        // <default GSL customizable: parseImuMessageRequestFrom-return>
-        // TODO return correct message instance
-        //return new RateRequest();
-        //return new RateSubscribe(subscription);
-        //return new AccelerationRequest();
-        //return new AccelerationSubscribe(subscription);
-        //return new PoseRequest();
-        //return new PoseSubscribe(subscription);
-        return null;
+        // <GSL customizable: parseImuMessageRequestFrom-return>
+        if(subscription === undefined) {
+            switch(kind) {
+                case ImuKind.RATE:
+                    return new RateRequest();
+                case ImuKind.ACCELERATION:
+                    return new AccelerationRequest();
+                case ImuKind.POSE:
+                    return new PoseRequest();
+                default:
+                    throw new Error("unreachable");
+            }
+        } else {
+            switch(kind) {
+                case ImuKind.RATE:
+                    return new RateSubscribe(subscription);
+                case ImuKind.ACCELERATION:
+                    return new AccelerationSubscribe(subscription);
+                case ImuKind.POSE:
+                    return new PoseSubscribe(subscription);
+                default:
+                    throw new Error("unreachable");
+            }
+        }
         // </GSL customizable: parseImuMessageRequestFrom-return>
     }
 );
@@ -234,15 +263,30 @@ ReplyMsg.parser(PayloadCase.IMU_MESSAGE)(
         let y = msg.getY();
         let z = msg.getZ();
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
-        // <default GSL customizable: parseImuMessageReplyFrom-return>
-        // TODO return correct message instance
-        //return new RateReply(x, y, z);
-        //return new RateUpdate(x, y, z, subscription);
-        //return new AccelerationReply(x, y, z);
-        //return new AccelerationUpdate(x, y, z, subscription);
-        //return new PoseReply(x, y, z);
-        //return new PoseUpdate(x, y, z, subscription);
-        return null;
+        // <GSL customizable: parseImuMessageReplyFrom-return>
+        if(subscription === undefined) {
+            switch(kind) {
+                case ImuKind.RATE:
+                    return new RateReply(x, y, z);
+                case ImuKind.ACCELERATION:
+                    return new AccelerationReply(x, y, z);
+                case ImuKind.POSE:
+                    return new PoseReply(x, y, z);
+                default:
+                    throw new Error("unreachable");
+            }
+        } else {
+            switch(kind) {
+                case ImuKind.RATE:
+                    return new RateUpdate(x, y, z, subscription);
+                case ImuKind.ACCELERATION:
+                    return new AccelerationUpdate(x, y, z, subscription);
+                case ImuKind.POSE:
+                    return new PoseUpdate(x, y, z, subscription);
+                default:
+                    throw new Error("unreachable");
+            }
+        }
         // </GSL customizable: parseImuMessageReplyFrom-return>
     }
 );
