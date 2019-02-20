@@ -251,6 +251,51 @@ describe('Protocol', () => {
         });
     });
 
+    describe('MotorConfigAction', () =>  {
+        it("should translate `motor.ConfigAction` for DC successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new motor_pb.MotorConfigAction();
+                proto.setPort(0);
+                proto.setDc(new motor_pb.Dummy());
+                _wire.setMotorConfigAction(proto);
+            });
+
+            let msg = new motor.ConfigAction(0, { kind: motor.ConfigKind.DC });
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+
+        it("should translate `motor.ConfigAction` for ENCODER successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new motor_pb.MotorConfigAction();
+                proto.setPort(0);
+                let config = new motor_pb.EncoderConfig();
+                config.setEncoderAPort(0);
+                config.setEncoderBPort(1);
+                proto.setEncoder(config);
+                _wire.setMotorConfigAction(proto);
+            });
+
+            let msg = new motor.ConfigAction(0, {
+                kind: motor.ConfigKind.ENCODER,
+                encoderAPort: 0,
+                encoderBPort: 1,
+            });
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+
+        it("should translate `motor.ConfigAction` for STEPPER successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new motor_pb.MotorConfigAction();
+                proto.setPort(0);
+                proto.setStepper(new motor_pb.Dummy());
+                _wire.setMotorConfigAction(proto);
+            });
+
+            let msg = new motor.ConfigAction(0, { kind: motor.ConfigKind.STEPPER });
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+    });
+
     describe('MotorSetPositionAction', () =>  {
         it("should translate `motor.SetPositionAction` successfully", () => {
             let wire = makeWire(_wire => {
@@ -293,7 +338,7 @@ describe('Protocol', () => {
             testMessage(msg, wire, protocol.RequestMsg);
         });
 
-        it("should translate `motor.CommandReply` successfully", () => {
+        it("should translate `motor.CommandReply` for DC successfully", () => {
             let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorCommandMessage();
                 proto.setPort(0);
@@ -307,7 +352,42 @@ describe('Protocol', () => {
             testMessage(msg, wire, protocol.ReplyMsg);
         });
 
-        it("should translate `motor.CommandUpdate` successfully", () => {
+        it("should translate `motor.CommandReply` for ENCODER successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new motor_pb.MotorCommandMessage();
+                proto.setPort(0);
+                let config = new motor_pb.EncoderConfig();
+                config.setEncoderAPort(0);
+                config.setEncoderBPort(1);
+                proto.setEncoder(config);
+                proto.setState(motor.MotorState.POWER);
+                proto.setAmount(1000);
+                _wire.setMotorCommandMessage(proto);
+            });
+
+            let msg = new motor.CommandReply(0, {
+                kind: motor.ConfigKind.ENCODER,
+                encoderAPort: 0,
+                encoderBPort: 1,
+            }, motor.MotorState.POWER, 1000);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+        it("should translate `motor.CommandReply` for STEPPER successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new motor_pb.MotorCommandMessage();
+                proto.setPort(0);
+                proto.setStepper(new motor_pb.Dummy());
+                proto.setState(motor.MotorState.POWER);
+                proto.setAmount(1000);
+                _wire.setMotorCommandMessage(proto);
+            });
+
+            let msg = new motor.CommandReply(0, { kind: motor.ConfigKind.STEPPER }, motor.MotorState.POWER, 1000);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+        it("should translate `motor.CommandUpdate` for DC successfully", () => {
             let sub = new subscription_pb.Subscription();
             sub.setSubscribe(true);
             sub.setTimeout(10);
@@ -323,6 +403,51 @@ describe('Protocol', () => {
             });
 
             let msg = new motor.CommandUpdate(0, { kind: motor.ConfigKind.DC }, motor.MotorState.POWER, 1000, sub);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+        it("should translate `motor.CommandUpdate` for ENCODER successfully", () => {
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+
+            let wire = makeWire(_wire => {
+                let proto = new motor_pb.MotorCommandMessage();
+                proto.setPort(0);
+                let config = new motor_pb.EncoderConfig();
+                config.setEncoderAPort(0);
+                config.setEncoderBPort(1);
+                proto.setEncoder(config);
+                proto.setState(motor.MotorState.POWER);
+                proto.setAmount(1000);
+                proto.setSubscription(sub);
+                _wire.setMotorCommandMessage(proto);
+            });
+
+            let msg = new motor.CommandUpdate(0, {
+                kind: motor.ConfigKind.ENCODER,
+                encoderAPort: 0,
+                encoderBPort: 1,
+            }, motor.MotorState.POWER, 1000, sub);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+        it("should translate `motor.CommandUpdate` for STEPPER successfully", () => {
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+
+            let wire = makeWire(_wire => {
+                let proto = new motor_pb.MotorCommandMessage();
+                proto.setPort(0);
+                proto.setStepper(new motor_pb.Dummy());
+                proto.setState(motor.MotorState.POWER);
+                proto.setAmount(1000);
+                proto.setSubscription(sub);
+                _wire.setMotorCommandMessage(proto);
+            });
+
+            let msg = new motor.CommandUpdate(0, { kind: motor.ConfigKind.STEPPER }, motor.MotorState.POWER, 1000, sub);
             testMessage(msg, wire, protocol.ReplyMsg);
         });
     });

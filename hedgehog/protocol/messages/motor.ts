@@ -53,7 +53,7 @@ export class Action extends Message {
 
 @RequestMsg.message(motor_pb.MotorConfigAction, PayloadCase.MOTOR_CONFIG_ACTION)
 export class ConfigAction extends Message {
-    constructor(public port: number, public config) {
+    constructor(public port: number, public config: MotorConfig) {
         super();
     }
 
@@ -62,9 +62,29 @@ export class ConfigAction extends Message {
     public static parseFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (containerMsg as any).getMotorConfigAction();
         let port = msg.getPort();
-        // <default GSL customizable: ConfigAction-parse-config>
-        // TODO parse custom field 'config'
-        let config = msg.getConfig();
+        // <GSL customizable: ConfigAction-parse-config>
+        let config: MotorConfig;
+        switch(msg.getConfigCase()) {
+            case motor_pb.MotorConfigAction.ConfigCase.DC:
+                config = {
+                    kind: ConfigKind.DC,
+                };
+                break;
+            case motor_pb.MotorConfigAction.ConfigCase.ENCODER:
+                config = {
+                    kind: ConfigKind.ENCODER,
+                    encoderAPort: msg.getEncoder().getEncoderAPort(),
+                    encoderBPort: msg.getEncoder().getEncoderBPort(),
+                };
+                break;
+            case motor_pb.MotorConfigAction.ConfigCase.STEPPER:
+                config = {
+                    kind: ConfigKind.STEPPER,
+                };
+                break;
+            default:
+                throw new Error("unreachable");
+        }
         // </GSL customizable: ConfigAction-parse-config>
         return new ConfigAction(port, config);
     }
@@ -72,9 +92,23 @@ export class ConfigAction extends Message {
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new motor_pb.MotorConfigAction();
         msg.setPort(this.port);
-        // <default GSL customizable: ConfigAction-serialize-config>
-        // TODO serialize custom field 'config'
-        msg.setConfig(this.config);
+        // <GSL customizable: ConfigAction-serialize-config>
+        switch(this.config.kind) {
+            case ConfigKind.DC:
+                msg.setDc(new motor_pb.Dummy());
+                break;
+            case ConfigKind.ENCODER:
+                let config = new motor_pb.EncoderConfig();
+                config.setEncoderAPort(this.config.encoderAPort);
+                config.setEncoderBPort(this.config.encoderBPort);
+                msg.setEncoder(config);
+                break;
+            case ConfigKind.STEPPER:
+                msg.setStepper(new motor_pb.Dummy());
+                break;
+            default:
+                throw new Error("unreachable");
+        }
         // </GSL customizable: ConfigAction-serialize-config>
         (containerMsg as any).setMotorConfigAction(msg);
     }
@@ -306,22 +340,26 @@ ReplyMsg.parser(PayloadCase.MOTOR_COMMAND_MESSAGE)(
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
         // <GSL customizable: parseMotorCommandMessageReplyFrom-return>
         let config: MotorConfig;
-        if(dc !== undefined) {
-            config = {
-                kind: ConfigKind.DC,
-            }
-        } else if(encoder !== undefined) {
-            config = {
-                kind: ConfigKind.ENCODER,
-                encoderAPort: encoder.getEncoderAPort(),
-                encoderBPort: encoder.getEncoderBPort(),
-            }
-        } else if(encoder !== undefined) {
-            config = {
-                kind: ConfigKind.STEPPER,
-            }
-        } else {
-            throw new Error("unreachable");
+        switch(msg.getConfigCase()) {
+            case motor_pb.MotorCommandMessage.ConfigCase.DC:
+                config = {
+                    kind: ConfigKind.DC,
+                };
+                break;
+            case motor_pb.MotorCommandMessage.ConfigCase.ENCODER:
+                config = {
+                    kind: ConfigKind.ENCODER,
+                    encoderAPort: encoder.getEncoderAPort(),
+                    encoderBPort: encoder.getEncoderBPort(),
+                };
+                break;
+            case motor_pb.MotorCommandMessage.ConfigCase.STEPPER:
+                config = {
+                    kind: ConfigKind.STEPPER,
+                };
+                break;
+            default:
+                throw new Error("unreachable");
         }
 
         if(subscription === undefined)
