@@ -3,9 +3,9 @@ import "@babel/polyfill";
 
 import * as assert from 'assert';
 
-import { hedgehog_pb, ack_pb, io_pb, motor_pb, servo_pb, process_pb,
+import { hedgehog_pb, ack_pb, imu_pb, io_pb, motor_pb, servo_pb, process_pb, speaker_pb,
          subscription_pb } from '../hedgehog/protocol/proto';
-import { protocol, Message, ack, io, analog, digital, motor, servo, process } from "../hedgehog";
+import { protocol, Message, ack, imu, io, analog, digital, motor, servo, process, speaker } from "../hedgehog";
 import { ProtoContainerMessage } from "../hedgehog/utils/protobuf";
 
 describe('Protocol', () => {
@@ -688,6 +688,19 @@ describe('Protocol', () => {
 
             let msg = new process.ExitUpdate(1234, 0);
             testMessage(msg, wire, protocol.ReplyMsg);
+        });
+    });
+
+    describe('SpeakerAction', () =>  {
+        it("should translate `speaker.Action` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new speaker_pb.SpeakerAction();
+                proto.setFrequency(440);
+                _wire.setSpeakerAction(proto);
+            });
+
+            let msg = new speaker.Action(440);
+            testMessage(msg, wire, protocol.RequestMsg);
         });
     });
 });
