@@ -3,7 +3,9 @@
 import { RequestMsg, ReplyMsg, message, PayloadCase, Message, ProtoContainerMessage } from './index';
 import { imu_pb } from '../proto';
 
-// <default GSL customizable: module-header />
+// <GSL customizable: module-header>
+type Subscription = any;
+// </GSL customizable: module-header>
 
 @message(imu_pb.ImuMessage, PayloadCase.IMU_MESSAGE)
 export class RateRequest extends Message {
