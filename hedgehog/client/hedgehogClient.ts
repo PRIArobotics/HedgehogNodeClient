@@ -166,7 +166,7 @@ export class HedgehogClient {
         await this.send(new servo.Action(port, position));
     }
 
-    public async getServoCommand(port: number): Promise<number | null> {
+    public async getServoPosition(port: number): Promise<number | null> {
         let reply = await this.send<servo.CommandReply>(new servo.CommandRequest(port));
         return reply.position;
     }
