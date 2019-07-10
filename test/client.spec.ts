@@ -195,7 +195,7 @@ describe('Client', () => {
     it('`setServo` should work', async () => {
         mock_server(
             [[new servo.Action(0, null)], [new ack.Acknowledgement()]],
-            [[new servo.Action(0, 1000)], [new ack.Acknowledgement()]],
+            [[new servo.Action(0, 5000)], [new ack.Acknowledgement()]],
         );
 
         await hedgehog.setServo(0, null);
@@ -205,7 +205,7 @@ describe('Client', () => {
     it('`getServoPosition` should work', async () => {
         mock_server(
             [[new servo.CommandRequest(0)], [new servo.CommandReply(0, null)]],
-            [[new servo.CommandRequest(0)], [new servo.CommandReply(0, 1000)]],
+            [[new servo.CommandRequest(0)], [new servo.CommandReply(0, 5000)]],
         );
 
         assert.strictEqual(await hedgehog.getServoPosition(0), null);

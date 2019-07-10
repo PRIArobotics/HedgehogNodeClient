@@ -163,10 +163,27 @@ export class HedgehogClient {
     }
 
     public async setServo(port: number, position: number | null): Promise<void> {
+        if (position !== null) {
+            // position is in range 0..1000 but must be in range 1000..5000
+            position = 1000 + 4 * position;
+        }
+        await this.setServoRaw(port, position);
+    }
+
+    public async setServoRaw(port: number, position: number | null): Promise<void> {
+        // position is in range 1000..5000, which is the duty cycle length in 0.5us units
         await this.send(new servo.Action(port, position));
     }
 
     public async getServoPosition(port: number): Promise<number | null> {
+        let position = await this.getServoPositionRaw(port);
+        if (position !== null) {
+            position = Math.floor((position - 1000) / 4);
+        }
+        return position;
+    }
+
+    public async getServoPositionRaw(port: number): Promise<number | null> {
         let reply = await this.send<servo.CommandReply>(new servo.CommandRequest(port));
         return reply.position;
     }
