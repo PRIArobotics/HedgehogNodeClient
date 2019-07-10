@@ -800,7 +800,7 @@ describe('Protocol', () => {
                 _wire.setServoAction(proto);
             });
 
-            let msg = new servo.Action(0, false);
+            let msg = new servo.Action(0, null);
             testMessage(msg, wire, protocol.RequestMsg);
         });
 
@@ -813,7 +813,7 @@ describe('Protocol', () => {
                 _wire.setServoAction(proto);
             });
 
-            let msg = new servo.Action(0, true, 1000);
+            let msg = new servo.Action(0, 1000);
             testMessage(msg, wire, protocol.RequestMsg);
         });
     });
@@ -846,7 +846,7 @@ describe('Protocol', () => {
             testMessage(msg, wire, protocol.RequestMsg);
         });
 
-        it("should translate `servo.CommandReply` successfully", () => {
+        it("should translate `servo.CommandReply` without position successfully", () => {
             let wire = makeWire(_wire => {
                 let proto = new servo_pb.ServoCommandMessage();
                 proto.setPort(0);
@@ -854,11 +854,24 @@ describe('Protocol', () => {
                 _wire.setServoCommandMessage(proto);
             });
 
-            let msg = new servo.CommandReply(0, false, undefined);
+            let msg = new servo.CommandReply(0, null);
             testMessage(msg, wire, protocol.ReplyMsg);
         });
 
-        it("should translate `servo.CommandUpdate` successfully", () => {
+        it("should translate `servo.CommandReply` with position successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new servo_pb.ServoCommandMessage();
+                proto.setPort(0);
+                proto.setActive(true);
+                proto.setPosition(1000);
+                _wire.setServoCommandMessage(proto);
+            });
+
+            let msg = new servo.CommandReply(0, 1000);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+        it("should translate `servo.CommandUpdate` without position successfully", () => {
             let sub = new subscription_pb.Subscription();
             sub.setSubscribe(true);
             sub.setTimeout(10);
@@ -871,7 +884,25 @@ describe('Protocol', () => {
                 _wire.setServoCommandMessage(proto);
             });
 
-            let msg = new servo.CommandUpdate(0, false, undefined, sub);
+            let msg = new servo.CommandUpdate(0, null, sub);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+        it("should translate `servo.CommandUpdate` with position successfully", () => {
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+
+            let wire = makeWire(_wire => {
+                let proto = new servo_pb.ServoCommandMessage();
+                proto.setPort(0);
+                proto.setActive(true);
+                proto.setPosition(1000);
+                proto.setSubscription(sub);
+                _wire.setServoCommandMessage(proto);
+            });
+
+            let msg = new servo.CommandUpdate(0, 1000, sub);
             testMessage(msg, wire, protocol.ReplyMsg);
         });
     });

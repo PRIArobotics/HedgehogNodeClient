@@ -117,19 +117,14 @@ motor.MotorSetPositionAction:
 servo.ServoAction:
   port:
     typ: number
-  active:
-    typ: boolean
   position:
-    typ: number
-    default: undefined
+    typ: number | null
 
 servo.ServoCommandMessage:
   port:
     typ: number
-  active:
-    typ: boolean
   position:
-    typ: number
+    typ: number | null
   subscription:
     typ: Subscription
 

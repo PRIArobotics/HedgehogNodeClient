@@ -144,13 +144,13 @@ export class HedgehogClient {
         await this.send(new motor.SetPositionAction(port, position));
     }
 
-    public async setServo(port: number, active: boolean, position?: number): Promise<void> {
-        await this.send(new servo.Action(port, active, position));
+    public async setServo(port: number, position: number | null): Promise<void> {
+        await this.send(new servo.Action(port, position));
     }
 
-    public async getServoCommand(port: number): Promise<[boolean, number]> {
+    public async getServoCommand(port: number): Promise<number | null> {
         let reply = await this.send<servo.CommandReply>(new servo.CommandRequest(port));
-        return [reply.active, reply.position];
+        return reply.position;
     }
 
     public close () {

@@ -9,10 +9,8 @@ type Subscription = any;
 
 @RequestMsg.message(servo_pb.ServoAction, PayloadCase.SERVO_ACTION)
 export class Action extends Message {
-    constructor(public port: number, public active: boolean, public position?: number) {
+    constructor(public port: number, public position: number | null) {
         super();
-        if(!active)
-            this.position = undefined;
     }
 
     // <default GSL customizable: Action-extra-members />
@@ -20,15 +18,19 @@ export class Action extends Message {
     public static parseFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (containerMsg as any).getServoAction();
         let port = msg.getPort();
+        // <GSL customizable: Action-parse-active>
         let active = msg.getActive();
+        // </GSL customizable: Action-parse-active>
         let position = msg.getPosition();
-        return new Action(port, active, position);
+        return new Action(port, active ? position : null);
     }
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new servo_pb.ServoAction();
         msg.setPort(this.port);
-        msg.setActive(this.active);
+        // <GSL customizable: Action-serialize-active>
+        msg.setActive(this.position !== null);
+        // </GSL customizable: Action-serialize-active>
         msg.setPosition(this.position);
         (containerMsg as any).setServoAction(msg);
     }
@@ -51,10 +53,8 @@ export class CommandRequest extends Message {
 
 @message(servo_pb.ServoCommandMessage, PayloadCase.SERVO_COMMAND_MESSAGE)
 export class CommandReply extends Message {
-    constructor(public port: number, public active: boolean, public position: number) {
+    constructor(public port: number, public position: number | null) {
         super();
-        if(!active)
-            this.position = undefined;
     }
 
     // <default GSL customizable: CommandReply-extra-members />
@@ -62,7 +62,9 @@ export class CommandReply extends Message {
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new servo_pb.ServoCommandMessage();
         msg.setPort(this.port);
-        msg.setActive(this.active);
+        // <GSL customizable: CommandReply-serialize-active>
+        msg.setActive(this.position !== null);
+        // </GSL customizable: CommandReply-serialize-active>
         msg.setPosition(this.position);
         (containerMsg as any).setServoCommandMessage(msg);
     }
@@ -88,10 +90,8 @@ export class CommandSubscribe extends Message {
 export class CommandUpdate extends Message {
     public isAsync = true;
 
-    constructor(public port: number, public active: boolean, public position: number, public subscription: Subscription) {
+    constructor(public port: number, public position: number | null, public subscription: Subscription) {
         super();
-        if(!active)
-            this.position = undefined;
     }
 
     // <default GSL customizable: CommandUpdate-extra-members />
@@ -99,7 +99,9 @@ export class CommandUpdate extends Message {
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new servo_pb.ServoCommandMessage();
         msg.setPort(this.port);
-        msg.setActive(this.active);
+        // <GSL customizable: CommandUpdate-serialize-active>
+        msg.setActive(this.position !== null);
+        // </GSL customizable: CommandUpdate-serialize-active>
         msg.setPosition(this.position);
         msg.setSubscription(this.subscription);
         (containerMsg as any).setServoCommandMessage(msg);
@@ -131,9 +133,9 @@ ReplyMsg.parser(PayloadCase.SERVO_COMMAND_MESSAGE)(
         let subscription = msg.hasSubscription()? msg.getSubscription() : undefined;
         // <GSL customizable: parseServoCommandMessageReplyFrom-return>
         if(subscription === undefined)
-            return new CommandReply(port, active, position);
+            return new CommandReply(port, active ? position : null);
         else
-            return new CommandUpdate(port, active, position, subscription);
+            return new CommandUpdate(port, active ? position : null, subscription);
         // </GSL customizable: parseServoCommandMessageReplyFrom-return>
     }
 );
