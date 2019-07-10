@@ -98,26 +98,44 @@ export class HedgehogClient {
         return reply.flags;
     }
 
-    public async setMotor(port: number, state: number, amount: number = 0,
-                          reachedState: number = motor.MotorState.POWER,
-                          relative?: number, absolute?: number): Promise<void> {
-        await this.send(new motor.Action(port, state, amount, reachedState, relative, absolute));
+    public async configureMotor(port: number, config: motor.MotorConfig): Promise<void> {
+        await this.send(new motor.ConfigAction(port, config));
     }
 
-    public async move(port: number, amount: number, state: number = motor.MotorState.POWER): Promise<void> {
-        await this.setMotor(port, state, amount);
+    public async configureMotorDc(port: number): Promise<void> {
+        await this.configureMotor(port, {kind: motor.ConfigKind.DC});
+    }
+
+    public async configureMotorEncoder(port: number, encoderAPort: number, encoderBPort: number): Promise<void> {
+        await this.configureMotor(port, {kind: motor.ConfigKind.ENCODER, encoderAPort, encoderBPort});
+    }
+
+    public async configureMotorStepper(port: number): Promise<void> {
+        await this.configureMotor(port, {kind: motor.ConfigKind.STEPPER});
+    }
+
+    public async moveMotor(port: number, amount: number, state: number = motor.MotorState.POWER): Promise<void> {
+        await this.send(new motor.Action(port, state, amount));
+    }
+
+    public async motorOff(port: number): Promise<void> {
+        await this.moveMotor(port, 0, motor.MotorState.POWER);
+    }
+
+    public async brake(port: number): Promise<void> {
+        await this.moveMotor(port, 1000, motor.MotorState.BRAKE);
     }
 
     public async moveRelativePosition(port: number, amount: number, relative: number,
                                       state: number = motor.MotorState.POWER,
                                       reachedState: number = motor.MotorState.POWER): Promise<void> {
-        await this.setMotor(port, state, amount, reachedState, relative, undefined);
+        await this.send(new motor.Action(port, state, amount, reachedState, relative, undefined));
     }
 
     public async moveAbsolutePosition(port: number, amount: number, absolute: number,
                                       state: number = motor.MotorState.POWER,
                                       reachedState: number = motor.MotorState.POWER): Promise<void> {
-        await this.setMotor(port, state, amount, reachedState, undefined, absolute);
+        await this.send(new motor.Action(port, state, amount, reachedState, undefined, absolute));
     }
 
     public async getMotorCommand(port: number): Promise<[number, number]> {

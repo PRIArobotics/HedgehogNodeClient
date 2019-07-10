@@ -136,12 +136,20 @@ describe('Client', () => {
         assert.strictEqual(await hedgehog.getIOConfig(0), io.IOFlags.INPUT_PULLUP);
     });
 
-    it('`move` should work', async () => {
+    it('`configureMotor` should work', async () => {
+        mock_server(
+            [[new motor.ConfigAction(0, {kind: motor.ConfigKind.DC})], [new ack.Acknowledgement()]],
+        );
+
+        await hedgehog.configureMotor(0, {kind: motor.ConfigKind.DC});
+    });
+
+    it('`moveMotor` should work', async () => {
         mock_server(
             [[new motor.Action(0, motor.MotorState.POWER, 1000)], [new ack.Acknowledgement()]],
         );
 
-        await hedgehog.move(0, 1000);
+        await hedgehog.moveMotor(0, 1000);
     });
 
     it('`moveRelativePosition` should work', async () => {
