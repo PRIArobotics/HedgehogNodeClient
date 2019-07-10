@@ -236,6 +236,7 @@ RequestMsg.parser(PayloadCase.IMU_MESSAGE)(
                     return new AccelerationRequest();
                 case ImuKind.POSE:
                     return new PoseRequest();
+                // istanbul ignore next
                 default:
                     throw new Error("unreachable");
             }
@@ -247,6 +248,7 @@ RequestMsg.parser(PayloadCase.IMU_MESSAGE)(
                     return new AccelerationSubscribe(subscription);
                 case ImuKind.POSE:
                     return new PoseSubscribe(subscription);
+                // istanbul ignore next
                 default:
                     throw new Error("unreachable");
             }
@@ -272,6 +274,7 @@ ReplyMsg.parser(PayloadCase.IMU_MESSAGE)(
                     return new AccelerationReply(x, y, z);
                 case ImuKind.POSE:
                     return new PoseReply(x, y, z);
+                // istanbul ignore next
                 default:
                     throw new Error("unreachable");
             }
@@ -283,6 +286,7 @@ ReplyMsg.parser(PayloadCase.IMU_MESSAGE)(
                     return new AccelerationUpdate(x, y, z, subscription);
                 case ImuKind.POSE:
                     return new PoseUpdate(x, y, z, subscription);
+                // istanbul ignore next
                 default:
                     throw new Error("unreachable");
             }

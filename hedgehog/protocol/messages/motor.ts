@@ -82,6 +82,7 @@ export class ConfigAction extends Message {
                     kind: ConfigKind.STEPPER,
                 };
                 break;
+            // istanbul ignore next
             default:
                 throw new Error("unreachable");
         }
@@ -106,6 +107,7 @@ export class ConfigAction extends Message {
             case ConfigKind.STEPPER:
                 msg.setStepper(new motor_pb.Dummy());
                 break;
+            // istanbul ignore next
             default:
                 throw new Error("unreachable");
         }
@@ -154,6 +156,7 @@ export class CommandReply extends Message {
             case ConfigKind.STEPPER:
                 msg.setStepper(new motor_pb.Dummy());
                 break;
+            // istanbul ignore next
             default:
                 throw new Error("unreachable");
         }
@@ -207,6 +210,7 @@ export class CommandUpdate extends Message {
             case ConfigKind.STEPPER:
                 msg.setStepper(new motor_pb.Dummy());
                 break;
+            // istanbul ignore next
             default:
                 throw new Error("unreachable");
         }
@@ -358,6 +362,7 @@ ReplyMsg.parser(PayloadCase.MOTOR_COMMAND_MESSAGE)(
                     kind: ConfigKind.STEPPER,
                 };
                 break;
+            // istanbul ignore next
             default:
                 throw new Error("unreachable");
         }
