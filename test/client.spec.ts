@@ -4,7 +4,7 @@ import "@babel/polyfill";
 import * as assert from 'assert';
 import * as zmq from 'zeromq';
 
-import { HedgehogClient, protocol, Message, ack, version, emergency, io, analog, digital, motor, servo } from "../hedgehog";
+import { HedgehogClient, protocol, Message, ack, version, emergency, io, analog, digital, motor, servo, imu } from "../hedgehog";
 
 describe('Client', () => {
     let server = null;
@@ -210,6 +210,30 @@ describe('Client', () => {
 
         assert.strictEqual(await hedgehog.getServoPosition(0), null);
         assert.strictEqual(await hedgehog.getServoPosition(0), 1000);
+    });
+
+    it('`getImuRate` should work', async () => {
+        mock_server(
+            [[new imu.RateRequest()], [new imu.RateReply(0, 0, 0)]],
+        );
+
+        assert.deepStrictEqual(await hedgehog.getImuRate(), [0, 0, 0]);
+    });
+
+    it('`getImuAcceleration` should work', async () => {
+        mock_server(
+            [[new imu.AccelerationRequest()], [new imu.AccelerationReply(0, 0, 0)]],
+        );
+
+        assert.deepStrictEqual(await hedgehog.getImuAcceleration(), [0, 0, 0]);
+    });
+
+    it('`getImuPose` should work', async () => {
+        mock_server(
+            [[new imu.PoseRequest()], [new imu.PoseReply(0, 0, 0)]],
+        );
+
+        assert.deepStrictEqual(await hedgehog.getImuPose(), [0, 0, 0]);
     });
 
     after(() => {

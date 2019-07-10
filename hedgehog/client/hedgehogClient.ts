@@ -3,7 +3,7 @@
  */
 
 import { RequestMsg, ReplyMsg, Message,
-         ack, version, emergency, io, analog, digital, motor, servo, process } from '../protocol';
+         ack, version, emergency, io, analog, digital, motor, servo, imu, process } from '../protocol';
 
 export { AcknowledgementCode } from '../protocol/messages/ack';
 export { IOFlags } from '../protocol/messages/io';
@@ -186,6 +186,21 @@ export class HedgehogClient {
     public async getServoPositionRaw(port: number): Promise<number | null> {
         let reply = await this.send<servo.CommandReply>(new servo.CommandRequest(port));
         return reply.position;
+    }
+
+    public async getImuRate(): Promise<[number, number, number]> {
+        let reply = await this.send<imu.RateReply>(new imu.RateRequest());
+        return [reply.x, reply.y, reply.z];
+    }
+
+    public async getImuAcceleration(): Promise<[number, number, number]> {
+        let reply = await this.send<imu.AccelerationReply>(new imu.AccelerationRequest());
+        return [reply.x, reply.y, reply.z];
+    }
+
+    public async getImuPose(): Promise<[number, number, number]> {
+        let reply = await this.send<imu.PoseReply>(new imu.PoseRequest());
+        return [reply.x, reply.y, reply.z];
     }
 
     public close () {
