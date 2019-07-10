@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package hedgehog.protocol.proto;
+
+option java_package = "at.pria.hedgehog.protocol.proto";
+option java_outer_classname = "EmergencyP";
+
+// <GSL customizable: module-extras>
+import "hedgehog/protocol/proto/subscription.proto";
+// </GSL customizable: module-extras>
+
+// Activates or releases the emergency-stop of the HWC.
+//
+// => (activate):            emergency action => ack
+message EmergencyAction {
+    bool activate = 1;
+}
+
+// Request or reply for the current HWC emergency stop state.
+//   The command may change by an emergency action, or by a press of the emergency stop button on the HWC.
+//
+// => ():                    emergency request => emergency command reply
+// <= (active):              emergency reply
+// => (subscription):        emergency subscribe => ack
+// <- (active, subscription):  emergency update
+message EmergencyMessage {
+    bool active = 1;
+    Subscription subscription = 2;
+}

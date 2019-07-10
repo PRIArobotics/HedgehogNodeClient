@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package hedgehog.protocol.proto;
+
+option java_package = "at.pria.hedgehog.protocol.proto";
+option java_outer_classname = "VersionP";
+
+// <default GSL customizable: module-extras />
+
+// Request or reply for version information of the Hedgehog hardware, firmware, and server software.
+//
+// => ():                    version request => version reply
+// <= (uc_id, hardware_version, firmware_version, server_version):  version reply
+message VersionMessage {
+    bytes uc_id = 1;
+    string hardware_version = 2;
+    string firmware_version = 3;
+    string server_version = 4;
+}

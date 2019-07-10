@@ -3,9 +3,9 @@ import "@babel/polyfill";
 
 import * as assert from 'assert';
 
-import { hedgehog_pb, ack_pb, imu_pb, io_pb, motor_pb, servo_pb, process_pb, speaker_pb,
+import { hedgehog_pb, ack_pb, version_pb, emergency_pb, imu_pb, io_pb, motor_pb, servo_pb, process_pb, speaker_pb,
          subscription_pb } from '../hedgehog/protocol/proto';
-import { protocol, Message, ack, imu, io, analog, digital, motor, servo, process, speaker } from "../hedgehog";
+import { protocol, Message, ack, version, emergency, imu, io, analog, digital, motor, servo, process, speaker } from "../hedgehog";
 import { ProtoContainerMessage } from "../hedgehog/utils/protobuf";
 
 describe('Protocol', () => {
@@ -32,6 +32,101 @@ describe('Protocol', () => {
             });
 
             let msg = new ack.Acknowledgement();
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+    });
+
+    describe('VersionMessage', () =>  {
+        it("should translate `version.Request` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new version_pb.VersionMessage();
+                _wire.setVersionMessage(proto);
+            });
+
+            let msg = new version.Request();
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+
+        it("should translate `version.Reply` successfully", () => {
+            let ucId = Uint8Array.from('\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' as any);
+
+            let wire = makeWire(_wire => {
+                let proto = new version_pb.VersionMessage();
+                proto.setUcId(ucId);
+                proto.setHardwareVersion("3");
+                proto.setFirmwareVersion("0");
+                proto.setServerVersion("0.9.0a2");
+                _wire.setVersionMessage(proto);
+            });
+
+            let msg = new version.Reply(ucId, "3", "0", "0.9.0a2");
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+    });
+
+    describe('EmergencyAction', () =>  {
+        it("should translate `emergency.Action` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new emergency_pb.EmergencyAction();
+                proto.setActivate(true);
+                _wire.setEmergencyAction(proto);
+            });
+
+            let msg = new emergency.Action(true);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+    });
+
+    describe('EmergencyMessage', () =>  {
+        it("should translate `emergency.Request` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new emergency_pb.EmergencyMessage();
+                _wire.setEmergencyMessage(proto);
+            });
+
+            let msg = new emergency.Request();
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+
+        it("should translate `emergency.Subscribe` successfully", () => {
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+
+            let wire = makeWire(_wire => {
+                let proto = new emergency_pb.EmergencyMessage();
+                proto.setSubscription(sub);
+                _wire.setEmergencyMessage(proto);
+            });
+
+            let msg = new emergency.Subscribe(sub);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+
+        it("should translate `emergency.Reply` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new emergency_pb.EmergencyMessage();
+                proto.setActive(true);
+                _wire.setEmergencyMessage(proto);
+            });
+
+            let msg = new emergency.Reply(true);
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+
+        it("should translate `emergency.Update` successfully", () => {
+            let sub = new subscription_pb.Subscription();
+            sub.setSubscribe(true);
+            sub.setTimeout(10);
+
+            let wire = makeWire(_wire => {
+                let proto = new emergency_pb.EmergencyMessage();
+                proto.setActive(true);
+                proto.setSubscription(sub);
+                _wire.setEmergencyMessage(proto);
+            });
+
+            let msg = new emergency.Update(true, sub);
             testMessage(msg, wire, protocol.ReplyMsg);
         });
     });

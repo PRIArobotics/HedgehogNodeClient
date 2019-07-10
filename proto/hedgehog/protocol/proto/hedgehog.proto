@@ -6,6 +6,8 @@ option java_package = "at.pria.hedgehog.protocol.proto";
 option java_outer_classname = "HedgehogP";
 
 import "hedgehog/protocol/proto/ack.proto";
+import "hedgehog/protocol/proto/version.proto";
+import "hedgehog/protocol/proto/emergency.proto";
 import "hedgehog/protocol/proto/io.proto";
 import "hedgehog/protocol/proto/imu.proto";
 import "hedgehog/protocol/proto/motor.proto";
@@ -22,6 +24,11 @@ message HedgehogMessage {
     oneof payload {
         // ack.proto
         Acknowledgement acknowledgement = 1;
+        // version.proto
+        VersionMessage version_message = 26;
+        // emergency.proto
+        EmergencyAction emergency_action = 27;
+        EmergencyMessage emergency_message = 28;
         // io.proto
         IOAction io_action = 2;
         IOCommandMessage io_command_message = 16;
