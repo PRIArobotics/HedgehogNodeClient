@@ -34,7 +34,7 @@ describe('Client', () => {
             let [ident, delimiter, ...data] = await recv();
             let requests = data.map(msg => protocol.RequestMsg.parse(msg));
 
-            assert.deepEqual(requests, expected);
+            assert.deepStrictEqual(requests, expected);
 
             server.send([
                 ident, delimiter,
@@ -49,7 +49,7 @@ describe('Client', () => {
         );
 
         let result = await hedgehog.send(new io.Action(0, io.IOFlags.INPUT_PULLUP));
-        assert.deepEqual(result, new ack.Acknowledgement());
+        assert.deepStrictEqual(result, new ack.Acknowledgement());
     });
 
     it('`sendMultipart` should work', async () => {
@@ -61,8 +61,8 @@ describe('Client', () => {
         let [a, b] = await hedgehog.sendMultipart(
             new analog.Request(0),
             new analog.Request(1));
-        assert.deepEqual(a, new analog.Reply(0, 0));
-        assert.deepEqual(b, new analog.Reply(1, 0));
+        assert.deepStrictEqual(a, new analog.Reply(0, 0));
+        assert.deepStrictEqual(b, new analog.Reply(1, 0));
     });
 
     it('`getAnalog` should work', async () => {
@@ -70,7 +70,7 @@ describe('Client', () => {
             [[new analog.Request(0)], [new analog.Reply(0, 0)]],
         );
 
-        assert.equal(await hedgehog.getAnalog(0), 0);
+        assert.strictEqual(await hedgehog.getAnalog(0), 0);
     });
 
     after(() => {

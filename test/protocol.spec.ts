@@ -11,9 +11,9 @@ import { ProtoContainerMessage } from "../hedgehog/utils/protobuf";
 describe('Protocol', () => {
     function testMessage(msg: Message, wire: ProtoContainerMessage, container: protocol.ContainerMessage) {
         let onWire = container.serialize(msg);
-        assert.deepEqual(onWire, wire.serializeBinary());
+        assert.deepStrictEqual(onWire, wire.serializeBinary());
         let received = container.parse(onWire);
-        assert.deepEqual(received, msg);
+        assert.deepStrictEqual(received, msg);
     }
 
     function makeWire(fn: (wire) => void): ProtoContainerMessage {
