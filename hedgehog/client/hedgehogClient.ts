@@ -3,7 +3,7 @@
  */
 
 import { RequestMsg, ReplyMsg, Message,
-         ack, io, analog, digital, motor, servo, process } from '../protocol';
+         ack, version, emergency, io, analog, digital, motor, servo, process } from '../protocol';
 
 export { AcknowledgementCode } from '../protocol/messages/ack';
 export { IOFlags } from '../protocol/messages/io';
@@ -15,6 +15,13 @@ import * as zmq from 'zeromq';
 interface CommandHandler<T> {
     resolve: (value?: T | PromiseLike<T>) => void;
     reject: (reason?: any) => void;
+}
+
+export interface VersionInfo {
+    ucId: Uint8Array;
+    hardwareVersion: string;
+    firmwareVersion: string;
+    serverVersion: string;
 }
 
 export class HedgehogClient {
@@ -50,6 +57,22 @@ export class HedgehogClient {
             this.socket.send(msgsRaw);
             this.commandQueue.push({ resolve, reject });
         });
+    }
+
+    public async getVersion(): Promise<VersionInfo> {
+        let {
+            ucId, hardwareVersion, firmwareVersion, serverVersion,
+        } = await this.send<version.Reply>(new version.Request());
+        return {ucId, hardwareVersion, firmwareVersion, serverVersion};
+    }
+
+    public async setEmergencyStop(activate: boolean): Promise<void> {
+        await this.send(new emergency.Action(activate));
+    }
+
+    public async getEmergencyStop(port: number): Promise<boolean> {
+        let reply = await this.send<emergency.Reply>(new emergency.Request());
+        return reply.active;
     }
 
     public async setInputState(port: number, pullup: boolean): Promise<void> {
