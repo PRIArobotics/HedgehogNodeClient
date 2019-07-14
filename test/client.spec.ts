@@ -4,7 +4,10 @@ import "@babel/polyfill";
 import * as assert from 'assert';
 import * as zmq from 'zeromq';
 
-import { HedgehogClient, protocol, Message, ack, version, emergency, io, analog, digital, motor, servo, imu } from "../hedgehog";
+import {
+    HedgehogClient, protocol, Message,
+    ack, version, emergency, io, analog, digital, motor, servo, imu,
+} from "../hedgehog";
 
 describe('Client', () => {
     let server = null;
@@ -74,7 +77,11 @@ describe('Client', () => {
         };
 
         mock_server(
-            [[new version.Request()], [new version.Reply(versionResult.ucId, versionResult.hardwareVersion, versionResult.firmwareVersion, versionResult.serverVersion)]],
+            [
+                [new version.Request()],
+                [new version.Reply(versionResult.ucId, versionResult.hardwareVersion,
+                        versionResult.firmwareVersion, versionResult.serverVersion)]
+            ],
         );
 
         assert.deepStrictEqual(await hedgehog.getVersion(), versionResult);
@@ -154,7 +161,10 @@ describe('Client', () => {
 
     it('`moveRelativePosition` should work', async () => {
         mock_server(
-            [[new motor.Action(0, motor.MotorState.POWER, 1000, motor.MotorState.POWER, -1000, undefined)], [new ack.Acknowledgement()]],
+            [
+                [new motor.Action(0, motor.MotorState.POWER, 1000, motor.MotorState.POWER, -1000, undefined)],
+                [new ack.Acknowledgement()]
+            ],
         );
 
         await hedgehog.moveRelativePosition(0, 1000, -1000);
@@ -162,7 +172,10 @@ describe('Client', () => {
 
     it('`moveAbsolutePosition` should work', async () => {
         mock_server(
-            [[new motor.Action(0, motor.MotorState.POWER, 1000, motor.MotorState.POWER, undefined, -1000)], [new ack.Acknowledgement()]],
+            [
+                [new motor.Action(0, motor.MotorState.POWER, 1000, motor.MotorState.POWER, undefined, -1000)],
+                [new ack.Acknowledgement()]
+            ],
         );
 
         await hedgehog.moveAbsolutePosition(0, 1000, -1000);
@@ -170,7 +183,10 @@ describe('Client', () => {
 
     it('`getMotorCommand` should work', async () => {
         mock_server(
-            [[new motor.CommandRequest(0)], [new motor.CommandReply(0, {kind: motor.ConfigKind.DC}, motor.MotorState.POWER, 1000)]],
+            [
+                [new motor.CommandRequest(0)],
+                [new motor.CommandReply(0, {kind: motor.ConfigKind.DC}, motor.MotorState.POWER, 1000)]
+            ],
         );
 
         assert.deepStrictEqual(await hedgehog.getMotorCommand(0), [motor.MotorState.POWER, 1000]);

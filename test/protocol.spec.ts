@@ -3,9 +3,15 @@ import "@babel/polyfill";
 
 import * as assert from 'assert';
 
-import { hedgehog_pb, ack_pb, version_pb, emergency_pb, imu_pb, io_pb, motor_pb, servo_pb, process_pb, speaker_pb,
-         subscription_pb } from '../hedgehog/protocol/proto';
-import { protocol, Message, ack, version, emergency, imu, io, analog, digital, motor, servo, process, speaker } from "../hedgehog";
+import {
+    hedgehog_pb,
+    ack_pb, version_pb, emergency_pb, imu_pb, io_pb, motor_pb, servo_pb, process_pb, speaker_pb,
+    subscription_pb,
+} from '../hedgehog/protocol/proto';
+import {
+    protocol, Message,
+    ack, version, emergency, imu, io, analog, digital, motor, servo, process, speaker,
+} from "../hedgehog";
 import { ProtoContainerMessage } from "../hedgehog/utils/protobuf";
 
 describe('Protocol', () => {
