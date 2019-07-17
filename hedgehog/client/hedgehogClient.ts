@@ -70,7 +70,7 @@ export class HedgehogClient {
         await this.send(new emergency.Action(activate));
     }
 
-    public async getEmergencyStop(port: number): Promise<boolean> {
+    public async getEmergencyStop(): Promise<boolean> {
         let reply = await this.send<emergency.Reply>(new emergency.Request());
         return reply.active;
     }
