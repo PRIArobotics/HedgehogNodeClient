@@ -7,7 +7,7 @@ import { speaker_pb } from '../proto';
 
 @RequestMsg.message(speaker_pb.SpeakerAction, PayloadCase.SPEAKER_ACTION)
 export class Action extends Message {
-    constructor(public frequency: number) {
+    constructor(public frequency: number | null) {
         super();
     }
 
@@ -16,12 +16,12 @@ export class Action extends Message {
     public static parseFrom(containerMsg: ProtoContainerMessage): Message {
         let msg = (containerMsg as any).getSpeakerAction();
         let frequency = msg.getFrequency();
-        return new Action(frequency);
+        return new Action(frequency !== 0 ? frequency : null);
     }
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
         let msg = new speaker_pb.SpeakerAction();
-        msg.setFrequency(this.frequency);
+        msg.setFrequency(this.frequency !== null ? this.frequency : 0);
         (containerMsg as any).setSpeakerAction(msg);
     }
 }

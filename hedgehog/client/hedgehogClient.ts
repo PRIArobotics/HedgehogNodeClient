@@ -3,7 +3,7 @@
  */
 
 import { RequestMsg, ReplyMsg, Message,
-         ack, version, emergency, io, analog, digital, motor, servo, imu, process } from '../protocol';
+         ack, version, emergency, io, analog, digital, motor, servo, imu, process, speaker } from '../protocol';
 
 export { AcknowledgementCode } from '../protocol/messages/ack';
 export { IOFlags } from '../protocol/messages/io';
@@ -201,6 +201,10 @@ export class HedgehogClient {
     public async getImuPose(): Promise<[number, number, number]> {
         let reply = await this.send<imu.PoseReply>(new imu.PoseRequest());
         return [reply.x, reply.y, reply.z];
+    }
+
+    public async setSpeaker(frequency: number | null): Promise<void> {
+        await this.send(new speaker.Action(frequency));
     }
 
     public close () {

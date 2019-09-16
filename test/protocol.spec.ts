@@ -1018,5 +1018,15 @@ describe('Protocol', () => {
             let msg = new speaker.Action(440);
             testMessage(msg, wire, protocol.RequestMsg);
         });
+        it("should translate `speaker.Action` for turning off successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new speaker_pb.SpeakerAction();
+                proto.setFrequency(0);
+                _wire.setSpeakerAction(proto);
+            });
+
+            let msg = new speaker.Action(null);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
     });
 });

@@ -162,4 +162,4 @@ process.ProcessExitUpdate:
 
 speaker.SpeakerAction:
   frequency:
-    typ: number
+    typ: number | null
