@@ -14,6 +14,7 @@ import "hedgehog/protocol/proto/motor.proto";
 import "hedgehog/protocol/proto/servo.proto";
 import "hedgehog/protocol/proto/process.proto";
 import "hedgehog/protocol/proto/speaker.proto";
+import "hedgehog/protocol/proto/vision.proto";
 
 // <default GSL customizable: module-extras />
 
@@ -53,5 +54,9 @@ message HedgehogMessage {
         ProcessExitUpdate process_exit_update = 23;
         // speaker.proto
         SpeakerAction speaker_action = 25;
+        // vision.proto
+        VisionCameraAction vision_camera_action = 29;
+        VisionRetrieveFrameAction vision_retrieve_frame_action = 10;
+        VisionFrameMessage vision_frame_message = 30;
     }
 }

@@ -5,12 +5,12 @@ import * as assert from 'assert';
 
 import {
     hedgehog_pb,
-    ack_pb, version_pb, emergency_pb, imu_pb, io_pb, motor_pb, servo_pb, process_pb, speaker_pb,
+    ack_pb, version_pb, emergency_pb, imu_pb, io_pb, motor_pb, servo_pb, process_pb, speaker_pb, vision_pb,
     subscription_pb,
 } from '../hedgehog/protocol/proto';
 import {
     protocol, Message,
-    ack, version, emergency, imu, io, analog, digital, motor, servo, process, speaker,
+    ack, version, emergency, imu, io, analog, digital, motor, servo, process, speaker, vision,
 } from "../hedgehog";
 import { ProtoContainerMessage } from "../hedgehog/utils/protobuf";
 
@@ -1027,6 +1027,114 @@ describe('Protocol', () => {
 
             let msg = new speaker.Action(null);
             testMessage(msg, wire, protocol.RequestMsg);
+        });
+    });
+
+    describe('VisionCameraAction', () =>  {
+        it("should translate `vision.OpenCameraAction` without channels successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionCameraAction();
+                proto.setOpen(true);
+                _wire.setVisionCameraAction(proto);
+            });
+
+            let msg = new vision.OpenCameraAction([]);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+        it("should translate `vision.OpenCameraAction` with channels successfully", () => {
+            let wire = makeWire(_wire => {
+                let channel1 = new vision_pb.Channel();
+                channel1.setFaces(new vision_pb.FacesChannel());
+                let contours = new vision_pb.ContoursChannel();
+                contours.setHsvMin(0x222222);
+                contours.setHsvMax(0x888888);
+                let channel2 = new vision_pb.Channel();
+                channel2.setContours(contours);
+
+                let proto = new vision_pb.VisionCameraAction();
+                proto.setOpen(true);
+                proto.setChannelsList([channel1, channel2]);
+                _wire.setVisionCameraAction(proto);
+            });
+
+            let msg = new vision.OpenCameraAction([
+                {
+                    kind: vision.ChannelKind.FACES,
+                },
+                {
+                    kind: vision.ChannelKind.CONTOURS,
+                    hsvMin: 0x222222,
+                    hsvMax: 0x888888,
+                },
+            ]);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+        it("should translate `vision.CloseCameraAction` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionCameraAction();
+                proto.setOpen(false);
+                _wire.setVisionCameraAction(proto);
+            });
+
+            let msg = new vision.CloseCameraAction();
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+    });
+
+    describe('VisionRetrieveFrameAction', () =>  {
+        it("should translate `vision.RetrieveFrameAction` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionRetrieveFrameAction();
+                _wire.setVisionRetrieveFrameAction(proto);
+            });
+
+            let msg = new vision.RetrieveFrameAction();
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+    });
+
+    describe('VisionFrameMessage', () =>  {
+        it("should translate `vision.FrameRequest` without highlight successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionFrameMessage();
+                proto.setHighlight(-1);
+                _wire.setVisionFrameMessage(proto);
+            });
+
+            let msg = new vision.FrameRequest(null);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+        it("should translate `vision.FrameRequest` with highlight successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionFrameMessage();
+                proto.setHighlight(0);
+                _wire.setVisionFrameMessage(proto);
+            });
+
+            let msg = new vision.FrameRequest(0);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+        it("should translate `vision.FrameReply` without highlight successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionFrameMessage();
+                proto.setHighlight(-1);
+                proto.setFrame(Uint8Array.from('' as any));
+                _wire.setVisionFrameMessage(proto);
+            });
+
+            let msg = new vision.FrameReply(null, Uint8Array.from('' as any));
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+        it("should translate `vision.FrameReply` with highlight successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionFrameMessage();
+                proto.setHighlight(0);
+                proto.setFrame(Uint8Array.from('' as any));
+                _wire.setVisionFrameMessage(proto);
+            });
+
+            let msg = new vision.FrameReply(0, Uint8Array.from('' as any));
+            testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
 });
