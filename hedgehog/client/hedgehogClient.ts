@@ -3,7 +3,7 @@
  */
 
 import { RequestMsg, ReplyMsg, Message,
-         ack, version, emergency, io, analog, digital, motor, servo, imu, process, speaker } from '../protocol';
+         ack, version, emergency, io, analog, digital, motor, servo, imu, process, speaker, vision } from '../protocol';
 
 export { AcknowledgementCode } from '../protocol/messages/ack';
 export { IOFlags } from '../protocol/messages/io';
@@ -205,6 +205,23 @@ export class HedgehogClient {
 
     public async setSpeaker(frequency: number | null): Promise<void> {
         await this.send(new speaker.Action(frequency));
+    }
+
+    public async openCamera(channels: vision.Channel[]): Promise<void> {
+        await this.send(new vision.OpenCameraAction(channels));
+    }
+
+    public async closeCamera(): Promise<void> {
+        await this.send(new vision.CloseCameraAction());
+    }
+
+    public async captureFrame(): Promise<void> {
+        await this.send(new vision.RetrieveFrameAction());
+    }
+
+    public async getFrame(highlight?: number): Promise<Uint8Array> {
+        let reply = await this.send<vision.FrameReply>(new vision.FrameRequest(highlight !== undefined ? highlight : null));
+        return reply.frame;
     }
 
     public close () {
