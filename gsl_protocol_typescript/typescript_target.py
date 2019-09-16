@@ -215,12 +215,15 @@ export class {messageClass.name} extends Message {{""")
 
             for field in message.fields:
                 if isinstance(field, Field):
-                    if not field.nested:
-                        yield from lines(f"""\
-        let {field.name} = msg.get{case(snake=field.name, to='pascal')}();""")
-                    else:
+                    if field.nested:
                         yield from lines(f"""\
         let {field.name} = msg.has{case(snake=field.name, to='pascal')}()? msg.get{case(snake=field.name, to='pascal')}() : undefined;""")
+                    elif field.repeated:
+                        yield from lines(f"""\
+        let {field.name} = msg.get{case(snake=field.name, to='pascal')}List();""")
+                    else:
+                        yield from lines(f"""\
+        let {field.name} = msg.get{case(snake=field.name, to='pascal')}();""")
                 elif isinstance(field, Oneof):
                     for field in field.fields:
                         yield from lines(f"""\
