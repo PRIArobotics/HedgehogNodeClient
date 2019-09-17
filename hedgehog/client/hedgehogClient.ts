@@ -216,7 +216,7 @@ export class HedgehogClient {
     }
 
     public async captureFrame(): Promise<void> {
-        await this.send(new vision.RetrieveFrameAction());
+        await this.send(new vision.CaptureFrameAction());
     }
 
     public async getFrame(highlight?: number): Promise<Uint8Array> {

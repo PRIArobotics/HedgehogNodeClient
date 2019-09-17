@@ -1081,14 +1081,14 @@ describe('Protocol', () => {
         });
     });
 
-    describe('VisionRetrieveFrameAction', () =>  {
-        it("should translate `vision.RetrieveFrameAction` successfully", () => {
+    describe('VisionCaptureFrameAction', () =>  {
+        it("should translate `vision.CaptureFrameAction` successfully", () => {
             let wire = makeWire(_wire => {
-                let proto = new vision_pb.VisionRetrieveFrameAction();
-                _wire.setVisionRetrieveFrameAction(proto);
+                let proto = new vision_pb.VisionCaptureFrameAction();
+                _wire.setVisionCaptureFrameAction(proto);
             });
 
-            let msg = new vision.RetrieveFrameAction();
+            let msg = new vision.CaptureFrameAction();
             testMessage(msg, wire, protocol.RequestMsg);
         });
     });

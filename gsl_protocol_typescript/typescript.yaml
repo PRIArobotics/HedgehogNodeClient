@@ -170,7 +170,7 @@ vision.VisionCameraAction:
   channels:
     typ: Channel[]
 
-vision.VisionRetrieveFrameAction:
+vision.VisionCaptureFrameAction:
 
 vision.VisionFrameMessage:
   highlight:

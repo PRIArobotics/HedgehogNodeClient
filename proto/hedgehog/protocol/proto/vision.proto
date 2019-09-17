@@ -22,11 +22,11 @@ message Channel {
 // </GSL customizable: module-extras>
 
 // Opens or closes the camera. When the camera is open,
-// frames will be read at the camera's speed and decoded at the caller's speed.
+// frames will be read at the camera's speed and captured at the caller's speed.
 // Similar to a subscription, the camera must be closed as many times as it was opened.
 // It will remain open until it is closed the appropriate number of times.
 // 
-// The channels specified define what analysis is performed on each frame that is retrieved.
+// The channels specified define what analysis is performed on each frame that is captured.
 // Re-opening the camera with new channel definitions will overwrite the old ones,
 // except if no channels are specified. In that case the previous configuration is preserved.
 // When closing, channels are ignored and should remain empty.
@@ -40,15 +40,15 @@ message VisionCameraAction {
 
 // Decodes and retrieved the latest grabbed frame.
 // While frames arrive regularly, they are only retrieved on demand with this command.
-// It is assumed that a retrieved frame will be used,
+// It is assumed that a captured frame will be used,
 // and thus all channel processing is done at this time.
 // This action is therefore a relatively expensive operation.
 //
-// => ():                    read frame action => ack
-message VisionRetrieveFrameAction {
+// => ():                    capture frame action => ack
+message VisionCaptureFrameAction {
 }
 
-// Request or reply for the current frame,
+// Request or reply for the last captured frame,
 // optionally with highlighting for one of the channels added in the image.
 // A highlight value of -1 means no highlighting,
 // a different value means the index of the channel when opening the camera.

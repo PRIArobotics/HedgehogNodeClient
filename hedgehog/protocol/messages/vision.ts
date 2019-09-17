@@ -64,22 +64,22 @@ export class CloseCameraAction extends Message {
     }
 }
 
-@RequestMsg.message(vision_pb.VisionRetrieveFrameAction, PayloadCase.VISION_RETRIEVE_FRAME_ACTION)
-export class RetrieveFrameAction extends Message {
+@RequestMsg.message(vision_pb.VisionCaptureFrameAction, PayloadCase.VISION_CAPTURE_FRAME_ACTION)
+export class CaptureFrameAction extends Message {
     constructor() {
         super();
     }
 
-    // <default GSL customizable: RetrieveFrameAction-extra-members />
+    // <default GSL customizable: CaptureFrameAction-extra-members />
 
     public static parseFrom(containerMsg: ProtoContainerMessage): Message {
-        let msg = (containerMsg as any).getVisionRetrieveFrameAction();
-        return new RetrieveFrameAction();
+        let msg = (containerMsg as any).getVisionCaptureFrameAction();
+        return new CaptureFrameAction();
     }
 
     public serializeTo(containerMsg: ProtoContainerMessage): void {
-        let msg = new vision_pb.VisionRetrieveFrameAction();
-        (containerMsg as any).setVisionRetrieveFrameAction(msg);
+        let msg = new vision_pb.VisionCaptureFrameAction();
+        (containerMsg as any).setVisionCaptureFrameAction(msg);
     }
 }
 
