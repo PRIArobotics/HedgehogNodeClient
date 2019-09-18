@@ -167,13 +167,15 @@ speaker.SpeakerAction:
 vision.VisionCameraAction:
   open:
     typ: boolean
-  channels:
-    typ: Channel[]
+
+vision.VisionChannelMessage:
+  op:
+    typ: number
 
 vision.VisionCaptureFrameAction:
 
 vision.VisionFrameMessage:
   highlight:
-    typ: number | null
+    typ: string | null
   frame:
     typ: Uint8Array

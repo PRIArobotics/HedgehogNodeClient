@@ -56,7 +56,8 @@ message HedgehogMessage {
         SpeakerAction speaker_action = 25;
         // vision.proto
         VisionCameraAction vision_camera_action = 29;
+        VisionChannelMessage vision_channel_message = 30;
         VisionCaptureFrameAction vision_capture_frame_action = 10;
-        VisionFrameMessage vision_frame_message = 30;
+        VisionFrameMessage vision_frame_message = 31;
     }
 }

@@ -207,8 +207,8 @@ export class HedgehogClient {
         await this.send(new speaker.Action(frequency));
     }
 
-    public async openCamera(channels: vision.Channel[]): Promise<void> {
-        await this.send(new vision.OpenCameraAction(channels));
+    public async openCamera(): Promise<void> {
+        await this.send(new vision.OpenCameraAction());
     }
 
     public async closeCamera(): Promise<void> {
@@ -219,7 +219,7 @@ export class HedgehogClient {
         await this.send(new vision.CaptureFrameAction());
     }
 
-    public async getFrame(highlight?: number): Promise<Uint8Array> {
+    public async getFrame(highlight?: string): Promise<Uint8Array> {
         let reply = await this.send<vision.FrameReply>(new vision.FrameRequest(highlight !== undefined ? highlight : null));
         return reply.frame;
     }

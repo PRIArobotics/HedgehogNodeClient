@@ -6,6 +6,13 @@ option java_package = "at.pria.hedgehog.protocol.proto";
 option java_outer_classname = "VisionP";
 
 // <GSL customizable: module-extras>
+enum ChannelOperation {
+    READ = 0;
+    CREATE = 1;
+    UPDATE = 2;
+    DELETE = 3;
+}
+
 message FacesChannel {}
 
 message ContoursChannel {
@@ -14,9 +21,10 @@ message ContoursChannel {
 }
 
 message Channel {
+    string key = 1;
     oneof channel {
-        FacesChannel faces = 1;
-        ContoursChannel contours = 2;
+        FacesChannel faces = 2;
+        ContoursChannel contours = 3;
     }
 }
 // </GSL customizable: module-extras>
@@ -25,39 +33,45 @@ message Channel {
 // frames will be read at the camera's speed and captured at the caller's speed.
 // Similar to a subscription, the camera must be closed as many times as it was opened.
 // It will remain open until it is closed the appropriate number of times.
-// 
-// The channels specified define what analysis is performed on each frame that is captured.
-// Re-opening the camera with new channel definitions will overwrite the old ones,
-// except if no channels are specified. In that case the previous configuration is preserved.
-// When closing, channels are ignored and should remain empty.
 //
-// => (*channels):           open camera action => ack
+// => ():                    open camera action => ack
 // => ():                    close camera action => ack
 message VisionCameraAction {
     bool open = 1;
+}
+
+// Creates, reads, updates or deletes channels. Using an existing key when creating,
+// or using a nonexistent key unless creating a channel, will result in the command to fail.
+// On a failure, no change will have been processed.
+// When reading or deleting a channel, only the key is used and specifying the channel details
+// is not necessary.
+// 
+// Not specifying any keys in a channel request will list all existing channels.
+//
+// => (channels):            create channel action => ack
+// => (channels):            update channel action => ack
+// => (keys):                delete channel action => ack
+// => (keys):                channel request => channel reply
+// <= (channels):            channel reply
+message VisionChannelMessage {
+    ChannelOperation op = 1;
     repeated Channel channels = 2;
 }
 
 // Decodes and retrieved the latest grabbed frame.
 // While frames arrive regularly, they are only retrieved on demand with this command.
-// It is assumed that a captured frame will be used,
-// and thus all channel processing is done at this time.
-// This action is therefore a relatively expensive operation.
+// Subsequent processing is done on this frame, until a newer one is captured.
 //
 // => ():                    capture frame action => ack
 message VisionCaptureFrameAction {
 }
 
-// Request or reply for the last captured frame,
+// Request or reply for the last captured frame, as a jpg encoded image,
 // optionally with highlighting for one of the channels added in the image.
-// A highlight value of -1 means no highlighting,
-// a different value means the index of the channel when opening the camera.
-// 
-// The frame itself is a jpg encoded image.
 //
 // => (highlight):           frame request => frame reply
 // <= (highlight, frame):    frame reply
 message VisionFrameMessage {
-    int32 highlight = 1;
+    string highlight = 1;
     bytes frame = 2;
 }

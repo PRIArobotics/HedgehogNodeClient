@@ -1031,42 +1031,14 @@ describe('Protocol', () => {
     });
 
     describe('VisionCameraAction', () =>  {
-        it("should translate `vision.OpenCameraAction` without channels successfully", () => {
+        it("should translate `vision.OpenCameraAction` successfully", () => {
             let wire = makeWire(_wire => {
                 let proto = new vision_pb.VisionCameraAction();
                 proto.setOpen(true);
                 _wire.setVisionCameraAction(proto);
             });
 
-            let msg = new vision.OpenCameraAction([]);
-            testMessage(msg, wire, protocol.RequestMsg);
-        });
-        it("should translate `vision.OpenCameraAction` with channels successfully", () => {
-            let wire = makeWire(_wire => {
-                let channel1 = new vision_pb.Channel();
-                channel1.setFaces(new vision_pb.FacesChannel());
-                let contours = new vision_pb.ContoursChannel();
-                contours.setHsvMin(0x222222);
-                contours.setHsvMax(0x888888);
-                let channel2 = new vision_pb.Channel();
-                channel2.setContours(contours);
-
-                let proto = new vision_pb.VisionCameraAction();
-                proto.setOpen(true);
-                proto.setChannelsList([channel1, channel2]);
-                _wire.setVisionCameraAction(proto);
-            });
-
-            let msg = new vision.OpenCameraAction([
-                {
-                    kind: vision.ChannelKind.FACES,
-                },
-                {
-                    kind: vision.ChannelKind.CONTOURS,
-                    hsvMin: 0x222222,
-                    hsvMax: 0x888888,
-                },
-            ]);
+            let msg = new vision.OpenCameraAction();
             testMessage(msg, wire, protocol.RequestMsg);
         });
         it("should translate `vision.CloseCameraAction` successfully", () => {
@@ -1093,11 +1065,97 @@ describe('Protocol', () => {
         });
     });
 
+    describe('VisionChannelMessage', () =>  {
+        it("should translate `vision.CreateChannelAction` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionChannelMessage();
+                proto.setOp(vision.ChannelOperation.CREATE);
+                let channel = new vision_pb.Channel();
+                channel.setKey('foo');
+                channel.setFaces(new vision_pb.FacesChannel());
+                proto.setChannelsList([channel]);
+                _wire.setVisionChannelMessage(proto);
+            });
+
+            let msg = new vision.CreateChannelAction({
+                foo: {
+                    kind: vision.ChannelKind.FACES,
+                },
+            });
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+        it("should translate `vision.UpdateChannelAction` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionChannelMessage();
+                proto.setOp(vision.ChannelOperation.UPDATE);
+                let channel = new vision_pb.Channel();
+                channel.setKey('foo');
+                channel.setContours(new vision_pb.ContoursChannel());
+                channel.getContours().setHsvMin(0x222222);
+                channel.getContours().setHsvMax(0x888888);
+                proto.setChannelsList([channel]);
+                _wire.setVisionChannelMessage(proto);
+            });
+
+            let msg = new vision.UpdateChannelAction({
+                foo: {
+                    kind: vision.ChannelKind.CONTOURS,
+                    hsvMin: 0x222222,
+                    hsvMax: 0x888888,
+                },
+            });
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+        it("should translate `vision.DeleteChannelAction` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionChannelMessage();
+                proto.setOp(vision.ChannelOperation.DELETE);
+                let channel = new vision_pb.Channel();
+                channel.setKey('foo');
+                proto.setChannelsList([channel]);
+                _wire.setVisionChannelMessage(proto);
+            });
+
+            let msg = new vision.DeleteChannelAction(['foo']);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+        it("should translate `vision.ChannelRequest` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionChannelMessage();
+                proto.setOp(vision.ChannelOperation.READ);
+                let channel = new vision_pb.Channel();
+                channel.setKey('foo');
+                proto.setChannelsList([channel]);
+                _wire.setVisionChannelMessage(proto);
+            });
+
+            let msg = new vision.ChannelRequest(['foo']);
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+        it("should translate `vision.ChannelReply` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionChannelMessage();
+                proto.setOp(vision.ChannelOperation.READ);
+                let channel = new vision_pb.Channel();
+                channel.setKey('foo');
+                channel.setFaces(new vision_pb.FacesChannel());
+                proto.setChannelsList([channel]);
+                _wire.setVisionChannelMessage(proto);
+            });
+
+            let msg = new vision.ChannelReply({
+                foo: {
+                    kind: vision.ChannelKind.FACES,
+                },
+            });
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+    });
+
     describe('VisionFrameMessage', () =>  {
         it("should translate `vision.FrameRequest` without highlight successfully", () => {
             let wire = makeWire(_wire => {
                 let proto = new vision_pb.VisionFrameMessage();
-                proto.setHighlight(-1);
                 _wire.setVisionFrameMessage(proto);
             });
 
@@ -1107,17 +1165,16 @@ describe('Protocol', () => {
         it("should translate `vision.FrameRequest` with highlight successfully", () => {
             let wire = makeWire(_wire => {
                 let proto = new vision_pb.VisionFrameMessage();
-                proto.setHighlight(0);
+                proto.setHighlight('foo');
                 _wire.setVisionFrameMessage(proto);
             });
 
-            let msg = new vision.FrameRequest(0);
+            let msg = new vision.FrameRequest('foo');
             testMessage(msg, wire, protocol.RequestMsg);
         });
         it("should translate `vision.FrameReply` without highlight successfully", () => {
             let wire = makeWire(_wire => {
                 let proto = new vision_pb.VisionFrameMessage();
-                proto.setHighlight(-1);
                 proto.setFrame(Uint8Array.from('' as any));
                 _wire.setVisionFrameMessage(proto);
             });
@@ -1128,12 +1185,12 @@ describe('Protocol', () => {
         it("should translate `vision.FrameReply` with highlight successfully", () => {
             let wire = makeWire(_wire => {
                 let proto = new vision_pb.VisionFrameMessage();
-                proto.setHighlight(0);
+                proto.setHighlight('foo');
                 proto.setFrame(Uint8Array.from('' as any));
                 _wire.setVisionFrameMessage(proto);
             });
 
-            let msg = new vision.FrameReply(0, Uint8Array.from('' as any));
+            let msg = new vision.FrameReply('foo', Uint8Array.from('' as any));
             testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
