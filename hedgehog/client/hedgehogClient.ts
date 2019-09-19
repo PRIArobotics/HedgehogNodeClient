@@ -215,6 +215,32 @@ export class HedgehogClient {
         await this.send(new vision.CloseCameraAction());
     }
 
+    public async createChannel(key: string, channel: vision.Channel): Promise<void> {
+        await this.send(new vision.CreateChannelAction({
+            [key]: channel,
+        }));
+    }
+
+    public async updateChannel(key: string, channel: vision.Channel): Promise<void> {
+        await this.send(new vision.UpdateChannelAction({
+            [key]: channel,
+        }));
+    }
+
+    public async deleteChannel(key: string): Promise<void> {
+        await this.send(new vision.DeleteChannelAction([key]));
+    }
+
+    public async getChannel(key: string): Promise<vision.Channel> {
+        let reply = await this.send<vision.ChannelReply>(new vision.ChannelRequest([key]));
+        return reply.channels[key];
+    }
+
+    public async getChannels(): Promise<{ [key: string]: vision.Channel }> {
+        let reply = await this.send<vision.ChannelReply>(new vision.ChannelRequest([]));
+        return reply.channels;
+    }
+
     public async captureFrame(): Promise<void> {
         await this.send(new vision.CaptureFrameAction());
     }
