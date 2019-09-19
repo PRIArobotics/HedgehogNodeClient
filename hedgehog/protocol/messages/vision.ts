@@ -8,7 +8,7 @@ export let ChannelOperation = vision_pb.ChannelOperation;
 
 export enum ChannelKind {
     FACES,
-    CONTOURS,
+    BLOBS,
 }
 
 export interface Channel {
@@ -25,11 +25,11 @@ function channelsToList(channels: { [key: string]: Channel }): vision_pb.Channel
             case ChannelKind.FACES:
                 msg.setFaces(new vision_pb.FacesChannel());
                 break;
-            case ChannelKind.CONTOURS:
-                let contours = new vision_pb.ContoursChannel();
-                contours.setHsvMin(channel.hsvMin);
-                contours.setHsvMax(channel.hsvMax);
-                msg.setContours(contours);
+            case ChannelKind.BLOBS:
+                let blobs = new vision_pb.BlobsChannel();
+                blobs.setHsvMin(channel.hsvMin);
+                blobs.setHsvMax(channel.hsvMax);
+                msg.setBlobs(blobs);
                 break;
             // istanbul ignore next
             default:
@@ -57,11 +57,11 @@ function channelsFromList(channelsList: vision_pb.Channel[]): { [key: string]: C
                     kind: ChannelKind.FACES,
                 };
                 break;
-            case vision_pb.Channel.ChannelCase.CONTOURS:
+            case vision_pb.Channel.ChannelCase.BLOBS:
                 channels[key] = {
-                    kind: ChannelKind.CONTOURS,
-                    hsvMin: channel.getContours().getHsvMin(),
-                    hsvMax: channel.getContours().getHsvMax(),
+                    kind: ChannelKind.BLOBS,
+                    hsvMin: channel.getBlobs().getHsvMin(),
+                    hsvMax: channel.getBlobs().getHsvMax(),
                 };
                 break;
             // istanbul ignore next

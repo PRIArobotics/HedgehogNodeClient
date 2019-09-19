@@ -15,7 +15,7 @@ enum ChannelOperation {
 
 message FacesChannel {}
 
-message ContoursChannel {
+message BlobsChannel {
     fixed32 hsv_min = 1;
     fixed32 hsv_max = 2;
 }
@@ -24,7 +24,7 @@ message Channel {
     string key = 1;
     oneof channel {
         FacesChannel faces = 2;
-        ContoursChannel contours = 3;
+        BlobsChannel blobs = 3;
     }
 }
 // </GSL customizable: module-extras>

@@ -1090,16 +1090,16 @@ describe('Protocol', () => {
                 proto.setOp(vision.ChannelOperation.UPDATE);
                 let channel = new vision_pb.Channel();
                 channel.setKey('foo');
-                channel.setContours(new vision_pb.ContoursChannel());
-                channel.getContours().setHsvMin(0x222222);
-                channel.getContours().setHsvMax(0x888888);
+                channel.setBlobs(new vision_pb.BlobsChannel());
+                channel.getBlobs().setHsvMin(0x222222);
+                channel.getBlobs().setHsvMax(0x888888);
                 proto.setChannelsList([channel]);
                 _wire.setVisionChannelMessage(proto);
             });
 
             let msg = new vision.UpdateChannelAction({
                 foo: {
-                    kind: vision.ChannelKind.CONTOURS,
+                    kind: vision.ChannelKind.BLOBS,
                     hsvMin: 0x222222,
                     hsvMax: 0x888888,
                 },
