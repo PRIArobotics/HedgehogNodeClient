@@ -59,5 +59,6 @@ message HedgehogMessage {
         VisionChannelMessage vision_channel_message = 30;
         VisionCaptureFrameAction vision_capture_frame_action = 10;
         VisionFrameMessage vision_frame_message = 31;
+        VisionFeatureMessage vision_feature_message = 11;
     }
 }

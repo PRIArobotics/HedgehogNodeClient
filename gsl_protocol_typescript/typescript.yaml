@@ -179,3 +179,7 @@ vision.VisionFrameMessage:
     typ: string | null
   frame:
     typ: Uint8Array
+
+vision.VisionFeatureMessage:
+  channel:
+    typ: string

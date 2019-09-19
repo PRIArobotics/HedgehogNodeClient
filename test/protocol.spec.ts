@@ -1194,4 +1194,68 @@ describe('Protocol', () => {
             testMessage(msg, wire, protocol.ReplyMsg);
         });
     });
+
+    describe('VisionFeatureMessage', () =>  {
+        it("should translate `vision.FeatureRequest` successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionFeatureMessage();
+                proto.setChannel('foo');
+                _wire.setVisionFeatureMessage(proto);
+            });
+
+            let msg = new vision.FeatureRequest('foo');
+            testMessage(msg, wire, protocol.RequestMsg);
+        });
+        it("should translate `vision.FeatureReply` with faces successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionFeatureMessage();
+                proto.setChannel('foo');
+                proto.setFeature(new vision_pb.Feature());
+                let faces = new vision_pb.FacesFeature();
+                let face = new vision_pb.Face();
+                face.setY(10);
+                face.setWidth(100);
+                face.setHeight(50);
+                faces.setFacesList([face]);
+                proto.getFeature().setFaces(faces);
+                _wire.setVisionFeatureMessage(proto);
+            });
+
+            let msg = new vision.FeatureReply('foo', {
+                kind: vision.ChannelKind.FACES,
+                faces: [{
+                    boundingRect: [0, 10, 100, 50],
+                }],
+            });
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+        it("should translate `vision.FeatureReply` with blobs successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionFeatureMessage();
+                proto.setChannel('foo');
+                proto.setFeature(new vision_pb.Feature());
+                let blobs = new vision_pb.BlobsFeature();
+                let blob = new vision_pb.Blob();
+                blob.setY(10);
+                blob.setWidth(100);
+                blob.setHeight(50);
+                blob.setCx(50);
+                blob.setCy(35);
+                blob.setConfidence(0.5);
+                blobs.setBlobsList([blob]);
+                proto.getFeature().setBlobs(blobs);
+                _wire.setVisionFeatureMessage(proto);
+            });
+
+            let msg = new vision.FeatureReply('foo', {
+                kind: vision.ChannelKind.BLOBS,
+                blobs: [{
+                    boundingRect: [0, 10, 100, 50],
+                    centroid: [50, 35],
+                    confidence: 0.5,
+                }],
+            });
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+    });
 });

@@ -75,6 +75,22 @@ function channelsFromList(channelsList: vision_pb.Channel[]): { [key: string]: C
 function keysFromList(keysList: vision_pb.Channel[]): string[] {
     return keysList.map(channel => channel.getKey());
 }
+
+interface Face {
+    boundingRect: [number, number, number, number];
+}
+
+interface Blob {
+    boundingRect: [number, number, number, number];
+    centroid: [number, number];
+    confidence: number;
+}
+
+export interface Feature {
+    kind: ChannelKind;
+    faces?: Face[];
+    blobs?: Blob[];
+}
 // </GSL customizable: module-header>
 
 @message(vision_pb.VisionCameraAction, PayloadCase.VISION_CAMERA_ACTION)
@@ -265,6 +281,131 @@ export class FrameReply extends Message {
         msg.setHighlight(this.highlight !== null ? this.highlight : '');
         msg.setFrame(this.frame);
         (containerMsg as any).setVisionFrameMessage(msg);
+    }
+}
+
+@RequestMsg.message(vision_pb.VisionFeatureMessage, PayloadCase.VISION_FEATURE_MESSAGE)
+export class FeatureRequest extends Message {
+    constructor(public channel: string) {
+        super();
+    }
+
+    // <default GSL customizable: FeatureRequest-extra-members />
+
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getVisionFeatureMessage();
+        let channel = msg.getChannel();
+        return new FeatureRequest(channel);
+    }
+
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
+        let msg = new vision_pb.VisionFeatureMessage();
+        msg.setChannel(this.channel);
+        (containerMsg as any).setVisionFeatureMessage(msg);
+    }
+}
+
+@ReplyMsg.message(vision_pb.VisionFeatureMessage, PayloadCase.VISION_FEATURE_MESSAGE)
+export class FeatureReply extends Message {
+    constructor(public channel: string, public feature: Feature) {
+        super();
+    }
+
+    // <default GSL customizable: FeatureReply-extra-members />
+
+    public static parseFrom(containerMsg: ProtoContainerMessage): Message {
+        let msg = (containerMsg as any).getVisionFeatureMessage();
+        let channel = msg.getChannel();
+        // <GSL customizable: FeatureReply-parse-feature>
+        let featureMsg = msg.getFeature();
+        let feature: Feature;
+        switch(featureMsg.getFeatureCase()) {
+            case vision_pb.Feature.FeatureCase.FACES:
+                feature = {
+                    kind: ChannelKind.FACES,
+                    faces: [],
+                };
+                for (let face of featureMsg.getFaces().getFacesList()) {
+                    feature.faces.push({
+                        boundingRect: [
+                            face.getX(), face.getY(),
+                            face.getWidth(), face.getHeight(),
+                        ],
+                    })
+                }
+                break;
+            case vision_pb.Feature.FeatureCase.BLOBS:
+                feature = {
+                    kind: ChannelKind.BLOBS,
+                    blobs: [],
+                };
+                for (let blob of featureMsg.getBlobs().getBlobsList()) {
+                    feature.blobs.push({
+                        boundingRect: [
+                            blob.getX(), blob.getY(),
+                            blob.getWidth(), blob.getHeight(),
+                        ],
+                        centroid: [ blob.getCx(), blob.getCy() ],
+                        confidence: blob.getConfidence(),
+                    })
+                }
+                break;
+            // istanbul ignore next
+            default:
+                throw new Error("unreachable");
+        }
+        // </GSL customizable: FeatureReply-parse-feature>
+        return new FeatureReply(channel, feature);
+    }
+
+    public serializeTo(containerMsg: ProtoContainerMessage): void {
+        let msg = new vision_pb.VisionFeatureMessage();
+        msg.setChannel(this.channel);
+        // <GSL customizable: FeatureReply-serialize-feature>
+        msg.setFeature(new vision_pb.Feature());
+        switch (this.feature.kind) {
+            case ChannelKind.FACES:
+                let faces = new vision_pb.FacesFeature();
+                faces.setFacesList(this.feature.faces.map(face => {
+                    let msg = new vision_pb.Face();
+
+                    let [x, y, w, h] = face.boundingRect;
+                    msg.setX(x);
+                    msg.setY(y);
+                    msg.setWidth(w);
+                    msg.setHeight(h);
+
+                    return msg;
+                }));
+                msg.getFeature().setFaces(faces);
+                break;
+            case ChannelKind.BLOBS:
+                let blobs = new vision_pb.BlobsFeature();
+                blobs.setBlobsList(this.feature.blobs.map(blob => {
+                    let msg = new vision_pb.Blob();
+
+                    let [x, y, w, h] = blob.boundingRect;
+                    msg.setX(x);
+                    msg.setY(y);
+                    msg.setWidth(w);
+                    msg.setHeight(h);
+
+                    let [cx, cy] = blob.centroid;
+                    msg.setCx(cx);
+                    msg.setCy(cy);
+
+                    msg.setConfidence(blob.confidence);
+
+                    return msg;
+                }));
+                msg.getFeature().setBlobs(blobs);
+                break;
+            // istanbul ignore next
+            default:
+                throw new Error("unreachable");
+        }
+        // </GSL customizable: FeatureReply-serialize-feature>
+        (containerMsg as any).setVisionFeatureMessage(msg);
     }
 }
 
