@@ -250,6 +250,11 @@ export class HedgehogClient {
         return reply.frame;
     }
 
+    public async getFeature(channel: string): Promise<vision.Feature> {
+        let reply = await this.send<vision.FeatureReply>(new vision.FeatureRequest(channel));
+        return reply.feature;
+    }
+
     public close () {
         this.socket.close();
     }
