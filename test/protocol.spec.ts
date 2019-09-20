@@ -1229,6 +1229,21 @@ describe('Protocol', () => {
             });
             testMessage(msg, wire, protocol.ReplyMsg);
         });
+        it("should translate `vision.FeatureReply` with no faces successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionFeatureMessage();
+                proto.setChannel('foo');
+                proto.setFeature(new vision_pb.Feature());
+                proto.getFeature().setFaces(new vision_pb.FacesFeature());
+                _wire.setVisionFeatureMessage(proto);
+            });
+
+            let msg = new vision.FeatureReply('foo', {
+                kind: vision.ChannelKind.FACES,
+                faces: [],
+            });
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
         it("should translate `vision.FeatureReply` with blobs successfully", () => {
             let wire = makeWire(_wire => {
                 let proto = new vision_pb.VisionFeatureMessage();
@@ -1254,6 +1269,21 @@ describe('Protocol', () => {
                     centroid: [50, 35],
                     confidence: 0.5,
                 }],
+            });
+            testMessage(msg, wire, protocol.ReplyMsg);
+        });
+        it("should translate `vision.FeatureReply` with no blobs successfully", () => {
+            let wire = makeWire(_wire => {
+                let proto = new vision_pb.VisionFeatureMessage();
+                proto.setChannel('foo');
+                proto.setFeature(new vision_pb.Feature());
+                proto.getFeature().setBlobs(new vision_pb.BlobsFeature());
+                _wire.setVisionFeatureMessage(proto);
+            });
+
+            let msg = new vision.FeatureReply('foo', {
+                kind: vision.ChannelKind.BLOBS,
+                blobs: [],
             });
             testMessage(msg, wire, protocol.ReplyMsg);
         });
