@@ -541,7 +541,7 @@ describe('Protocol', () => {
             let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorConfigAction();
                 proto.setPort(0);
-                proto.setDc(new motor_pb.Dummy());
+                proto.setDc(new motor_pb.DcConfig());
                 _wire.setMotorConfigAction(proto);
             });
 
@@ -572,7 +572,7 @@ describe('Protocol', () => {
             let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorConfigAction();
                 proto.setPort(0);
-                proto.setStepper(new motor_pb.Dummy());
+                proto.setStepper(new motor_pb.StepperConfig());
                 _wire.setMotorConfigAction(proto);
             });
 
@@ -627,7 +627,7 @@ describe('Protocol', () => {
             let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorCommandMessage();
                 proto.setPort(0);
-                proto.setDc(new motor_pb.Dummy());
+                proto.setDc(new motor_pb.DcConfig());
                 proto.setState(motor.MotorState.POWER);
                 proto.setAmount(1000);
                 _wire.setMotorCommandMessage(proto);
@@ -662,7 +662,7 @@ describe('Protocol', () => {
             let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorCommandMessage();
                 proto.setPort(0);
-                proto.setStepper(new motor_pb.Dummy());
+                proto.setStepper(new motor_pb.StepperConfig());
                 proto.setState(motor.MotorState.POWER);
                 proto.setAmount(1000);
                 _wire.setMotorCommandMessage(proto);
@@ -680,7 +680,7 @@ describe('Protocol', () => {
             let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorCommandMessage();
                 proto.setPort(0);
-                proto.setDc(new motor_pb.Dummy());
+                proto.setDc(new motor_pb.DcConfig());
                 proto.setState(motor.MotorState.POWER);
                 proto.setAmount(1000);
                 proto.setSubscription(sub);
@@ -725,7 +725,7 @@ describe('Protocol', () => {
             let wire = makeWire(_wire => {
                 let proto = new motor_pb.MotorCommandMessage();
                 proto.setPort(0);
-                proto.setStepper(new motor_pb.Dummy());
+                proto.setStepper(new motor_pb.StepperConfig());
                 proto.setState(motor.MotorState.POWER);
                 proto.setAmount(1000);
                 proto.setSubscription(sub);

@@ -21,12 +21,14 @@ enum MotorState {
     VELOCITY = 2;
 }
 
-message Dummy {}
+message DcConfig {}
 
 message EncoderConfig {
     uint32 encoder_a_port = 1;
     uint32 encoder_b_port = 2;
 }
+
+message StepperConfig {}
 // </GSL customizable: module-extras>
 
 // Command for one motor. By setting a relative or absolute goal position,
@@ -61,9 +63,9 @@ message MotorAction {
 message MotorConfigAction {
     uint32 port = 1;
     oneof config {
-        Dummy dc = 2;
+        DcConfig dc = 2;
         EncoderConfig encoder = 3;
-        Dummy stepper = 4;
+        StepperConfig stepper = 4;
     }
 }
 
@@ -77,9 +79,9 @@ message MotorConfigAction {
 message MotorCommandMessage {
     uint32 port = 1;
     oneof config {
-        Dummy dc = 5;
+        DcConfig dc = 5;
         EncoderConfig encoder = 6;
-        Dummy stepper = 7;
+        StepperConfig stepper = 7;
     }
     MotorState state = 2;
     sint32 amount = 3;

@@ -96,7 +96,7 @@ export class ConfigAction extends Message {
         // <GSL customizable: ConfigAction-serialize-config>
         switch(this.config.kind) {
             case ConfigKind.DC:
-                msg.setDc(new motor_pb.Dummy());
+                msg.setDc(new motor_pb.DcConfig());
                 break;
             case ConfigKind.ENCODER:
                 let config = new motor_pb.EncoderConfig();
@@ -105,7 +105,7 @@ export class ConfigAction extends Message {
                 msg.setEncoder(config);
                 break;
             case ConfigKind.STEPPER:
-                msg.setStepper(new motor_pb.Dummy());
+                msg.setStepper(new motor_pb.StepperConfig());
                 break;
             // istanbul ignore next
             default:
@@ -145,7 +145,7 @@ export class CommandReply extends Message {
         // <GSL customizable: CommandReply-serialize-config>
         switch(this.config.kind) {
             case ConfigKind.DC:
-                msg.setDc(new motor_pb.Dummy());
+                msg.setDc(new motor_pb.DcConfig());
                 break;
             case ConfigKind.ENCODER:
                 let config = new motor_pb.EncoderConfig();
@@ -154,7 +154,7 @@ export class CommandReply extends Message {
                 msg.setEncoder(config);
                 break;
             case ConfigKind.STEPPER:
-                msg.setStepper(new motor_pb.Dummy());
+                msg.setStepper(new motor_pb.StepperConfig());
                 break;
             // istanbul ignore next
             default:
@@ -199,7 +199,7 @@ export class CommandUpdate extends Message {
         // <GSL customizable: CommandUpdate-serialize-config>
         switch(this.config.kind) {
             case ConfigKind.DC:
-                msg.setDc(new motor_pb.Dummy());
+                msg.setDc(new motor_pb.DcConfig());
                 break;
             case ConfigKind.ENCODER:
                 let config = new motor_pb.EncoderConfig();
@@ -208,7 +208,7 @@ export class CommandUpdate extends Message {
                 msg.setEncoder(config);
                 break;
             case ConfigKind.STEPPER:
-                msg.setStepper(new motor_pb.Dummy());
+                msg.setStepper(new motor_pb.StepperConfig());
                 break;
             // istanbul ignore next
             default:
