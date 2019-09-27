@@ -1,5 +1,8 @@
 export * from './client/hedgehogClient';
-export { Message, ack, version, emergency, imu, io, analog, digital, motor, servo, process, vision, speaker } from './protocol';
+export {
+    Message,
+    ack, version, emergency, imu, io, analog, digital, motor, servo, process, vision, speaker,
+} from './protocol';
 
 import * as protocol from './protocol';
 export { protocol };

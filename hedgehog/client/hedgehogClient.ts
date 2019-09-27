@@ -246,7 +246,9 @@ export class HedgehogClient {
     }
 
     public async getFrame(highlight?: string): Promise<Uint8Array> {
-        let reply = await this.send<vision.FrameReply>(new vision.FrameRequest(highlight !== undefined ? highlight : null));
+        let reply = await this.send<vision.FrameReply>(
+            new vision.FrameRequest(highlight !== undefined ? highlight : null)
+        );
         return reply.frame;
     }
 
