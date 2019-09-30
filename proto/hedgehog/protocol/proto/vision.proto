@@ -62,9 +62,10 @@ message Feature {
 // </GSL customizable: module-extras>
 
 // Opens or closes the camera. When the camera is open,
-// frames will be read at the camera's speed and captured at the caller's speed.
-// Similar to a subscription, the camera must be closed as many times as it was opened.
-// It will remain open until it is closed the appropriate number of times.
+// frames will be read at the camera's speed and retrieved/analyzed at the client's speed.
+// The server keeps track which clients are connected: a client opening the camera twice is an error,
+// a client closing the camera multiple times or without opening it is redundant.
+// If the camera fails (e.g. USB is disconnected) all clients are disconnected.
 //
 // => ():                    open camera action => ack
 // => ():                    close camera action => ack
