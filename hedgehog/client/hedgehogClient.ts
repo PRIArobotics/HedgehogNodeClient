@@ -3,7 +3,7 @@
  */
 
 import { RequestMsg, ReplyMsg, Message,
-         ack, version, emergency, io, analog, digital, motor, servo, imu, process, speaker, vision } from '../protocol';
+         ack, version, emergency, imu, io, analog, digital, motor, servo, process, speaker, vision } from '../protocol';
 
 export { AcknowledgementCode } from '../protocol/messages/ack';
 export { IOFlags } from '../protocol/messages/io';

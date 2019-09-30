@@ -6,7 +6,7 @@ import * as zmq from 'zeromq';
 
 import {
     HedgehogClient, protocol, Message,
-    ack, version, emergency, io, analog, digital, motor, servo, imu,
+    ack, version, emergency, imu, io, analog, digital, motor, servo, speaker, vision,
 } from "../hedgehog";
 
 describe('Client', () => {
