@@ -252,6 +252,16 @@ describe('Client', () => {
         assert.deepStrictEqual(await hedgehog.getImuPose(), [0, 0, 0]);
     });
 
+    it('`setSpeaker` should work', async () => {
+        mock_server(
+            [[new speaker.Action(null)], [new ack.Acknowledgement()]],
+            [[new speaker.Action(440)], [new ack.Acknowledgement()]],
+        );
+
+        await hedgehog.setSpeaker(null);
+        await hedgehog.setSpeaker(440);
+    });
+
     after(() => {
         hedgehog.close();
         hedgehog = null;
