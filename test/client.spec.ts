@@ -262,6 +262,104 @@ describe('Client', () => {
         await hedgehog.setSpeaker(440);
     });
 
+    it('`openCamera` should work', async () => {
+        mock_server(
+            [[new vision.OpenCameraAction()], [new ack.Acknowledgement()]],
+        );
+
+        await hedgehog.openCamera();
+    });
+
+    it('`closeCamera` should work', async () => {
+        mock_server(
+            [[new vision.CloseCameraAction()], [new ack.Acknowledgement()]],
+        );
+
+        await hedgehog.closeCamera();
+    });
+
+    it('`createChannel` should work', async () => {
+        mock_server(
+            [[new vision.CreateChannelAction({
+                foo: { kind: vision.ChannelKind.FACES },
+            })], [new ack.Acknowledgement()]],
+        );
+
+        await hedgehog.createChannel('foo', { kind: vision.ChannelKind.FACES });
+    });
+
+    it('`updateChannel` should work', async () => {
+        mock_server(
+            [[new vision.UpdateChannelAction({
+                foo: { kind: vision.ChannelKind.FACES },
+            })], [new ack.Acknowledgement()]],
+        );
+
+        await hedgehog.updateChannel('foo', { kind: vision.ChannelKind.FACES });
+    });
+
+    it('`deleteChannel` should work', async () => {
+        mock_server(
+            [[new vision.DeleteChannelAction(['foo'])], [new ack.Acknowledgement()]],
+        );
+
+        await hedgehog.deleteChannel('foo');
+    });
+
+    it('`getChannel` should work', async () => {
+        mock_server(
+            [[new vision.ChannelRequest(['foo'])], [new vision.ChannelReply({
+                foo: { kind: vision.ChannelKind.FACES },
+            })]],
+        );
+
+        assert.deepStrictEqual(await hedgehog.getChannel('foo'), { kind: vision.ChannelKind.FACES });
+    });
+
+    it('`getChannels` should work', async () => {
+        mock_server(
+            [[new vision.ChannelRequest([])], [new vision.ChannelReply({
+                foo: { kind: vision.ChannelKind.FACES },
+            })]],
+        );
+
+        assert.deepStrictEqual(await hedgehog.getChannels(), {
+            foo: {kind: vision.ChannelKind.FACES},
+        });
+    });
+
+    it('`captureFrame` should work', async () => {
+        mock_server(
+            [[new vision.CaptureFrameAction()], [new ack.Acknowledgement()]],
+        );
+
+        await hedgehog.captureFrame();
+    });
+
+    it('`getFrame` should work', async () => {
+        mock_server(
+            [[new vision.FrameRequest('foo')], [new vision.FrameReply('foo', Uint8Array.of())]],
+            [[new vision.FrameRequest(null)], [new vision.FrameReply('foo', Uint8Array.of())]],
+        );
+
+        assert.deepStrictEqual(await hedgehog.getFrame('foo'), Uint8Array.of());
+        assert.deepStrictEqual(await hedgehog.getFrame(), Uint8Array.of());
+    });
+
+    it('`getFeature` should work', async () => {
+        mock_server(
+            [[new vision.FeatureRequest('foo')], [new vision.FeatureReply('foo', {
+                kind: vision.ChannelKind.FACES,
+                faces: [],
+            })]],
+        );
+
+        assert.deepStrictEqual(await hedgehog.getFeature('foo'), {
+            kind: vision.ChannelKind.FACES,
+            faces: [],
+        });
+    });
+
     after(() => {
         hedgehog.close();
         hedgehog = null;
