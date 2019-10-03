@@ -29,10 +29,10 @@ message Channel {
 }
 
 message Face {
-    uint32 x = 1;
-    uint32 y = 2;
-    uint32 width = 3;
-    uint32 height = 4;
+    int32 x = 1;
+    int32 y = 2;
+    int32 width = 3;
+    int32 height = 4;
 }
 
 message FacesFeature {
@@ -40,12 +40,12 @@ message FacesFeature {
 }
 
 message Blob {
-    uint32 x = 1;
-    uint32 y = 2;
-    uint32 width = 3;
-    uint32 height = 4;
-    uint32 cx = 5;
-    uint32 cy = 6;
+    int32 x = 1;
+    int32 y = 2;
+    int32 width = 3;
+    int32 height = 4;
+    int32 cx = 5;
+    int32 cy = 6;
     float confidence = 7;
 }
 
